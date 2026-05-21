@@ -44,7 +44,7 @@ jobs:
       SQLX_ENV_DIR: tests/${{ matrix.db-type }}/.sqlx
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Rust Cache
         uses: swatinem/rust-cache@v2
