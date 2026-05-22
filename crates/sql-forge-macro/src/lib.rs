@@ -835,6 +835,7 @@ fn render_validator_text(
     text: &str,
     use_dollar_params: bool,
     param_offset: &mut usize,
+    list_count: usize,
 ) -> (String, Vec<(String, bool)>) {
     let mut out_sql = String::new();
     let mut occurrences = Vec::new();
@@ -843,7 +844,19 @@ fn render_validator_text(
         match part {
             TextPart::Lit(lit) => out_sql.push_str(&lit),
             TextPart::Param { name, is_list } => {
-                if use_dollar_params {
+                if is_list && list_count > 1 {
+                    let slots: Vec<String> = if use_dollar_params {
+                        (0..list_count)
+                            .map(|i| format!("${}", *param_offset + i + 1))
+                            .collect()
+                    } else {
+                        (0..list_count).map(|_| "?".to_string()).collect()
+                    };
+                    if use_dollar_params {
+                        *param_offset += list_count;
+                    }
+                    out_sql.push_str(&slots.join(", "));
+                } else if use_dollar_params {
                     *param_offset += 1;
                     write!(out_sql, "${}", *param_offset).unwrap();
                 } else {
@@ -1166,8 +1179,10 @@ fn render_validator_args(
     use_dollar_params: bool,
     param_offset: &mut usize,
     sql_span: Span,
+    list_count: usize,
 ) -> Result<(String, Vec<TokenStream2>), TokenStream> {
-    let (rendered_sql, occurrences) = render_validator_text(sql, use_dollar_params, param_offset);
+    let (rendered_sql, occurrences) =
+        render_validator_text(sql, use_dollar_params, param_offset, list_count);
     let mut args = Vec::<TokenStream2>::new();
 
     for (name, is_list) in occurrences {
@@ -1189,7 +1204,10 @@ fn render_validator_args(
         };
 
         if is_list {
-            args.push(quote! { (#local_ident).as_slice()[0] });
+            let first = quote! { *(#local_ident).as_slice().first().unwrap_or(&0i64) };
+            for _ in 0..list_count {
+                args.push(first.clone());
+            }
         } else {
             args.push(quote! { #local_ident });
         }
@@ -1565,6 +1583,16 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
     };
 
     let use_dollar_params = uses_dollar_params(&db);
+    let is_sqlite = if let syn::Type::Path(type_path) = &db {
+        type_path
+            .path
+            .segments
+            .last()
+            .is_some_and(|s| s.ident == "Sqlite")
+    } else {
+        false
+    };
+    let list_count: usize = if is_sqlite { 1 } else { 3 };
 
     // ---- Phase 3: Build result case definitions ----
     // Each result case is (optional_key, model_type, optional_scalar_type).
@@ -1796,6 +1824,7 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
                             use_dollar_params,
                             &mut param_offset,
                             sql_span,
+                            list_count,
                         ) {
                             Ok(value) => value,
                             Err(err) => return err,
@@ -1833,6 +1862,7 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
                             use_dollar_params,
                             &mut param_offset,
                             fragment.span,
+                            list_count,
                         ) {
                             Ok(value) => value,
                             Err(err) => return err,

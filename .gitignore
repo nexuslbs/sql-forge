@@ -1,4 +1,5 @@
 .env
+sql_forge_test.db
 /target/
 /.sqlx/
 /tmp/

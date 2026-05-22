@@ -1,0 +1,20 @@
+{
+  "db_name": "SQLite",
+  "query": "\n        SELECT items.name\n        FROM items\n        WHERE items.category_id = ?\n        ",
+  "describe": {
+    "columns": [
+      {
+        "name": "name",
+        "ordinal": 0,
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "863c99c420d6ec22b768b9dcd75e0115cda086890a3dec3c5dac343fb8ee5f06"
+}

@@ -25,9 +25,9 @@
         "ordinal": 2,
         "name": "price",
         "type_info": {
-          "type": "NewDecimal",
+          "type": "LongLong",
           "flags": "NOT_NULL",
-          "max_size": 14
+          "max_size": 20
         }
       },
       {

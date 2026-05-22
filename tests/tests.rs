@@ -1,9 +1,18 @@
-use rust_decimal::Decimal;
 use sql_forge::db_type;
 use sql_forge::sql_forge;
 
 pub type AppDb = db_type!();
 pub type DbPool = sqlx::Pool<AppDb>;
+
+type Price = i64;
+
+fn price_new(v: i64, scale: u32) -> Price {
+    v * 10i64.pow(2 - scale)
+}
+
+fn price_inc(base: &Price, v: i64, scale: u32) -> Price {
+    *base + price_new(v, scale)
+}
 
 #[derive(sqlx::FromRow, Debug, PartialEq)]
 struct User {
@@ -15,7 +24,7 @@ struct User {
 struct Product {
     id: i64,
     name: String,
-    price: Decimal,
+    price: Price,
     stock: i64,
     category: String,
 }
@@ -24,7 +33,7 @@ struct Product {
 struct Item {
     id: i64,
     name: String,
-    price: Decimal,
+    price: Price,
     stock: i64,
 }
 
@@ -250,7 +259,7 @@ async fn multiple_results_group() {
     let pool = pool().await;
 
     let category_id = 1i64;
-    let min_price = Decimal::new(10000, 2);
+    let min_price = price_new(10000, 2);
 
     let group = sql_forge!(
         (
@@ -354,8 +363,8 @@ async fn combining_features_example() {
     let pool = pool().await;
 
     let category = Some("Electronics");
-    let price_min = Some(Decimal::new(5000, 2));
-    let price_max: Option<Decimal> = None;
+    let price_min = Some(price_new(5000, 2));
+    let price_max: Option<Price> = None;
     let in_stock_only = true;
     let order_by = Some("price_desc".to_string());
     let page: i64 = 0;
@@ -426,7 +435,7 @@ async fn combining_features_example() {
     assert!(!products.is_empty(), "expected at least one product");
     for p in &products {
         assert_eq!(p.category, "Electronics");
-        assert!(p.price >= Decimal::new(50, 0), "price should be >= 50");
+        assert!(p.price >= price_new(50, 0), "price should be >= 50");
         assert!(p.stock > 0, "stock should be > 0");
     }
     assert_eq!(
@@ -472,8 +481,16 @@ async fn execute_only_query() {
 async fn execute_only_insert_update_delete() {
     let pool = pool().await;
 
+    sql_forge!(
+        "DELETE FROM products WHERE category = :category",
+        ( :category = "Temporary" ),
+    )
+    .execute(&pool)
+    .await
+    .ok();
+
     let names = ["Temp A", "Temp B", "Temp C"];
-    let base_price = Decimal::new(9999, 2);
+    let base_price = price_new(9999, 2);
 
     for (i, name) in names.iter().enumerate() {
         sql_forge!(
@@ -483,7 +500,7 @@ async fn execute_only_insert_update_delete() {
             "#,
             (
                 :name = name,
-                :price = base_price + Decimal::new(i as i64, 2),
+                :price = price_inc(&base_price, i as i64, 2),
                 :stock = 10i64,
                 :category = "Temporary",
             ),
@@ -500,7 +517,7 @@ async fn execute_only_insert_update_delete() {
         WHERE category = :category AND name = :name
         "#,
         (
-            :new_price = Decimal::new(4999, 2),
+            :new_price = price_new(4999, 2),
             :category = "Temporary",
             :name = "Temp B",
         ),
@@ -513,7 +530,7 @@ async fn execute_only_insert_update_delete() {
     struct TempRow {
         #[expect(dead_code)]
         name: String,
-        price: Decimal,
+        price: Price,
     }
 
     let rows: Vec<TempRow> = sql_forge!(
@@ -530,9 +547,9 @@ async fn execute_only_insert_update_delete() {
     .expect("select after update failed");
 
     assert_eq!(rows.len(), 3);
-    assert_eq!(rows[0].price, Decimal::new(9999, 2));
-    assert_eq!(rows[1].price, Decimal::new(4999, 2));
-    assert_eq!(rows[2].price, Decimal::new(10001, 2));
+    assert_eq!(rows[0].price, price_new(9999, 2));
+    assert_eq!(rows[1].price, price_new(4999, 2));
+    assert_eq!(rows[2].price, price_new(10001, 2));
 
     sql_forge!(
         r#"

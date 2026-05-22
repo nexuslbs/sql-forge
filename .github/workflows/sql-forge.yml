@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        db-type: [mysql, postgres]
+        db-type: [mysql, postgres, sqlite]
 
     services:
       mysql:
@@ -39,8 +39,8 @@ jobs:
           - 5432:5432
 
     env:
-      DATABASE_URL: ${{ matrix.db-type == 'mysql' && 'mysql://root:root@127.0.0.1:3306/sql_forge_test' || matrix.db-type == 'postgres' && 'postgres://postgres:root@127.0.0.1:5432/sql_forge_test' || '' }}
-      SQL_FORGE_DB_TYPE: ${{ matrix.db-type == 'mysql' && 'sqlx::MySql' || 'sqlx::Postgres' }}
+      DATABASE_URL: ${{ matrix.db-type == 'mysql' && 'mysql://root:root@127.0.0.1:3306/sql_forge_test' || matrix.db-type == 'postgres' && 'postgres://postgres:root@127.0.0.1:5432/sql_forge_test' || 'sqlite:sql_forge_test.db' }}
+      SQL_FORGE_DB_TYPE: ${{ matrix.db-type == 'mysql' && 'sqlx::MySql' || matrix.db-type == 'postgres' && 'sqlx::Postgres' || 'sqlx::Sqlite' }}
       SQLX_ENV_DIR: tests/${{ matrix.db-type }}/.sqlx
 
     steps:
@@ -72,31 +72,33 @@ jobs:
               sleep 2
             done
             mysql -h 127.0.0.1 -uroot -proot sql_forge_test < tests/init.sql
-          else
+          elif [ "${{ matrix.db-type }}" = "postgres" ]; then
             until pg_isready -h 127.0.0.1 -U postgres; do
               echo "waiting for postgres..."
               sleep 2
             done
             PGPASSWORD=root psql -h 127.0.0.1 -U postgres -d sql_forge_test -f tests/init-pg.sql
+          else
+            sqlite3 sql_forge_test.db < tests/init-sqlite.sql
           fi
 
       - name: Copy .sqlx metadata for this database type
         run: cp -r tests/${{ matrix.db-type }}/.sqlx .sqlx
 
       - name: Install sqlx-cli
-        run: cargo install sqlx-cli --force --no-default-features --features native-tls,mysql,postgres,sqlite
+        run: cargo install sqlx-cli --no-default-features --features native-tls,mysql,postgres,sqlite
 
       - name: cargo check
-        run: cargo check --tests
+        run: cargo check --tests ${{ matrix.db-type == 'sqlite' && '--features sqlite' || '' }}
 
       - name: cargo fmt
         run: cargo fmt --all -- --check
 
       - name: cargo clippy
-        run: cargo clippy --tests -- -D warnings
+        run: cargo clippy --tests ${{ matrix.db-type == 'sqlite' && '--features sqlite' || '' }} -- -D warnings
 
       - name: cargo test
-        run: cargo test
+        run: cargo test ${{ matrix.db-type == 'sqlite' && '--features sqlite' || '' }}
 
       - name: Verify that .sqlx/ files are up to date
-        run: cargo sqlx prepare --check -- --tests
+        run: cargo sqlx prepare --check ${{ matrix.db-type == 'sqlite' && '--features sqlite' || '' }} -- --tests

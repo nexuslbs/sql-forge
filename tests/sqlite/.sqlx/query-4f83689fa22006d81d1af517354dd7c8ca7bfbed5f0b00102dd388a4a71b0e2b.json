@@ -1,0 +1,44 @@
+{
+  "db_name": "SQLite",
+  "query": "\n        SELECT id, name, price, stock, category\n        FROM products\n        WHERE 1 = 1\n         AND category = ? \n        ",
+  "describe": {
+    "columns": [
+      {
+        "name": "id",
+        "ordinal": 0,
+        "type_info": "Integer"
+      },
+      {
+        "name": "name",
+        "ordinal": 1,
+        "type_info": "Text"
+      },
+      {
+        "name": "price",
+        "ordinal": 2,
+        "type_info": "Integer"
+      },
+      {
+        "name": "stock",
+        "ordinal": 3,
+        "type_info": "Integer"
+      },
+      {
+        "name": "category",
+        "ordinal": 4,
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "4f83689fa22006d81d1af517354dd7c8ca7bfbed5f0b00102dd388a4a71b0e2b"
+}

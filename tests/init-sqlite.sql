@@ -1,57 +1,54 @@
-CREATE DATABASE IF NOT EXISTS sql_forge_test;
-USE sql_forge_test;
-
 CREATE TABLE IF NOT EXISTS users (
-    id      BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name    VARCHAR(255) NOT NULL
+    id      INTEGER PRIMARY KEY,
+    name    TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS organisations (
-    id      BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name    VARCHAR(255) NOT NULL
+    id      INTEGER PRIMARY KEY,
+    name    TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS categories (
-    id      BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name    VARCHAR(255) NOT NULL
+    id      INTEGER PRIMARY KEY,
+    name    TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS items (
-    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name        VARCHAR(255) NOT NULL,
-    category_id BIGINT       NOT NULL,
-    price       BIGINT       NOT NULL DEFAULT 0,
-    stock       INT          NOT NULL DEFAULT 0,
-    created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    id          INTEGER PRIMARY KEY,
+    name        TEXT NOT NULL,
+    category_id INTEGER NOT NULL,
+    price       INTEGER NOT NULL DEFAULT 0,
+    stock       INTEGER NOT NULL DEFAULT 0,
+    created_at  TEXT NOT NULL DEFAULT (datetime('now')),
     FOREIGN KEY (category_id) REFERENCES categories(id)
 );
 
 CREATE TABLE IF NOT EXISTS products (
-    id       BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name     VARCHAR(255) NOT NULL,
-    price    BIGINT       NOT NULL DEFAULT 0,
-    stock    INT          NOT NULL DEFAULT 0,
-    category VARCHAR(255) NOT NULL DEFAULT ''
+    id       INTEGER PRIMARY KEY,
+    name     TEXT NOT NULL,
+    price    INTEGER NOT NULL DEFAULT 0,
+    stock    INTEGER NOT NULL DEFAULT 0,
+    category TEXT NOT NULL DEFAULT ''
 );
 
-INSERT IGNORE INTO users (id, name) VALUES
+INSERT OR IGNORE INTO users (id, name) VALUES
     (1, 'Alice'),
     (2, 'Bob'),
     (3, 'Charlie'),
     (4, 'Diana'),
     (5, 'Eve');
 
-INSERT IGNORE INTO organisations (id, name) VALUES
+INSERT OR IGNORE INTO organisations (id, name) VALUES
     (1, 'Org Alpha'),
     (2, 'Org Beta'),
     (3, 'Org Gamma');
 
-INSERT IGNORE INTO categories (id, name) VALUES
+INSERT OR IGNORE INTO categories (id, name) VALUES
     (1, 'Electronics'),
     (2, 'Books'),
     (3, 'Clothing');
 
-INSERT IGNORE INTO items (id, name, category_id, price, stock, created_at) VALUES
+INSERT OR IGNORE INTO items (id, name, category_id, price, stock, created_at) VALUES
     (1,  'Laptop',      1, 150000, 10, '2025-01-15 10:00:00'),
     (2,  'Mouse',       1,   2500, 200, '2025-02-10 12:00:00'),
     (3,  'Keyboard',    1,   8000, 150, '2025-03-05 09:30:00'),
@@ -60,7 +57,7 @@ INSERT IGNORE INTO items (id, name, category_id, price, stock, created_at) VALUE
     (6,  'Headphones',  1,  12000, 75,  '2025-05-10 16:00:00'),
     (7,  'Monitor',     1,  35000, 30,  '2025-06-01 11:00:00');
 
-INSERT IGNORE INTO products (id, name, price, stock, category) VALUES
+INSERT OR IGNORE INTO products (id, name, price, stock, category) VALUES
     (1, 'Smartphone',   40000,  50, 'Electronics'),
     (2, 'Tablet',       80000,  30, 'Electronics'),
     (3, 'Notebook',       500, 500, 'Stationery'),

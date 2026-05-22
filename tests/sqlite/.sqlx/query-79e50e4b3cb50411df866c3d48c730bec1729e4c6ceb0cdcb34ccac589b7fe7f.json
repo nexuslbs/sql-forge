@@ -1,0 +1,20 @@
+{
+  "db_name": "SQLite",
+  "query": "\n        SELECT COUNT(*) AS total\n        FROM items\n        \n        WHERE items.category_id = ?\n        AND   items.price      >= ?\n        \n        ",
+  "describe": {
+    "columns": [
+      {
+        "name": "total",
+        "ordinal": 0,
+        "type_info": "Integer"
+      }
+    ],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "79e50e4b3cb50411df866c3d48c730bec1729e4c6ceb0cdcb34ccac589b7fe7f"
+}

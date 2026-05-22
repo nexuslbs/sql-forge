@@ -6,7 +6,7 @@
     "parameters": {
       "Left": [
         "Text",
-        "Numeric",
+        "Int8",
         "Int8",
         "Text"
       ]
