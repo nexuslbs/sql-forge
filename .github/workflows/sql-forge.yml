@@ -89,16 +89,16 @@ jobs:
         run: cargo install sqlx-cli --no-default-features --features native-tls,mysql,postgres,sqlite
 
       - name: cargo check
-        run: cargo check --tests ${{ matrix.db-type == 'sqlite' && '--features sqlite' || '' }}
+        run: cargo check --tests
 
       - name: cargo fmt
         run: cargo fmt --all -- --check
 
       - name: cargo clippy
-        run: cargo clippy --tests ${{ matrix.db-type == 'sqlite' && '--features sqlite' || '' }} -- -D warnings
+        run: cargo clippy --tests -- -D warnings
 
       - name: cargo test
-        run: cargo test ${{ matrix.db-type == 'sqlite' && '--features sqlite' || '' }}
+        run: cargo test
 
       - name: Verify that .sqlx/ files are up to date
-        run: cargo sqlx prepare --check ${{ matrix.db-type == 'sqlite' && '--features sqlite' || '' }} -- --tests
+        run: cargo sqlx prepare --check -- --tests
