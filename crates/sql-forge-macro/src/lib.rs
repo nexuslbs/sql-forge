@@ -131,7 +131,7 @@ enum ResultSpec {
     /// Execute-only (no model), e.g. `sql_forge!("SQL", ...)`
     None,
     /// e.g. `sql_forge!(User, ...)`
-    Single(Type),
+    Single(Box<Type>),
     /// e.g. `sql_forge!((>a = X, >b = Y), ...)`
     Group(Vec<ResultAssign>),
 }
@@ -142,7 +142,7 @@ enum ParamsSource {
     /// `( :name = expr, ... )`
     Map(Vec<ParamAssign>),
     /// A struct expression whose fields are matched to `:name` placeholders.
-    Struct(Expr),
+    Struct(Box<Expr>),
 }
 
 /// The SQL template. Only string literals are supported.
@@ -314,10 +314,10 @@ fn parse_params_source_expr(
             Some(MapKind::Sections) => Err(input.error(
                 "sql_forge!: use :name = expr for section-local parameters, not #name = expr",
             )),
-            None => Ok(ParamsSource::Struct(input.parse::<Expr>()?)),
+            None => Ok(ParamsSource::Struct(Box::new(input.parse::<Expr>()?))),
         }
     } else {
-        Ok(ParamsSource::Struct(input.parse::<Expr>()?))
+        Ok(ParamsSource::Struct(Box::new(input.parse::<Expr>()?)))
     }
 }
 
@@ -433,7 +433,7 @@ impl Parse for EnhancedQueryInput {
             let model: Type = input.parse()?;
             input.parse::<Token![,]>()?;
             let sql = parse_sql_template(input)?;
-            (None, ResultSpec::Single(model), true, sql)
+            (None, ResultSpec::Single(Box::new(model)), true, sql)
         } else if input.peek(syn::token::Paren) {
             let result_map_kind = detect_parenthesized_map_kind(input)?;
             match result_map_kind {
@@ -456,13 +456,18 @@ impl Parse for EnhancedQueryInput {
             if input.peek(LitStr) {
                 let model = first_ty;
                 let sql = parse_sql_template(input)?;
-                (None, ResultSpec::Single(model), false, sql)
+                (None, ResultSpec::Single(Box::new(model)), false, sql)
             } else if input.peek(kw::scalar) {
                 input.parse::<kw::scalar>()?;
                 let model: Type = input.parse()?;
                 input.parse::<Token![,]>()?;
                 let sql = parse_sql_template(input)?;
-                (Some(first_ty), ResultSpec::Single(model), true, sql)
+                (
+                    Some(first_ty),
+                    ResultSpec::Single(Box::new(model)),
+                    true,
+                    sql,
+                )
             } else if input.peek(syn::token::Paren)
                 && matches!(
                     detect_parenthesized_map_kind(input)?,
@@ -478,7 +483,7 @@ impl Parse for EnhancedQueryInput {
                 let model: Type = input.parse()?;
                 input.parse::<Token![,]>()?;
                 let sql = parse_sql_template(input)?;
-                (db, ResultSpec::Single(model), false, sql)
+                (db, ResultSpec::Single(Box::new(model)), false, sql)
             }
         };
 
@@ -529,7 +534,7 @@ impl Parse for EnhancedQueryInput {
                                     input.error("sql_forge!: only one parameter source is allowed")
                                 );
                             }
-                            params = ParamsSource::Struct(input.parse::<Expr>()?);
+                            params = ParamsSource::Struct(Box::new(input.parse::<Expr>()?));
                             seen_params = true;
                         }
                     }
@@ -537,7 +542,7 @@ impl Parse for EnhancedQueryInput {
                     if seen_params {
                         return Err(input.error("sql_forge!: only one parameter source is allowed"));
                     }
-                    params = ParamsSource::Struct(input.parse::<Expr>()?);
+                    params = ParamsSource::Struct(Box::new(input.parse::<Expr>()?));
                     seen_params = true;
                 }
 
@@ -607,7 +612,7 @@ fn resolve_db_from_env() -> Result<Type, String> {
         .and_then(|v| v.get("sql_forge"))
         .and_then(|v| v.get("db"))
         .and_then(|v| v.as_str())
-        .ok_or_else(|| {
+        .ok_or({
             "sql_forge!: missing [package.metadata.sql_forge] db = \"...\" in Cargo.toml, \
              SQL_FORGE_DB_TYPE env var, or DB as first macro argument"
         })?;
@@ -816,7 +821,7 @@ fn sanitize_runtime_sql_text(text: &str) -> String {
         let mut content = String::new();
         let mut closed = false;
 
-        while let Some(next) = chars.next() {
+        for next in chars.by_ref() {
             if next == '`' {
                 closed = true;
                 break;
@@ -856,7 +861,7 @@ fn parse_text_parts(text: &str) -> Vec<TextPart> {
             continue;
         }
 
-        if text[..idx].chars().next_back() == Some(':') {
+        if text[..idx].ends_with(':') {
             continue;
         }
 
@@ -976,9 +981,9 @@ fn result_flag_ident(name: &str) -> syn::Ident {
 fn preprocess_result_key_placeholders(input: TokenStream2) -> TokenStream2 {
     fn walk(stream: TokenStream2) -> TokenStream2 {
         let mut out = TokenStream2::new();
-        let mut iter = stream.into_iter().peekable();
+        let iter = stream.into_iter().peekable();
 
-        while let Some(token) = iter.next() {
+        for token in iter {
             match token {
                 TokenTree::Group(group) => {
                     if group.delimiter() == Delimiter::Brace {
@@ -1233,36 +1238,45 @@ fn build_param_bindings(
     Ok((declared_params, bindings))
 }
 
+struct ValidatorRenderContext<'a> {
+    local_params: &'a HashMap<String, syn::Ident>,
+    top_level_params: &'a HashMap<String, syn::Ident>,
+    allow_top_level_fallback: bool,
+    use_dollar_params: bool,
+    sql_span: Span,
+    list_count: usize,
+}
+
 /// Builds the placeholders SQL string and argument list for the compile-time
 /// validator (sqlx::query_as! / query_scalar!). Each `:param` in the SQL is
 /// replaced by `?` (MySQL/SQLite) or `$1`/`$2`/... (PostgreSQL), and the
 /// corresponding value expression is collected into the args list.
 fn render_validator_args(
     sql: &str,
-    local_params: &HashMap<String, syn::Ident>,
-    top_level_params: &HashMap<String, syn::Ident>,
-    allow_top_level_fallback: bool,
-    use_dollar_params: bool,
     param_offset: &mut usize,
-    sql_span: Span,
-    list_count: usize,
+    context: &ValidatorRenderContext<'_>,
 ) -> Result<(String, Vec<TokenStream2>), TokenStream> {
-    let (rendered_sql, occurrences) =
-        render_validator_text(sql, use_dollar_params, param_offset, list_count);
+    let (rendered_sql, occurrences) = render_validator_text(
+        sql,
+        context.use_dollar_params,
+        param_offset,
+        context.list_count,
+    );
     let mut args = Vec::<TokenStream2>::new();
 
     for (name, is_list) in occurrences {
-        let local_ident = if allow_top_level_fallback {
-            local_params
+        let local_ident = if context.allow_top_level_fallback {
+            context
+                .local_params
                 .get(&name)
-                .or_else(|| top_level_params.get(&name))
+                .or_else(|| context.top_level_params.get(&name))
         } else {
-            local_params.get(&name)
+            context.local_params.get(&name)
         };
 
         let Some(local_ident) = local_ident else {
             return Err(syn::Error::new(
-                sql_span,
+                context.sql_span,
                 format!("sql_forge!: parameter :{} has no mapping", name),
             )
             .to_compile_error()
@@ -1271,7 +1285,7 @@ fn render_validator_args(
 
         if is_list {
             let first = quote! { *(#local_ident).as_slice().first().unwrap_or(&0i64) };
-            for _ in 0..list_count {
+            for _ in 0..context.list_count {
                 args.push(first.clone());
             }
         } else {
@@ -1712,11 +1726,11 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
         }
         ResultSpec::Single(ref model) => {
             let scalar = if force_scalar {
-                Some(model.clone())
+                Some((**model).clone())
             } else {
-                scalar_output_type(model).cloned()
+                scalar_output_type(model.as_ref()).cloned()
             };
-            vec![(None, Some(model.clone()), scalar)]
+            vec![(None, Some((**model).clone()), scalar)]
         }
         ResultSpec::Group(ref cases) => {
             if force_scalar {
@@ -1910,7 +1924,7 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
 
     let mut grouped_validator_invocations = Vec::<TokenStream2>::new();
 
-    for (_idx, (result_key, model_opt, scalar_model_ty)) in result_cases.iter().enumerate() {
+    for (result_key, model_opt, scalar_model_ty) in result_cases.iter() {
         let suffix = result_key.clone().unwrap_or_else(|| "single".to_string());
         let query_ident = format_ident!("__EnhancedQuery_{}", suffix);
         let query_value_ident = format_ident!("__sql_forge_value_{}", suffix);
@@ -1971,19 +1985,22 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
             let mut case_args = Vec::<TokenStream2>::new();
             let mut param_offset = 0usize;
             let empty_params = HashMap::<String, syn::Ident>::new();
+            let root_validator_context = ValidatorRenderContext {
+                local_params: &empty_params,
+                top_level_params: &declared_params,
+                allow_top_level_fallback: true,
+                use_dollar_params,
+                sql_span,
+                list_count,
+            };
 
             for segment in &segments {
                 match segment {
                     Segment::Text(text) => {
                         let (chunk_sql, chunk_args) = match render_validator_args(
                             text,
-                            &empty_params,
-                            &declared_params,
-                            true,
-                            use_dollar_params,
                             &mut param_offset,
-                            sql_span,
-                            list_count,
+                            &root_validator_context,
                         ) {
                             Ok(value) => value,
                             Err(err) => return err,
@@ -2013,15 +2030,18 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
                             Ok(value) => value,
                             Err(err) => return err,
                         };
+                        let section_validator_context = ValidatorRenderContext {
+                            local_params: &local_params,
+                            top_level_params: &declared_params,
+                            allow_top_level_fallback: true,
+                            use_dollar_params,
+                            sql_span: fragment.span,
+                            list_count,
+                        };
                         let (chunk_sql, chunk_args) = match render_validator_args(
                             &fragment.sql,
-                            &local_params,
-                            &declared_params,
-                            true,
-                            use_dollar_params,
                             &mut param_offset,
-                            fragment.span,
-                            list_count,
+                            &section_validator_context,
                         ) {
                             Ok(value) => value,
                             Err(err) => return err,
