@@ -115,6 +115,7 @@ struct EnhancedQueryInput {
     sql: SqlTemplate,
     params: ParamsSource,
     sections: Vec<SectionAssign>,
+    batch: Option<Expr>,
 }
 
 /// One entry in a result map `(>key = Model, ...)`.
@@ -179,9 +180,12 @@ enum Segment {
     Text(String),
     /// A `{#section_name}` placeholder.
     Section { name: String },
+    /// A `{( ... )}` batch value template (repeated per batch item).
+    Batch { parts: Vec<TextPart> },
 }
 
 /// A fragment of SQL text after splitting on `:param`.
+#[derive(Clone)]
 enum TextPart {
     /// Literal SQL text.
     Lit(String),
@@ -478,6 +482,7 @@ impl Parse for EnhancedQueryInput {
             }
         };
 
+        let mut batch = None;
         let mut params = ParamsSource::None;
         let mut sections = Vec::new();
         let mut seen_params = false;
@@ -485,7 +490,15 @@ impl Parse for EnhancedQueryInput {
 
         if input.parse::<Token![,]>().is_ok() {
             while !input.is_empty() {
-                if input.peek(syn::token::Paren) {
+                if input.peek(Token![..]) {
+                    if batch.is_some() {
+                        return Err(
+                            input.error("sql_forge!: only one batch source argument is allowed")
+                        );
+                    }
+                    input.parse::<Token![..]>()?;
+                    batch = Some(input.parse::<Expr>()?);
+                } else if input.peek(syn::token::Paren) {
                     match detect_parenthesized_map_kind(input)? {
                         Some(MapKind::Results) => {
                             return Err(input.error(
@@ -546,6 +559,7 @@ impl Parse for EnhancedQueryInput {
             sql,
             params,
             sections,
+            batch,
         })
     }
 }
@@ -671,6 +685,58 @@ fn parse_literal_segments(sql: &str) -> Result<Vec<Segment>, String> {
     while let Some(ch) = chars.next() {
         if ch != '{' {
             text.push(ch);
+            continue;
+        }
+
+        if chars.peek() == Some(&'(') {
+            push_text_segment(&mut out, std::mem::take(&mut text));
+
+            let mut paren_depth = 0u32;
+            let mut content = String::new();
+            let mut found_close = false;
+            for ch in chars.by_ref() {
+                if ch == '{' {
+                    return Err(
+                        "sql_forge!: nested braces not allowed inside batch section".to_string()
+                    );
+                }
+                if ch == '}' {
+                    if paren_depth != 0 {
+                        return Err(
+                            "sql_forge!: batch section {( ... )} has unbalanced parentheses"
+                                .to_string(),
+                        );
+                    }
+                    found_close = true;
+                    break;
+                }
+                if ch == '(' {
+                    paren_depth += 1;
+                } else if ch == ')' {
+                    if paren_depth == 0 {
+                        return Err(
+                            "sql_forge!: batch section {( ... )} has unbalanced parentheses"
+                                .to_string(),
+                        );
+                    }
+                    paren_depth -= 1;
+                }
+                content.push(ch);
+            }
+            if !found_close {
+                return Err("sql_forge!: batch section {( ... )} without closing }".to_string());
+            }
+            let parts = parse_text_parts(&content);
+            for part in &parts {
+                if let TextPart::Param { is_list: true, .. } = part {
+                    return Err(
+                        "sql_forge!: list parameters (:name[]) are not allowed inside {( ... )} \
+                         batch sections; use plain parameters (:name) instead"
+                            .to_string(),
+                    );
+                }
+            }
+            out.push(Segment::Batch { parts });
             continue;
         }
 
@@ -1311,12 +1377,24 @@ fn collect_used_param_names(segments: &[Segment]) -> Vec<String> {
     let mut seen = HashSet::<String>::new();
 
     for segment in segments {
-        if let Segment::Text(text) = segment {
-            for name in collect_used_param_names_in_sql(text) {
-                if seen.insert(name.clone()) {
-                    names.push(name);
+        match segment {
+            Segment::Text(text) => {
+                for name in collect_used_param_names_in_sql(text) {
+                    if seen.insert(name.clone()) {
+                        names.push(name);
+                    }
                 }
             }
+            Segment::Batch { parts } => {
+                for part in parts {
+                    if let TextPart::Param { name, .. } = part {
+                        if seen.insert(name.clone()) {
+                            names.push(name.clone());
+                        }
+                    }
+                }
+            }
+            _ => {}
         }
     }
 
@@ -1468,6 +1546,36 @@ fn collect_used_param_names_in_sql(sql: &str) -> Vec<String> {
 /// )
 /// ```
 ///
+/// # Batch inserts (`{( ... )}`)
+///
+/// A batch section `{( ... )}` repeats its content for each item in an iterable
+/// source passed as `..expr`. Inside the batch, `:name` refers to a field on the
+/// current item. List parameters (`:name[]`) are **not** allowed inside batch
+/// sections.
+///
+/// ## Struct batch
+///
+/// ```rust,ignore
+/// struct BatchItem { name: String, price: i64 }
+///
+/// let items = vec![
+///     BatchItem { name: "A".into(), price: 100 },
+///     BatchItem { name: "B".into(), price: 200 },
+/// ];
+///
+/// sql_forge!(
+///     "INSERT INTO products (name, price, stock, category)
+///      VALUES {(:name, :price, 10, 'Batch')}",
+///     ..items
+/// )
+/// .execute(&pool)
+/// .await?;
+/// ```
+///
+/// For compile-time checking, the validator expands the batch to 3 fake copies
+/// (`(?, ?, 10, 'Batch'), (?, ?, 10, 'Batch')`, (?, ?, 10, 'Batch')`).
+/// At runtime the iterable drives the actual number of rows.
+///
 /// # Scalar output
 ///
 /// When `Model` is a primitive (`i32`, `i64`, `String`, etc.) the macro uses
@@ -1564,6 +1672,7 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
         sql,
         params,
         sections,
+        batch,
     } = match syn::parse2::<EnhancedQueryInput>(preprocessed) {
         Ok(v) => v,
         Err(err) => return err.to_compile_error().into(),
@@ -1657,11 +1766,61 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
         }
     };
 
+    let has_batch_segment = segments.iter().any(|s| matches!(s, Segment::Batch { .. }));
+    match (&batch, has_batch_segment) {
+        (None, true) => {
+            return syn::Error::new(
+                sql_span,
+                "sql_forge!: SQL contains {( ... )} batch section but no batch source argument (..expr) \
+                 was provided"
+            )
+            .to_compile_error()
+            .into();
+        }
+        (Some(_), false) => {
+            return syn::Error::new(
+                sql_span,
+                "sql_forge!: batch source argument (..expr) provided but SQL has no {( ... )} \
+                 batch section",
+            )
+            .to_compile_error()
+            .into();
+        }
+        _ => {}
+    }
+
     let used_param_names = collect_used_param_names(&segments);
+
+    // Batch-only params come from batch items, not the top-level params map.
+    // They must be excluded from the usage check so that a param like :category
+    // that appears only inside {( ... )} is flagged as unused when given in the
+    // params map, as it would never be read from there at runtime.
+    let batch_param_names: std::collections::HashSet<String> = segments
+        .iter()
+        .filter_map(|s| {
+            if let Segment::Batch { parts } = s {
+                Some(parts.iter().filter_map(|p| {
+                    if let TextPart::Param { name, .. } = p {
+                        Some(name.clone())
+                    } else {
+                        None
+                    }
+                }))
+            } else {
+                None
+            }
+        })
+        .flatten()
+        .collect();
+    let top_level_used_names: Vec<String> = used_param_names
+        .iter()
+        .filter(|n| !batch_param_names.contains(*n))
+        .cloned()
+        .collect();
 
     // ---- Phase 5: Build parameter bindings for the top-level params ----
     let (declared_params, validator_param_bindings) =
-        match build_param_bindings(&params, &used_param_names, "top_level", true, true) {
+        match build_param_bindings(&params, &top_level_used_names, "top_level", true, true) {
             Ok(v) => v,
             Err(err) => return err,
         };
@@ -1670,7 +1829,7 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
     let mut runtime_section_actions = HashMap::<String, TokenStream2>::new();
     let mut section_variants = HashMap::<String, Vec<SectionFragment>>::new();
 
-    // ---- Phase 6: Process sections — build runtime actions and collect validation variants ----
+    // ---- Phase 6: Process sections: build runtime actions and collect validation variants ----
     for assign in sections {
         let SectionAssign { names, value } = assign;
 
@@ -1871,6 +2030,36 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
                         case_setup.extend(bindings);
                         case_args.extend(chunk_args);
                     }
+                    Segment::Batch { parts } => {
+                        let mut first = true;
+                        for _ in 0..list_count {
+                            let sep = if first { "" } else { ", " };
+                            first = false;
+                            sql_case.push_str(sep);
+                            for tp in parts {
+                                match tp {
+                                    TextPart::Lit(lit) => sql_case.push_str(lit),
+                                    TextPart::Param { name, .. } => {
+                                        if let Some(batch_expr) = &batch {
+                                            let field_ident = format_ident!("{}", name);
+                                            if use_dollar_params {
+                                                param_offset += 1;
+                                                write!(sql_case, "${}", param_offset).unwrap();
+                                            } else {
+                                                sql_case.push('?');
+                                            }
+                                            case_args.push(quote! { #batch_expr[0].#field_ident });
+                                        } else if use_dollar_params {
+                                            param_offset += 1;
+                                            write!(sql_case, "${}", param_offset).unwrap();
+                                        } else {
+                                            sql_case.push('?');
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
@@ -2022,6 +2211,39 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
                     runtime_steps.push(quote! {
                         #section_action
                     });
+                }
+                Segment::Batch { parts } => {
+                    if let Some(batch_expr) = &batch {
+                        let mut body = Vec::<TokenStream2>::new();
+                        for part in parts {
+                            match part {
+                                TextPart::Lit(lit) => {
+                                    let lit_str = LitStr::new(lit, sql_span);
+                                    body.push(quote! {
+                                        __builder.push(#lit_str);
+                                    });
+                                }
+                                TextPart::Param { name, .. } => {
+                                    let field_ident = format_ident!("{}", name);
+                                    body.push(quote! {
+                                        __builder.push_bind(__item.#field_ident);
+                                    });
+                                }
+                            }
+                        }
+                        runtime_steps.push(quote! {
+                            {
+                                let mut __first = true;
+                                for __item in #batch_expr {
+                                    if !__first {
+                                        __builder.push(", ");
+                                    }
+                                    __first = false;
+                                    #( #body )*
+                                }
+                            }
+                        });
+                    }
                 }
             }
         }

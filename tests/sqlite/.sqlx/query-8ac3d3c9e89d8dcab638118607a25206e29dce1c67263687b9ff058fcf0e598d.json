@@ -1,0 +1,38 @@
+{
+  "db_name": "SQLite",
+  "query": "\n        SELECT name, price, stock, category FROM products\n        WHERE category = ?\n        ORDER BY id\n        ",
+  "describe": {
+    "columns": [
+      {
+        "name": "name",
+        "ordinal": 0,
+        "type_info": "Text"
+      },
+      {
+        "name": "price",
+        "ordinal": 1,
+        "type_info": "Integer"
+      },
+      {
+        "name": "stock",
+        "ordinal": 2,
+        "type_info": "Integer"
+      },
+      {
+        "name": "category",
+        "ordinal": 3,
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "8ac3d3c9e89d8dcab638118607a25206e29dce1c67263687b9ff058fcf0e598d"
+}

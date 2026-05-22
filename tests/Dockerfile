@@ -11,6 +11,8 @@ RUN apt-get update && \
 RUN cargo install sqlx-cli --version 0.8.6 && \
     rustup component add rustfmt clippy
 
+RUN cargo install cargo-expand
+
 COPY tests/sql-forge-with-db.sh /usr/local/bin/sql-forge-with-db
 COPY tests/sql-forge-test.sh  /usr/local/bin/sql-forge-test
 

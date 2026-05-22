@@ -576,3 +576,155 @@ async fn execute_only_insert_update_delete() {
         "all temporary products should have been deleted"
     );
 }
+
+#[derive(sqlx::FromRow)]
+struct BatchItem {
+    name: String,
+    price: Price,
+}
+
+#[tokio::test]
+async fn execute_batch() {
+    let pool = pool().await;
+
+    sql_forge!(
+        "DELETE FROM products WHERE category = :category",
+        ( :category = "Batch" ),
+    )
+    .execute(&pool)
+    .await
+    .ok();
+
+    let items = vec![
+        BatchItem {
+            name: "Batch A".to_string(),
+            price: price_new(9999, 2),
+        },
+        BatchItem {
+            name: "Batch B".to_string(),
+            price: price_new(4999, 2),
+        },
+        BatchItem {
+            name: "Batch C".to_string(),
+            price: price_new(10001, 2),
+        },
+    ];
+
+    sql_forge!(
+        r#"
+        INSERT INTO products (name, price, stock, category)
+        VALUES {(:name, :price, 10, 'Batch')}
+        "#,
+        ..items
+    )
+    .execute(&pool)
+    .await
+    .expect("batch insert failed");
+
+    let rows: Vec<BatchItem> = sql_forge!(
+        BatchItem,
+        r#"
+        SELECT name, price FROM products
+        WHERE category = :cat
+        ORDER BY id
+        "#,
+        ( :cat = "Batch" ),
+    )
+    .fetch_all(&pool)
+    .await
+    .expect("select batch failed");
+
+    assert_eq!(rows.len(), 3);
+    assert_eq!(rows[0].name, "Batch A");
+    assert_eq!(rows[0].price, price_new(9999, 2));
+    assert_eq!(rows[1].name, "Batch B");
+    assert_eq!(rows[1].price, price_new(4999, 2));
+    assert_eq!(rows[2].name, "Batch C");
+    assert_eq!(rows[2].price, price_new(10001, 2));
+
+    sql_forge!(
+        "DELETE FROM products WHERE category = :category",
+        ( :category = "Batch" ),
+    )
+    .execute(&pool)
+    .await
+    .expect("delete batch failed");
+}
+
+#[derive(sqlx::FromRow)]
+struct BatchFullItem {
+    name: String,
+    price: Price,
+    stock: i64,
+    category: String,
+}
+
+#[tokio::test]
+async fn execute_batch_full() {
+    let pool = pool().await;
+
+    sql_forge!(
+        "DELETE FROM products WHERE category = :category",
+        ( :category = "BatchFull" ),
+    )
+    .execute(&pool)
+    .await
+    .ok();
+
+    let items = vec![
+        BatchFullItem {
+            name: "Batch A".to_string(),
+            price: price_new(9999, 2),
+            stock: 10i64,
+            category: "BatchFull".to_string(),
+        },
+        BatchFullItem {
+            name: "Batch B".to_string(),
+            price: price_new(4999, 2),
+            stock: 10i64,
+            category: "BatchFull".to_string(),
+        },
+    ];
+
+    sql_forge!(
+        r#"
+        INSERT INTO products (name, price, stock, category)
+        VALUES {(:name, :price, :stock, :category)}
+        "#,
+        ..items
+    )
+    .execute(&pool)
+    .await
+    .expect("batch insert failed");
+
+    let rows: Vec<BatchFullItem> = sql_forge!(
+        BatchFullItem,
+        r#"
+        SELECT name, price, stock, category FROM products
+        WHERE category = :cat
+        ORDER BY id
+        "#,
+        ( :cat = "BatchFull" ),
+    )
+    .fetch_all(&pool)
+    .await
+    .expect("select batch full failed");
+
+    assert_eq!(rows.len(), 2);
+    assert_eq!(rows[0].name, "Batch A");
+    assert_eq!(rows[0].price, price_new(9999, 2));
+    assert_eq!(rows[0].stock, 10i64);
+    assert_eq!(rows[0].category, "BatchFull");
+    assert_eq!(rows[1].name, "Batch B");
+    assert_eq!(rows[1].price, price_new(4999, 2));
+    assert_eq!(rows[1].stock, 10i64);
+    assert_eq!(rows[1].category, "BatchFull");
+
+    sql_forge!(
+        "DELETE FROM products WHERE category = :category",
+        ( :category = "BatchFull" ),
+    )
+    .execute(&pool)
+    .await
+    .expect("delete batch full failed");
+}
