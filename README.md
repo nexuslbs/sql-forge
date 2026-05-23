@@ -203,6 +203,31 @@ sql_forge!(
 )
 ```
 
+Grouped section items can themselves contain nested `match` expressions. When that happens, `sql_forge!` applies the same smart-cycling idea inside that grouped arm: sibling nested matches are aligned by index instead of expanded as a cartesian product.
+
+For example, this arm:
+
+```rust
+true => (
+    " JOIN organisations o ON o.id = users.org_id ",
+    match can_read_org_name {
+        true => "o.name AS org_name",
+        false => "users.name AS org_name",
+    },
+    match use_org_label {
+        true => "'org' AS org_kind",
+        false => "'user' AS org_kind",
+    },
+)
+```
+
+produces two aligned variants, not four cartesian combinations:
+
+- variant 0: `(" JOIN ...", "o.name AS org_name", "'org' AS org_kind")`
+- variant 1: `(" JOIN ...", "users.name AS org_name", "'user' AS org_kind")`
+
+This keeps validation and runtime behavior consistent with the grouped structure while avoiding combinatorial explosion.
+
 ---
 
 ## Scalar output
@@ -584,6 +609,8 @@ Under the hood the macro emits a never-called closure containing one or more `sq
 - Query _i_ (0-based) uses variant `i % m` for each section.
 
 For example, with two sections having 3 and 10 variants respectively, 10 validator queries are generated, instead of 30; the first section cycles `(0, 1, 2, 0, 1, 2, 0, 1, 2, 0)` while the second uses each of its 10 variants once. This ensures every variant of the widest section appears in exactly one validator query, and every other section is exercised as many times as its own variant count allows, without combinatorial growth.
+
+The same idea is also used recursively inside grouped sections: if a grouped arm contains nested `match` values for multiple tuple slots, those slots are cycled together by index within that arm instead of generating every cartesian pairing.
 
 List parameters are validated using index access to the first element (`.as_slice()[0]`), as if provided 3 times. The validator closure is never called at runtime, it exists solely to drive `query_as!`/`query_scalar!` compile-time type checking. This means that `IN (:list[])` would be validated as `IN (?, ?, ?)` (or `IN ($1, $2, $3)` in Postgres) using the first list element in a closure that is never called, used only for compile-time validation (the runtime query will use the full list with a QueryBuilder `push_bind`).
 

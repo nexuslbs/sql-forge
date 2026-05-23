@@ -1554,6 +1554,13 @@ fn collect_used_param_names_in_sql(sql: &str) -> Vec<String> {
 /// )
 /// ```
 ///
+/// Grouped section items may themselves use nested `match` expressions. Those
+/// nested matches use smart cycling within the arm rather than a cartesian
+/// product. For example, if one grouped arm returns a fixed first item plus two
+/// nested binary matches for the second and third items, that arm contributes
+/// two aligned variants `(0, 0)` and `(1, 1)`, not four `(0, 0)`, `(0, 1)`,
+/// `(1, 0)`, `(1, 1)` combinations.
+///
 /// # `IN (...)` with list parameters
 ///
 /// Wrap the placeholder in parentheses to expand a `Vec` into multiple bound
