@@ -208,6 +208,60 @@ async fn grouped_sections() {
 }
 
 #[tokio::test]
+async fn grouped_sections_with_nested_matches() {
+    let pool = pool().await;
+
+    let include_org = true;
+    let can_read_org_name = false;
+    let use_org_label = true;
+
+    #[derive(sqlx::FromRow)]
+    struct Row {
+        field_1: i64,
+        field_2: Option<String>,
+        field_3: Option<String>,
+    }
+
+    let rows: Vec<Row> = sql_forge!(
+        Row,
+        r#"
+        SELECT t1.id AS field_1, {#field_2}, {#field_3}
+        FROM users t1
+        {#join_org}
+        WHERE 1 = 1
+        "#,
+        (
+            #(join_org, field_2, field_3) = match include_org {
+                true => (
+                    " JOIN organisations o ON o.id = t1.id ",
+                    match can_read_org_name {
+                        true => "COALESCE(o.name, '') AS field_2",
+                        false => "COALESCE(t1.name, '') AS field_2",
+                    },
+                    match use_org_label {
+                        true => "COALESCE('org', '') AS field_3",
+                        false => "COALESCE('user', '') AS field_3",
+                    },
+                ),
+                false => (
+                    "",
+                    "COALESCE(t1.name, '') AS field_2",
+                    "COALESCE('no_join', '') AS field_3",
+                ),
+            },
+        )
+    )
+    .fetch_all(&pool)
+    .await
+    .expect("grouped nested sections query failed");
+
+    assert_eq!(rows.len(), 3);
+    assert_eq!(rows[0].field_1, 1);
+    assert_eq!(rows[0].field_2.as_deref(), Some("Alice"));
+    assert_eq!(rows[0].field_3.as_deref(), Some("org"));
+}
+
+#[tokio::test]
 async fn list_parameter_in_clause() {
     let pool = pool().await;
 

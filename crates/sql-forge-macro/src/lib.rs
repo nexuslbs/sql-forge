@@ -61,8 +61,8 @@ struct SectionMatchArm {
 enum SectionValue {
     /// A plain string (or `(string, params)` tuple).
     Single(SectionFragment),
-    /// A tuple of fragments, one per section when using `#(a, b) = ...`.
-    Grouped(Vec<SectionFragment>),
+    /// A tuple of values, one per section when using `#(a, b) = ...`.
+    Grouped(Vec<SectionValue>),
     /// A `match expr { arm => ..., arm => ... }` expression.
     Match {
         expr: Expr,
@@ -402,7 +402,7 @@ fn parse_section_value(input: ParseStream<'_>, width: usize) -> syn::Result<Sect
     syn::parenthesized!(content in input);
     let mut items = Vec::new();
     while !content.is_empty() {
-        items.push(parse_section_fragment(&content)?);
+        items.push(parse_section_value(&content, 1)?);
         if content.is_empty() {
             break;
         }
@@ -1031,6 +1031,111 @@ fn build_result_flag_bindings(keys: &[String], active_key: Option<&str>) -> Vec<
         .collect()
 }
 
+fn transpose_section_case_matrix(
+    case_matrix: Vec<Vec<SectionFragment>>,
+    width: usize,
+) -> Result<Vec<Vec<SectionFragment>>, String> {
+    let mut per_section: Vec<Vec<SectionFragment>> = (0..width).map(|_| Vec::new()).collect();
+
+    for row in case_matrix {
+        if row.len() != width {
+            return Err(
+                "sql_forge!: grouped sections must return one item per section".to_string(),
+            );
+        }
+        for (section_idx, fragment) in row.into_iter().enumerate() {
+            per_section[section_idx].push(fragment);
+        }
+    }
+
+    Ok(per_section)
+}
+
+fn collect_section_case_matrix(
+    value: SectionValue,
+    width: usize,
+    active_key: Option<&str>,
+) -> Result<Vec<Vec<SectionFragment>>, String> {
+    match value {
+        SectionValue::Single(fragment) => {
+            if width != 1 {
+                return Err(
+                    "sql_forge!: grouped sections must return one item per section".to_string(),
+                );
+            }
+            Ok(vec![vec![fragment]])
+        }
+        SectionValue::Grouped(values) => {
+            if values.len() != width {
+                return Err(
+                    "sql_forge!: grouped sections must return one item per section".to_string(),
+                );
+            }
+
+            let mut variants_by_section = Vec::<Vec<SectionFragment>>::with_capacity(width);
+            let mut nmax = 1usize;
+
+            for value in values {
+                let item_matrix = collect_section_case_matrix(value, 1, active_key)?;
+                let mut item_variants = Vec::<SectionFragment>::with_capacity(item_matrix.len());
+                for mut row in item_matrix {
+                    let fragment = row.pop().ok_or_else(|| {
+                        "sql_forge!: grouped sections must return one item per section".to_string()
+                    })?;
+                    if !row.is_empty() {
+                        return Err(
+                            "sql_forge!: grouped sections must return one item per section"
+                                .to_string(),
+                        );
+                    }
+                    item_variants.push(fragment);
+                }
+                if item_variants.is_empty() {
+                    return Err("sql_forge!: section match must have at least one arm".to_string());
+                }
+                nmax = nmax.max(item_variants.len());
+                variants_by_section.push(item_variants);
+            }
+
+            let mut case_matrix = Vec::<Vec<SectionFragment>>::with_capacity(nmax);
+            for case_idx in 0..nmax {
+                let mut row = Vec::<SectionFragment>::with_capacity(width);
+                for variants in &variants_by_section {
+                    row.push(variants[case_idx % variants.len()].clone());
+                }
+                case_matrix.push(row);
+            }
+
+            Ok(case_matrix)
+        }
+        SectionValue::Match { expr, arms } => {
+            let mut case_matrix = Vec::<Vec<SectionFragment>>::new();
+
+            if let Some(key) = expr_result_flag_key(&expr) {
+                let target = active_key == Some(key.as_str());
+                for arm in arms {
+                    if arm.guard.is_none() {
+                        if let Some(false) = pattern_matches_bool(&arm.pat, target) {
+                            continue;
+                        }
+                    }
+                    case_matrix.extend(collect_section_case_matrix(arm.value, width, active_key)?);
+                }
+            } else {
+                for arm in arms {
+                    case_matrix.extend(collect_section_case_matrix(arm.value, width, active_key)?);
+                }
+            }
+
+            if case_matrix.is_empty() {
+                return Err("sql_forge!: section match must have at least one arm".to_string());
+            }
+
+            Ok(case_matrix)
+        }
+    }
+}
+
 // Returns Vec<Vec<SectionFragment>> indexed [section_idx][case_idx].
 // =============================================================================
 // Section variant collection
@@ -1044,38 +1149,7 @@ fn collect_section_variants(
     value: SectionValue,
     width: usize,
 ) -> Result<Vec<Vec<SectionFragment>>, String> {
-    match value {
-        SectionValue::Single(fragment) => {
-            if width != 1 {
-                return Err(
-                    "sql_forge!: grouped sections must return one item per section".to_string(),
-                );
-            }
-            Ok(vec![vec![fragment]])
-        }
-        SectionValue::Grouped(fragments) => {
-            if fragments.len() != width {
-                return Err(
-                    "sql_forge!: grouped sections must return one item per section".to_string(),
-                );
-            }
-            Ok(fragments.into_iter().map(|f| vec![f]).collect())
-        }
-        SectionValue::Match { arms, .. } => {
-            let mut per_section: Vec<Vec<SectionFragment>> =
-                (0..width).map(|_| Vec::new()).collect();
-            for arm in arms {
-                let arm_sections = collect_section_variants(arm.value, width)?;
-                for (sec_idx, cases) in arm_sections.into_iter().enumerate() {
-                    per_section[sec_idx].extend(cases);
-                }
-            }
-            if per_section.is_empty() || per_section[0].is_empty() {
-                return Err("sql_forge!: section match must have at least one arm".to_string());
-            }
-            Ok(per_section)
-        }
-    }
+    transpose_section_case_matrix(collect_section_case_matrix(value, width, None)?, width)
 }
 
 fn expr_result_flag_key(expr: &Expr) -> Option<String> {
@@ -1109,59 +1183,10 @@ fn collect_section_variants_for_result(
     width: usize,
     active_key: Option<&str>,
 ) -> Result<Vec<Vec<SectionFragment>>, String> {
-    match value {
-        SectionValue::Single(fragment) => {
-            if width != 1 {
-                return Err(
-                    "sql_forge!: grouped sections must return one item per section".to_string(),
-                );
-            }
-            Ok(vec![vec![fragment]])
-        }
-        SectionValue::Grouped(fragments) => {
-            if fragments.len() != width {
-                return Err(
-                    "sql_forge!: grouped sections must return one item per section".to_string(),
-                );
-            }
-            Ok(fragments.into_iter().map(|f| vec![f]).collect())
-        }
-        SectionValue::Match { expr, arms } => {
-            let mut per_section: Vec<Vec<SectionFragment>> =
-                (0..width).map(|_| Vec::new()).collect();
-
-            let mut selected_arms: Vec<SectionMatchArm> = Vec::new();
-            if let Some(key) = expr_result_flag_key(&expr) {
-                let target = active_key == Some(key.as_str());
-                for arm in arms {
-                    if arm.guard.is_some() {
-                        selected_arms.push(arm);
-                        continue;
-                    }
-                    match pattern_matches_bool(&arm.pat, target) {
-                        Some(true) => selected_arms.push(arm),
-                        Some(false) => {}
-                        None => selected_arms.push(arm),
-                    }
-                }
-            } else {
-                selected_arms = arms;
-            }
-
-            for arm in selected_arms {
-                let arm_sections =
-                    collect_section_variants_for_result(arm.value, width, active_key)?;
-                for (sec_idx, cases) in arm_sections.into_iter().enumerate() {
-                    per_section[sec_idx].extend(cases);
-                }
-            }
-
-            if per_section.is_empty() || per_section[0].is_empty() {
-                return Err("sql_forge!: section match must have at least one arm".to_string());
-            }
-            Ok(per_section)
-        }
-    }
+    transpose_section_case_matrix(
+        collect_section_case_matrix(value, width, active_key)?,
+        width,
+    )
 }
 
 // =============================================================================
@@ -1353,14 +1378,11 @@ fn build_section_runtime_action(
             let body = render_runtime_fragment(fragment, &local_params)?;
             Ok(quote! {{ #( #bindings )* #body }})
         }
-        SectionValue::Grouped(fragments) => {
-            let fragment = &fragments[section_idx];
-            let used_param_names = collect_used_param_names_in_sql(&fragment.sql);
-            let (local_params, bindings) =
-                build_param_bindings(&fragment.params, &used_param_names, prefix, false, true)?;
-            let body = render_runtime_fragment(fragment, &local_params)?;
-            Ok(quote! {{ #( #bindings )* #body }})
-        }
+        SectionValue::Grouped(fragments) => build_section_runtime_action(
+            &fragments[section_idx],
+            0,
+            &format!("{}_grouped_{}", prefix, section_idx),
+        ),
         SectionValue::Match { expr, arms } => {
             let arm_tokens: Result<Vec<TokenStream2>, TokenStream> = arms
                 .iter()
@@ -1838,7 +1860,6 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
 
     let sections_for_validation = sections.clone();
     let mut runtime_section_actions = HashMap::<String, TokenStream2>::new();
-    let mut section_variants = HashMap::<String, Vec<SectionFragment>>::new();
 
     // ---- Phase 6: Process sections: build runtime actions and collect validation variants ----
     for assign in sections {
@@ -1867,19 +1888,15 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
             named_actions.push((name, action));
         }
 
-        // Consume `value` to collect per-section case variants without cloning.
-        let variants_by_section = match collect_section_variants(value, names.len()) {
-            Ok(v) => v,
-            Err(msg) => {
-                return syn::Error::new(names[0].span(), msg)
-                    .to_compile_error()
-                    .into();
-            }
-        };
+        // Consume `value` here so invalid grouped/nested section structures fail early.
+        if let Err(msg) = collect_section_variants(value, names.len()) {
+            return syn::Error::new(names[0].span(), msg)
+                .to_compile_error()
+                .into();
+        }
 
-        for ((name, action), section_cases) in named_actions.into_iter().zip(variants_by_section) {
+        for (name, action) in named_actions {
             runtime_section_actions.insert(name.clone(), action);
-            section_variants.insert(name, section_cases);
         }
     }
 

@@ -1,0 +1,44 @@
+{
+  "db_name": "MySQL",
+  "query": "\n        SELECT t1.id AS field_1, COALESCE(t1.name, '') AS field_2, COALESCE('no_join', '') AS field_3\n        FROM users t1\n        \n        WHERE 1 = 1\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "field_1",
+        "type_info": {
+          "type": "LongLong",
+          "flags": "NOT_NULL | PRIMARY_KEY | AUTO_INCREMENT",
+          "max_size": 20
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "field_2",
+        "type_info": {
+          "type": "VarString",
+          "flags": "NOT_NULL",
+          "max_size": 1020
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "field_3",
+        "type_info": {
+          "type": "VarString",
+          "flags": "NOT_NULL",
+          "max_size": 28
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "627a23067b1d2ad6f656d6af992b464ea991e648daf1a501531048a30d140e9f"
+}

@@ -324,10 +324,10 @@ fn basic_query_with_inline_params() {
                     }
                 }
             };
-            struct __EnhancedQuery_single<'args> {
+            struct __SqlForgeQuery_single<'args> {
                 inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
             }
-            impl<'args> __EnhancedQuery_single<'args> {
+            impl<'args> __SqlForgeQuery_single<'args> {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -365,8 +365,8 @@ fn basic_query_with_inline_params() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::EnhancedQuery<User>
-            for __EnhancedQuery_single<'args> {
+            impl<'args> sql_forge::SqlForgeQuery<User>
+            for __SqlForgeQuery_single<'args> {
                 type Db = sqlx::MySql;
                 fn fetch_all<'e, E>(
                     self,
@@ -379,7 +379,7 @@ fn basic_query_with_inline_params() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_all(self, executor)
+                    __SqlForgeQuery_single::fetch_all(self, executor)
                 }
                 fn fetch_one<'e, E>(
                     self,
@@ -392,7 +392,7 @@ fn basic_query_with_inline_params() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_one(self, executor)
+                    __SqlForgeQuery_single::fetch_one(self, executor)
                 }
                 fn fetch_optional<'e, E>(
                     self,
@@ -405,7 +405,7 @@ fn basic_query_with_inline_params() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_optional(self, executor)
+                    __SqlForgeQuery_single::fetch_optional(self, executor)
                 }
                 fn execute<'e, E>(
                     self,
@@ -421,7 +421,7 @@ fn basic_query_with_inline_params() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::execute(self, executor)
+                    __SqlForgeQuery_single::execute(self, executor)
                 }
             }
             let __enhanced_runtime_max_id = 3i64;
@@ -435,7 +435,7 @@ fn basic_query_with_inline_params() {
             __builder.push_bind(__enhanced_runtime_max_id);
             __builder.push(" >= id LIMIT ");
             __builder.push_bind(__enhanced_runtime_limit);
-            let __sql_forge_value_single = __EnhancedQuery_single {
+            let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
             __sql_forge_value_single
@@ -579,10 +579,10 @@ fn scalar_output() {
                     }
                 }
             };
-            struct __EnhancedQuery_single<'args> {
+            struct __SqlForgeQuery_single<'args> {
                 inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
             }
-            impl<'args> __EnhancedQuery_single<'args> {
+            impl<'args> __SqlForgeQuery_single<'args> {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -620,7 +620,7 @@ fn scalar_output() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::EnhancedQuery<i64> for __EnhancedQuery_single<'args> {
+            impl<'args> sql_forge::SqlForgeQuery<i64> for __SqlForgeQuery_single<'args> {
                 type Db = sqlx::MySql;
                 fn fetch_all<'e, E>(
                     self,
@@ -633,7 +633,7 @@ fn scalar_output() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_all(self, executor)
+                    __SqlForgeQuery_single::fetch_all(self, executor)
                 }
                 fn fetch_one<'e, E>(
                     self,
@@ -646,7 +646,7 @@ fn scalar_output() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_one(self, executor)
+                    __SqlForgeQuery_single::fetch_one(self, executor)
                 }
                 fn fetch_optional<'e, E>(
                     self,
@@ -659,7 +659,7 @@ fn scalar_output() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_optional(self, executor)
+                    __SqlForgeQuery_single::fetch_optional(self, executor)
                 }
                 fn execute<'e, E>(
                     self,
@@ -675,7 +675,7 @@ fn scalar_output() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::execute(self, executor)
+                    __SqlForgeQuery_single::execute(self, executor)
                 }
             }
             let __enhanced_runtime_min_id = 2i64;
@@ -684,7 +684,7 @@ fn scalar_output() {
             );
             __builder.push("SELECT COUNT(*) FROM users WHERE id > ");
             __builder.push_bind(__enhanced_runtime_min_id);
-            let __sql_forge_value_single = __EnhancedQuery_single {
+            let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
             __sql_forge_value_single
@@ -819,10 +819,10 @@ fn struct_source_params() {
                     }
                 }
             };
-            struct __EnhancedQuery_single<'args> {
+            struct __SqlForgeQuery_single<'args> {
                 inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
             }
-            impl<'args> __EnhancedQuery_single<'args> {
+            impl<'args> __SqlForgeQuery_single<'args> {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -860,8 +860,8 @@ fn struct_source_params() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::EnhancedQuery<User>
-            for __EnhancedQuery_single<'args> {
+            impl<'args> sql_forge::SqlForgeQuery<User>
+            for __SqlForgeQuery_single<'args> {
                 type Db = sqlx::MySql;
                 fn fetch_all<'e, E>(
                     self,
@@ -874,7 +874,7 @@ fn struct_source_params() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_all(self, executor)
+                    __SqlForgeQuery_single::fetch_all(self, executor)
                 }
                 fn fetch_one<'e, E>(
                     self,
@@ -887,7 +887,7 @@ fn struct_source_params() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_one(self, executor)
+                    __SqlForgeQuery_single::fetch_one(self, executor)
                 }
                 fn fetch_optional<'e, E>(
                     self,
@@ -900,7 +900,7 @@ fn struct_source_params() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_optional(self, executor)
+                    __SqlForgeQuery_single::fetch_optional(self, executor)
                 }
                 fn execute<'e, E>(
                     self,
@@ -916,7 +916,7 @@ fn struct_source_params() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::execute(self, executor)
+                    __SqlForgeQuery_single::execute(self, executor)
                 }
             }
             let __enhanced_source_runtime = &(filter);
@@ -929,7 +929,7 @@ fn struct_source_params() {
             __builder.push_bind(__enhanced_runtime_max_id);
             __builder.push(" LIMIT ");
             __builder.push_bind(__enhanced_runtime_limit);
-            let __sql_forge_value_single = __EnhancedQuery_single {
+            let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
             __sql_forge_value_single
@@ -1070,10 +1070,10 @@ fn section_dynamic_where() {
                     }
                 }
             };
-            struct __EnhancedQuery_single<'args> {
+            struct __SqlForgeQuery_single<'args> {
                 inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
             }
-            impl<'args> __EnhancedQuery_single<'args> {
+            impl<'args> __SqlForgeQuery_single<'args> {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -1111,8 +1111,8 @@ fn section_dynamic_where() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::EnhancedQuery<Product>
-            for __EnhancedQuery_single<'args> {
+            impl<'args> sql_forge::SqlForgeQuery<Product>
+            for __SqlForgeQuery_single<'args> {
                 type Db = sqlx::MySql;
                 fn fetch_all<'e, E>(
                     self,
@@ -1125,7 +1125,7 @@ fn section_dynamic_where() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_all(self, executor)
+                    __SqlForgeQuery_single::fetch_all(self, executor)
                 }
                 fn fetch_one<'e, E>(
                     self,
@@ -1138,7 +1138,7 @@ fn section_dynamic_where() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_one(self, executor)
+                    __SqlForgeQuery_single::fetch_one(self, executor)
                 }
                 fn fetch_optional<'e, E>(
                     self,
@@ -1151,7 +1151,7 @@ fn section_dynamic_where() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_optional(self, executor)
+                    __SqlForgeQuery_single::fetch_optional(self, executor)
                 }
                 fn execute<'e, E>(
                     self,
@@ -1167,7 +1167,7 @@ fn section_dynamic_where() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::execute(self, executor)
+                    __SqlForgeQuery_single::execute(self, executor)
                 }
             }
             let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
@@ -1184,7 +1184,7 @@ fn section_dynamic_where() {
                 __builder.push(" ");
             }
             __builder.push("\n        ");
-            let __sql_forge_value_single = __EnhancedQuery_single {
+            let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
             __sql_forge_value_single
@@ -1312,10 +1312,10 @@ fn section_with_local_params() {
                     }
                 }
             };
-            struct __EnhancedQuery_single<'args> {
+            struct __SqlForgeQuery_single<'args> {
                 inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
             }
-            impl<'args> __EnhancedQuery_single<'args> {
+            impl<'args> __SqlForgeQuery_single<'args> {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -1353,8 +1353,8 @@ fn section_with_local_params() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::EnhancedQuery<User>
-            for __EnhancedQuery_single<'args> {
+            impl<'args> sql_forge::SqlForgeQuery<User>
+            for __SqlForgeQuery_single<'args> {
                 type Db = sqlx::MySql;
                 fn fetch_all<'e, E>(
                     self,
@@ -1367,7 +1367,7 @@ fn section_with_local_params() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_all(self, executor)
+                    __SqlForgeQuery_single::fetch_all(self, executor)
                 }
                 fn fetch_one<'e, E>(
                     self,
@@ -1380,7 +1380,7 @@ fn section_with_local_params() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_one(self, executor)
+                    __SqlForgeQuery_single::fetch_one(self, executor)
                 }
                 fn fetch_optional<'e, E>(
                     self,
@@ -1393,7 +1393,7 @@ fn section_with_local_params() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_optional(self, executor)
+                    __SqlForgeQuery_single::fetch_optional(self, executor)
                 }
                 fn execute<'e, E>(
                     self,
@@ -1409,7 +1409,7 @@ fn section_with_local_params() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::execute(self, executor)
+                    __SqlForgeQuery_single::execute(self, executor)
                 }
             }
             let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
@@ -1422,7 +1422,7 @@ fn section_with_local_params() {
                 __builder.push_bind(__enhanced_section_filter_max_id);
                 __builder.push(" ");
             }
-            let __sql_forge_value_single = __EnhancedQuery_single {
+            let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
             __sql_forge_value_single
@@ -1596,10 +1596,10 @@ fn grouped_sections() {
                     }
                 }
             };
-            struct __EnhancedQuery_single<'args> {
+            struct __SqlForgeQuery_single<'args> {
                 inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
             }
-            impl<'args> __EnhancedQuery_single<'args> {
+            impl<'args> __SqlForgeQuery_single<'args> {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -1637,7 +1637,7 @@ fn grouped_sections() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::EnhancedQuery<Row> for __EnhancedQuery_single<'args> {
+            impl<'args> sql_forge::SqlForgeQuery<Row> for __SqlForgeQuery_single<'args> {
                 type Db = sqlx::MySql;
                 fn fetch_all<'e, E>(
                     self,
@@ -1650,7 +1650,7 @@ fn grouped_sections() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_all(self, executor)
+                    __SqlForgeQuery_single::fetch_all(self, executor)
                 }
                 fn fetch_one<'e, E>(
                     self,
@@ -1663,7 +1663,7 @@ fn grouped_sections() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_one(self, executor)
+                    __SqlForgeQuery_single::fetch_one(self, executor)
                 }
                 fn fetch_optional<'e, E>(
                     self,
@@ -1676,7 +1676,7 @@ fn grouped_sections() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_optional(self, executor)
+                    __SqlForgeQuery_single::fetch_optional(self, executor)
                 }
                 fn execute<'e, E>(
                     self,
@@ -1692,7 +1692,7 @@ fn grouped_sections() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::execute(self, executor)
+                    __SqlForgeQuery_single::execute(self, executor)
                 }
             }
             let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
@@ -1715,7 +1715,7 @@ fn grouped_sections() {
                 false => {}
             }
             __builder.push("\n        WHERE 1 = 1\n        ");
-            let __sql_forge_value_single = __EnhancedQuery_single {
+            let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
             __sql_forge_value_single
@@ -1783,6 +1783,421 @@ fn grouped_sections() {
     }
 }
 extern crate test;
+#[rustc_test_marker = "grouped_sections_with_nested_matches"]
+#[doc(hidden)]
+pub const grouped_sections_with_nested_matches: test::TestDescAndFn = test::TestDescAndFn {
+    desc: test::TestDesc {
+        name: test::StaticTestName("grouped_sections_with_nested_matches"),
+        ignore: false,
+        ignore_message: ::core::option::Option::None,
+        source_file: "tests/tests.rs",
+        start_line: 211usize,
+        start_col: 10usize,
+        end_line: 211usize,
+        end_col: 46usize,
+        compile_fail: false,
+        no_run: false,
+        should_panic: test::ShouldPanic::No,
+        test_type: test::TestType::IntegrationTest,
+    },
+    testfn: test::StaticTestFn(
+        #[coverage(off)]
+        || test::assert_test_result(grouped_sections_with_nested_matches()),
+    ),
+};
+fn grouped_sections_with_nested_matches() {
+    let body = async {
+        let pool = pool().await;
+        let include_org = true;
+        let can_read_org_name = false;
+        let use_org_label = true;
+        struct Row {
+            field_1: i64,
+            field_2: Option<String>,
+            field_3: Option<String>,
+        }
+        #[automatically_derived]
+        impl<'a, R: ::sqlx::Row> ::sqlx::FromRow<'a, R> for Row
+        where
+            &'a ::std::primitive::str: ::sqlx::ColumnIndex<R>,
+            i64: ::sqlx::decode::Decode<'a, R::Database>,
+            i64: ::sqlx::types::Type<R::Database>,
+            Option<String>: ::sqlx::decode::Decode<'a, R::Database>,
+            Option<String>: ::sqlx::types::Type<R::Database>,
+            Option<String>: ::sqlx::decode::Decode<'a, R::Database>,
+            Option<String>: ::sqlx::types::Type<R::Database>,
+        {
+            fn from_row(__row: &'a R) -> ::sqlx::Result<Self> {
+                let field_1: i64 = __row.try_get("field_1")?;
+                let field_2: Option<String> = __row.try_get("field_2")?;
+                let field_3: Option<String> = __row.try_get("field_3")?;
+                ::std::result::Result::Ok(Row { field_1, field_2, field_3 })
+            }
+        }
+        let rows: Vec<Row> = {
+            let _sql_forge_validator = || {
+                {
+                    type __EnhancedModel = Row;
+                    {
+                        let _ = {
+                            {
+                                #[allow(clippy::all)]
+                                {
+                                    use ::sqlx::Arguments as _;
+                                    let query_args = ::core::result::Result::<
+                                        _,
+                                        ::sqlx::error::BoxDynError,
+                                    >::Ok(
+                                        <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::<
+                                            '_,
+                                        >::default(),
+                                    );
+                                    ::sqlx::__query_with_result::<
+                                        sqlx::mysql::MySql,
+                                        _,
+                                    >(
+                                            "\n        SELECT t1.id AS field_1, COALESCE(o.name, '') AS field_2, COALESCE('org', '') AS field_3\n        FROM users t1\n         JOIN organisations o ON o.id = t1.id \n        WHERE 1 = 1\n        ",
+                                            query_args,
+                                        )
+                                        .try_map(|row: sqlx::mysql::MySqlRow| {
+                                            use ::sqlx::Row as _;
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_field_1 = row
+                                                .try_get_unchecked::<i64, _>(0usize)?
+                                                .into();
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_field_2 = row
+                                                .try_get_unchecked::<String, _>(1usize)?
+                                                .into();
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_field_3 = row
+                                                .try_get_unchecked::<String, _>(2usize)?
+                                                .into();
+                                            ::std::result::Result::Ok(__EnhancedModel {
+                                                field_1: sqlx_query_as_field_1,
+                                                field_2: sqlx_query_as_field_2,
+                                                field_3: sqlx_query_as_field_3,
+                                            })
+                                        })
+                                }
+                            }
+                        };
+                    }
+                    {
+                        let _ = {
+                            {
+                                #[allow(clippy::all)]
+                                {
+                                    use ::sqlx::Arguments as _;
+                                    let query_args = ::core::result::Result::<
+                                        _,
+                                        ::sqlx::error::BoxDynError,
+                                    >::Ok(
+                                        <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::<
+                                            '_,
+                                        >::default(),
+                                    );
+                                    ::sqlx::__query_with_result::<
+                                        sqlx::mysql::MySql,
+                                        _,
+                                    >(
+                                            "\n        SELECT t1.id AS field_1, COALESCE(t1.name, '') AS field_2, COALESCE('user', '') AS field_3\n        FROM users t1\n         JOIN organisations o ON o.id = t1.id \n        WHERE 1 = 1\n        ",
+                                            query_args,
+                                        )
+                                        .try_map(|row: sqlx::mysql::MySqlRow| {
+                                            use ::sqlx::Row as _;
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_field_1 = row
+                                                .try_get_unchecked::<i64, _>(0usize)?
+                                                .into();
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_field_2 = row
+                                                .try_get_unchecked::<String, _>(1usize)?
+                                                .into();
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_field_3 = row
+                                                .try_get_unchecked::<String, _>(2usize)?
+                                                .into();
+                                            ::std::result::Result::Ok(__EnhancedModel {
+                                                field_1: sqlx_query_as_field_1,
+                                                field_2: sqlx_query_as_field_2,
+                                                field_3: sqlx_query_as_field_3,
+                                            })
+                                        })
+                                }
+                            }
+                        };
+                    }
+                    {
+                        let _ = {
+                            {
+                                #[allow(clippy::all)]
+                                {
+                                    use ::sqlx::Arguments as _;
+                                    let query_args = ::core::result::Result::<
+                                        _,
+                                        ::sqlx::error::BoxDynError,
+                                    >::Ok(
+                                        <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::<
+                                            '_,
+                                        >::default(),
+                                    );
+                                    ::sqlx::__query_with_result::<
+                                        sqlx::mysql::MySql,
+                                        _,
+                                    >(
+                                            "\n        SELECT t1.id AS field_1, COALESCE(t1.name, '') AS field_2, COALESCE('no_join', '') AS field_3\n        FROM users t1\n        \n        WHERE 1 = 1\n        ",
+                                            query_args,
+                                        )
+                                        .try_map(|row: sqlx::mysql::MySqlRow| {
+                                            use ::sqlx::Row as _;
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_field_1 = row
+                                                .try_get_unchecked::<i64, _>(0usize)?
+                                                .into();
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_field_2 = row
+                                                .try_get_unchecked::<String, _>(1usize)?
+                                                .into();
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_field_3 = row
+                                                .try_get_unchecked::<String, _>(2usize)?
+                                                .into();
+                                            ::std::result::Result::Ok(__EnhancedModel {
+                                                field_1: sqlx_query_as_field_1,
+                                                field_2: sqlx_query_as_field_2,
+                                                field_3: sqlx_query_as_field_3,
+                                            })
+                                        })
+                                }
+                            }
+                        };
+                    }
+                }
+            };
+            struct __SqlForgeQuery_single<'args> {
+                inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
+            }
+            impl<'args> __SqlForgeQuery_single<'args> {
+                async fn fetch_all<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<Vec<Row>, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::MySql>,
+                {
+                    self.inner.build_query_as::<Row>().fetch_all(executor).await
+                }
+                async fn fetch_one<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<Row, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::MySql>,
+                {
+                    self.inner.build_query_as::<Row>().fetch_one(executor).await
+                }
+                async fn fetch_optional<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<Option<Row>, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::MySql>,
+                {
+                    self.inner.build_query_as::<Row>().fetch_optional(executor).await
+                }
+                async fn execute<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<<sqlx::MySql as sqlx::Database>::QueryResult, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::MySql>,
+                {
+                    self.inner.build().execute(executor).await
+                }
+            }
+            impl<'args> sql_forge::SqlForgeQuery<Row> for __SqlForgeQuery_single<'args> {
+                type Db = sqlx::MySql;
+                fn fetch_all<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<Vec<Row>, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
+                    sqlx::MySql: 'e,
+                {
+                    __SqlForgeQuery_single::fetch_all(self, executor)
+                }
+                fn fetch_one<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<Row, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
+                    sqlx::MySql: 'e,
+                {
+                    __SqlForgeQuery_single::fetch_one(self, executor)
+                }
+                fn fetch_optional<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<Option<Row>, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
+                    sqlx::MySql: 'e,
+                {
+                    __SqlForgeQuery_single::fetch_optional(self, executor)
+                }
+                fn execute<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<
+                        <sqlx::MySql as sqlx::Database>::QueryResult,
+                        sqlx::Error,
+                    >,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
+                    sqlx::MySql: 'e,
+                {
+                    __SqlForgeQuery_single::execute(self, executor)
+                }
+            }
+            let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
+                "",
+            );
+            __builder.push("\n        SELECT t1.id AS field_1, ");
+            match include_org {
+                true => {
+                    match can_read_org_name {
+                        true => {
+                            __builder.push("COALESCE(o.name, '') AS field_2");
+                        }
+                        false => {
+                            __builder.push("COALESCE(t1.name, '') AS field_2");
+                        }
+                    }
+                }
+                false => {
+                    __builder.push("COALESCE(t1.name, '') AS field_2");
+                }
+            }
+            __builder.push(", ");
+            match include_org {
+                true => {
+                    match use_org_label {
+                        true => {
+                            __builder.push("COALESCE('org', '') AS field_3");
+                        }
+                        false => {
+                            __builder.push("COALESCE('user', '') AS field_3");
+                        }
+                    }
+                }
+                false => {
+                    __builder.push("COALESCE('no_join', '') AS field_3");
+                }
+            }
+            __builder.push("\n        FROM users t1\n        ");
+            match include_org {
+                true => {
+                    __builder.push(" JOIN organisations o ON o.id = t1.id ");
+                }
+                false => {}
+            }
+            __builder.push("\n        WHERE 1 = 1\n        ");
+            let __sql_forge_value_single = __SqlForgeQuery_single {
+                inner: __builder,
+            };
+            __sql_forge_value_single
+        }
+            .fetch_all(&pool)
+            .await
+            .expect("grouped nested sections query failed");
+        match (&rows.len(), &3) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
+        match (&rows[0].field_1, &1) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
+        match (&rows[0].field_2.as_deref(), &Some("Alice")) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
+        match (&rows[0].field_3.as_deref(), &Some("org")) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
+    };
+    let mut body = body;
+    #[allow(unused_mut)]
+    let mut body = unsafe { ::tokio::macros::support::Pin::new_unchecked(&mut body) };
+    let body: ::core::pin::Pin<&mut dyn ::core::future::Future<Output = ()>> = body;
+    #[allow(
+        clippy::expect_used,
+        clippy::diverging_sub_expression,
+        clippy::needless_return,
+        clippy::unwrap_in_result
+    )]
+    {
+        use tokio::runtime::Builder;
+        return Builder::new_current_thread()
+            .enable_all()
+            .build()
+            .expect("Failed building the Runtime")
+            .block_on(body);
+    }
+}
+extern crate test;
 #[rustc_test_marker = "list_parameter_in_clause"]
 #[doc(hidden)]
 pub const list_parameter_in_clause: test::TestDescAndFn = test::TestDescAndFn {
@@ -1791,9 +2206,9 @@ pub const list_parameter_in_clause: test::TestDescAndFn = test::TestDescAndFn {
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 211usize,
+        start_line: 265usize,
         start_col: 10usize,
-        end_line: 211usize,
+        end_line: 265usize,
         end_col: 34usize,
         compile_fail: false,
         no_run: false,
@@ -1895,10 +2310,10 @@ fn list_parameter_in_clause() {
                     }
                 }
             };
-            struct __EnhancedQuery_single<'args> {
+            struct __SqlForgeQuery_single<'args> {
                 inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
             }
-            impl<'args> __EnhancedQuery_single<'args> {
+            impl<'args> __SqlForgeQuery_single<'args> {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -1936,8 +2351,8 @@ fn list_parameter_in_clause() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::EnhancedQuery<User>
-            for __EnhancedQuery_single<'args> {
+            impl<'args> sql_forge::SqlForgeQuery<User>
+            for __SqlForgeQuery_single<'args> {
                 type Db = sqlx::MySql;
                 fn fetch_all<'e, E>(
                     self,
@@ -1950,7 +2365,7 @@ fn list_parameter_in_clause() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_all(self, executor)
+                    __SqlForgeQuery_single::fetch_all(self, executor)
                 }
                 fn fetch_one<'e, E>(
                     self,
@@ -1963,7 +2378,7 @@ fn list_parameter_in_clause() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_one(self, executor)
+                    __SqlForgeQuery_single::fetch_one(self, executor)
                 }
                 fn fetch_optional<'e, E>(
                     self,
@@ -1976,7 +2391,7 @@ fn list_parameter_in_clause() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_optional(self, executor)
+                    __SqlForgeQuery_single::fetch_optional(self, executor)
                 }
                 fn execute<'e, E>(
                     self,
@@ -1992,7 +2407,7 @@ fn list_parameter_in_clause() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::execute(self, executor)
+                    __SqlForgeQuery_single::execute(self, executor)
                 }
             }
             let __enhanced_runtime_ids = ids;
@@ -2006,7 +2421,7 @@ fn list_parameter_in_clause() {
                 __separated.push_bind(__value);
             }
             __builder.push(")");
-            let __sql_forge_value_single = __EnhancedQuery_single {
+            let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
             __sql_forge_value_single
@@ -2095,9 +2510,9 @@ pub const list_parameter_with_empty_guard: test::TestDescAndFn = test::TestDescA
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 232usize,
+        start_line: 286usize,
         start_col: 10usize,
-        end_line: 232usize,
+        end_line: 286usize,
         end_col: 41usize,
         compile_fail: false,
         no_run: false,
@@ -2231,10 +2646,10 @@ fn list_parameter_with_empty_guard() {
                     }
                 }
             };
-            struct __EnhancedQuery_single<'args> {
+            struct __SqlForgeQuery_single<'args> {
                 inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
             }
-            impl<'args> __EnhancedQuery_single<'args> {
+            impl<'args> __SqlForgeQuery_single<'args> {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -2272,8 +2687,8 @@ fn list_parameter_with_empty_guard() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::EnhancedQuery<User>
-            for __EnhancedQuery_single<'args> {
+            impl<'args> sql_forge::SqlForgeQuery<User>
+            for __SqlForgeQuery_single<'args> {
                 type Db = sqlx::MySql;
                 fn fetch_all<'e, E>(
                     self,
@@ -2286,7 +2701,7 @@ fn list_parameter_with_empty_guard() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_all(self, executor)
+                    __SqlForgeQuery_single::fetch_all(self, executor)
                 }
                 fn fetch_one<'e, E>(
                     self,
@@ -2299,7 +2714,7 @@ fn list_parameter_with_empty_guard() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_one(self, executor)
+                    __SqlForgeQuery_single::fetch_one(self, executor)
                 }
                 fn fetch_optional<'e, E>(
                     self,
@@ -2312,7 +2727,7 @@ fn list_parameter_with_empty_guard() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_optional(self, executor)
+                    __SqlForgeQuery_single::fetch_optional(self, executor)
                 }
                 fn execute<'e, E>(
                     self,
@@ -2328,7 +2743,7 @@ fn list_parameter_with_empty_guard() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::execute(self, executor)
+                    __SqlForgeQuery_single::execute(self, executor)
                 }
             }
             let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
@@ -2350,7 +2765,7 @@ fn list_parameter_with_empty_guard() {
                     __builder.push(")");
                 }
             }
-            let __sql_forge_value_single = __EnhancedQuery_single {
+            let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
             __sql_forge_value_single
@@ -2400,9 +2815,9 @@ pub const multiple_results_group: test::TestDescAndFn = test::TestDescAndFn {
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 258usize,
+        start_line: 312usize,
         start_col: 10usize,
-        end_line: 258usize,
+        end_line: 312usize,
         end_col: 32usize,
         compile_fail: false,
         no_run: false,
@@ -2571,10 +2986,10 @@ fn multiple_results_group() {
                     }
                 }
             };
-            struct __EnhancedQuery_amount<'args> {
+            struct __SqlForgeQuery_amount<'args> {
                 inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
             }
-            impl<'args> __EnhancedQuery_amount<'args> {
+            impl<'args> __SqlForgeQuery_amount<'args> {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -2615,8 +3030,8 @@ fn multiple_results_group() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::EnhancedQuery<AmountResult>
-            for __EnhancedQuery_amount<'args> {
+            impl<'args> sql_forge::SqlForgeQuery<AmountResult>
+            for __SqlForgeQuery_amount<'args> {
                 type Db = sqlx::MySql;
                 fn fetch_all<'e, E>(
                     self,
@@ -2629,7 +3044,7 @@ fn multiple_results_group() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_amount::fetch_all(self, executor)
+                    __SqlForgeQuery_amount::fetch_all(self, executor)
                 }
                 fn fetch_one<'e, E>(
                     self,
@@ -2642,7 +3057,7 @@ fn multiple_results_group() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_amount::fetch_one(self, executor)
+                    __SqlForgeQuery_amount::fetch_one(self, executor)
                 }
                 fn fetch_optional<'e, E>(
                     self,
@@ -2655,7 +3070,7 @@ fn multiple_results_group() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_amount::fetch_optional(self, executor)
+                    __SqlForgeQuery_amount::fetch_optional(self, executor)
                 }
                 fn execute<'e, E>(
                     self,
@@ -2671,13 +3086,13 @@ fn multiple_results_group() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_amount::execute(self, executor)
+                    __SqlForgeQuery_amount::execute(self, executor)
                 }
             }
-            struct __EnhancedQuery_list<'args> {
+            struct __SqlForgeQuery_list<'args> {
                 inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
             }
-            impl<'args> __EnhancedQuery_list<'args> {
+            impl<'args> __SqlForgeQuery_list<'args> {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -2715,7 +3130,7 @@ fn multiple_results_group() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::EnhancedQuery<Item> for __EnhancedQuery_list<'args> {
+            impl<'args> sql_forge::SqlForgeQuery<Item> for __SqlForgeQuery_list<'args> {
                 type Db = sqlx::MySql;
                 fn fetch_all<'e, E>(
                     self,
@@ -2728,7 +3143,7 @@ fn multiple_results_group() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_list::fetch_all(self, executor)
+                    __SqlForgeQuery_list::fetch_all(self, executor)
                 }
                 fn fetch_one<'e, E>(
                     self,
@@ -2741,7 +3156,7 @@ fn multiple_results_group() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_list::fetch_one(self, executor)
+                    __SqlForgeQuery_list::fetch_one(self, executor)
                 }
                 fn fetch_optional<'e, E>(
                     self,
@@ -2754,7 +3169,7 @@ fn multiple_results_group() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_list::fetch_optional(self, executor)
+                    __SqlForgeQuery_list::fetch_optional(self, executor)
                 }
                 fn execute<'e, E>(
                     self,
@@ -2770,7 +3185,7 @@ fn multiple_results_group() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_list::execute(self, executor)
+                    __SqlForgeQuery_list::execute(self, executor)
                 }
             }
             let __enhanced_runtime_category_id = category_id;
@@ -2805,16 +3220,18 @@ fn multiple_results_group() {
             match __enhanced_result_flag_amount {
                 true => {}
                 false => {
-                    let __enhanced_section_order_limit_1_start = 0i64;
-                    let __enhanced_section_order_limit_1_limit = 50i64;
+                    let __enhanced_section_order_limit_1_grouped_2_start = 0i64;
+                    let __enhanced_section_order_limit_1_grouped_2_limit = 50i64;
                     __builder.push("ORDER BY items.created_at DESC LIMIT ");
-                    __builder.push_bind(__enhanced_section_order_limit_1_limit);
+                    __builder
+                        .push_bind(__enhanced_section_order_limit_1_grouped_2_limit);
                     __builder.push(" OFFSET ");
-                    __builder.push_bind(__enhanced_section_order_limit_1_start);
+                    __builder
+                        .push_bind(__enhanced_section_order_limit_1_grouped_2_start);
                 }
             }
             __builder.push("\n        ");
-            let __sql_forge_value_amount = __EnhancedQuery_amount {
+            let __sql_forge_value_amount = __SqlForgeQuery_amount {
                 inner: __builder,
             };
             let __enhanced_runtime_category_id = category_id;
@@ -2849,61 +3266,63 @@ fn multiple_results_group() {
             match __enhanced_result_flag_amount {
                 true => {}
                 false => {
-                    let __enhanced_section_order_limit_1_start = 0i64;
-                    let __enhanced_section_order_limit_1_limit = 50i64;
+                    let __enhanced_section_order_limit_1_grouped_2_start = 0i64;
+                    let __enhanced_section_order_limit_1_grouped_2_limit = 50i64;
                     __builder.push("ORDER BY items.created_at DESC LIMIT ");
-                    __builder.push_bind(__enhanced_section_order_limit_1_limit);
+                    __builder
+                        .push_bind(__enhanced_section_order_limit_1_grouped_2_limit);
                     __builder.push(" OFFSET ");
-                    __builder.push_bind(__enhanced_section_order_limit_1_start);
+                    __builder
+                        .push_bind(__enhanced_section_order_limit_1_grouped_2_start);
                 }
             }
             __builder.push("\n        ");
-            let __sql_forge_value_list = __EnhancedQuery_list {
+            let __sql_forge_value_list = __SqlForgeQuery_list {
                 inner: __builder,
             };
-            struct __EnhancedQueryGroup<'args> {
-                amount: __EnhancedQuery_amount<'args>,
-                list: __EnhancedQuery_list<'args>,
+            struct __SqlForgeQueryGroup<'args> {
+                amount: __SqlForgeQuery_amount<'args>,
+                list: __SqlForgeQuery_list<'args>,
             }
-            impl<'args> __EnhancedQueryGroup<'args> {
-                pub fn amount(self) -> __EnhancedQuery_amount<'args> {
+            impl<'args> __SqlForgeQueryGroup<'args> {
+                pub fn amount(self) -> __SqlForgeQuery_amount<'args> {
                     self.amount
                 }
-                pub fn list(self) -> __EnhancedQuery_list<'args> {
+                pub fn list(self) -> __SqlForgeQuery_list<'args> {
                     self.list
                 }
                 pub fn into_parts(
                     self,
-                ) -> (__EnhancedQuery_amount<'args>, __EnhancedQuery_list<'args>) {
+                ) -> (__SqlForgeQuery_amount<'args>, __SqlForgeQuery_list<'args>) {
                     (self.amount, self.list)
                 }
             }
-            impl<'args> sql_forge::EnhancedQueryGroup for __EnhancedQueryGroup<'args> {
+            impl<'args> sql_forge::SqlForgeQueryGroup for __SqlForgeQueryGroup<'args> {
                 type Db = sqlx::MySql;
             }
-            struct __EnhancedQueryGroupKey_amount;
+            struct __SqlForgeQueryGroupKey_amount;
             impl<
                 'args,
-            > sql_forge::EnhancedQueryGroupGet<
-                __EnhancedQueryGroupKey_amount,
+            > sql_forge::SqlForgeQueryGroupGet<
+                __SqlForgeQueryGroupKey_amount,
                 AmountResult,
-            > for __EnhancedQueryGroup<'args> {
-                type Query = __EnhancedQuery_amount<'args>;
-                fn get(self, _: __EnhancedQueryGroupKey_amount) -> Self::Query {
+            > for __SqlForgeQueryGroup<'args> {
+                type Query = __SqlForgeQuery_amount<'args>;
+                fn get(self, _: __SqlForgeQueryGroupKey_amount) -> Self::Query {
                     self.amount
                 }
             }
-            struct __EnhancedQueryGroupKey_list;
+            struct __SqlForgeQueryGroupKey_list;
             impl<
                 'args,
-            > sql_forge::EnhancedQueryGroupGet<__EnhancedQueryGroupKey_list, Item>
-            for __EnhancedQueryGroup<'args> {
-                type Query = __EnhancedQuery_list<'args>;
-                fn get(self, _: __EnhancedQueryGroupKey_list) -> Self::Query {
+            > sql_forge::SqlForgeQueryGroupGet<__SqlForgeQueryGroupKey_list, Item>
+            for __SqlForgeQueryGroup<'args> {
+                type Query = __SqlForgeQuery_list<'args>;
+                fn get(self, _: __SqlForgeQueryGroupKey_list) -> Self::Query {
                     self.list
                 }
             }
-            __EnhancedQueryGroup {
+            __SqlForgeQueryGroup {
                 amount: __sql_forge_value_amount,
                 list: __sql_forge_value_list,
             }
@@ -2985,9 +3404,9 @@ pub const multiple_results_scalar_key: test::TestDescAndFn = test::TestDescAndFn
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 321usize,
+        start_line: 375usize,
         start_col: 10usize,
-        end_line: 321usize,
+        end_line: 375usize,
         end_col: 37usize,
         compile_fail: false,
         no_run: false,
@@ -3085,10 +3504,10 @@ fn multiple_results_scalar_key() {
                     }
                 }
             };
-            struct __EnhancedQuery_amount<'args> {
+            struct __SqlForgeQuery_amount<'args> {
                 inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
             }
-            impl<'args> __EnhancedQuery_amount<'args> {
+            impl<'args> __SqlForgeQuery_amount<'args> {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -3126,7 +3545,7 @@ fn multiple_results_scalar_key() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::EnhancedQuery<i64> for __EnhancedQuery_amount<'args> {
+            impl<'args> sql_forge::SqlForgeQuery<i64> for __SqlForgeQuery_amount<'args> {
                 type Db = sqlx::MySql;
                 fn fetch_all<'e, E>(
                     self,
@@ -3139,7 +3558,7 @@ fn multiple_results_scalar_key() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_amount::fetch_all(self, executor)
+                    __SqlForgeQuery_amount::fetch_all(self, executor)
                 }
                 fn fetch_one<'e, E>(
                     self,
@@ -3152,7 +3571,7 @@ fn multiple_results_scalar_key() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_amount::fetch_one(self, executor)
+                    __SqlForgeQuery_amount::fetch_one(self, executor)
                 }
                 fn fetch_optional<'e, E>(
                     self,
@@ -3165,7 +3584,7 @@ fn multiple_results_scalar_key() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_amount::fetch_optional(self, executor)
+                    __SqlForgeQuery_amount::fetch_optional(self, executor)
                 }
                 fn execute<'e, E>(
                     self,
@@ -3181,13 +3600,13 @@ fn multiple_results_scalar_key() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_amount::execute(self, executor)
+                    __SqlForgeQuery_amount::execute(self, executor)
                 }
             }
-            struct __EnhancedQuery_first_name<'args> {
+            struct __SqlForgeQuery_first_name<'args> {
                 inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
             }
-            impl<'args> __EnhancedQuery_first_name<'args> {
+            impl<'args> __SqlForgeQuery_first_name<'args> {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -3228,8 +3647,8 @@ fn multiple_results_scalar_key() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::EnhancedQuery<String>
-            for __EnhancedQuery_first_name<'args> {
+            impl<'args> sql_forge::SqlForgeQuery<String>
+            for __SqlForgeQuery_first_name<'args> {
                 type Db = sqlx::MySql;
                 fn fetch_all<'e, E>(
                     self,
@@ -3242,7 +3661,7 @@ fn multiple_results_scalar_key() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_first_name::fetch_all(self, executor)
+                    __SqlForgeQuery_first_name::fetch_all(self, executor)
                 }
                 fn fetch_one<'e, E>(
                     self,
@@ -3255,7 +3674,7 @@ fn multiple_results_scalar_key() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_first_name::fetch_one(self, executor)
+                    __SqlForgeQuery_first_name::fetch_one(self, executor)
                 }
                 fn fetch_optional<'e, E>(
                     self,
@@ -3268,7 +3687,7 @@ fn multiple_results_scalar_key() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_first_name::fetch_optional(self, executor)
+                    __SqlForgeQuery_first_name::fetch_optional(self, executor)
                 }
                 fn execute<'e, E>(
                     self,
@@ -3284,7 +3703,7 @@ fn multiple_results_scalar_key() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_first_name::execute(self, executor)
+                    __SqlForgeQuery_first_name::execute(self, executor)
                 }
             }
             let __enhanced_runtime_category_id = category_id;
@@ -3305,7 +3724,7 @@ fn multiple_results_scalar_key() {
             __builder.push("\n        FROM items\n        WHERE items.category_id = ");
             __builder.push_bind(__enhanced_runtime_category_id);
             __builder.push("\n        ");
-            let __sql_forge_value_amount = __EnhancedQuery_amount {
+            let __sql_forge_value_amount = __SqlForgeQuery_amount {
                 inner: __builder,
             };
             let __enhanced_runtime_category_id = category_id;
@@ -3326,52 +3745,52 @@ fn multiple_results_scalar_key() {
             __builder.push("\n        FROM items\n        WHERE items.category_id = ");
             __builder.push_bind(__enhanced_runtime_category_id);
             __builder.push("\n        ");
-            let __sql_forge_value_first_name = __EnhancedQuery_first_name {
+            let __sql_forge_value_first_name = __SqlForgeQuery_first_name {
                 inner: __builder,
             };
-            struct __EnhancedQueryGroup<'args> {
-                amount: __EnhancedQuery_amount<'args>,
-                first_name: __EnhancedQuery_first_name<'args>,
+            struct __SqlForgeQueryGroup<'args> {
+                amount: __SqlForgeQuery_amount<'args>,
+                first_name: __SqlForgeQuery_first_name<'args>,
             }
-            impl<'args> __EnhancedQueryGroup<'args> {
-                pub fn amount(self) -> __EnhancedQuery_amount<'args> {
+            impl<'args> __SqlForgeQueryGroup<'args> {
+                pub fn amount(self) -> __SqlForgeQuery_amount<'args> {
                     self.amount
                 }
-                pub fn first_name(self) -> __EnhancedQuery_first_name<'args> {
+                pub fn first_name(self) -> __SqlForgeQuery_first_name<'args> {
                     self.first_name
                 }
                 pub fn into_parts(
                     self,
-                ) -> (__EnhancedQuery_amount<'args>, __EnhancedQuery_first_name<'args>) {
+                ) -> (__SqlForgeQuery_amount<'args>, __SqlForgeQuery_first_name<'args>) {
                     (self.amount, self.first_name)
                 }
             }
-            impl<'args> sql_forge::EnhancedQueryGroup for __EnhancedQueryGroup<'args> {
+            impl<'args> sql_forge::SqlForgeQueryGroup for __SqlForgeQueryGroup<'args> {
                 type Db = sqlx::MySql;
             }
-            struct __EnhancedQueryGroupKey_amount;
+            struct __SqlForgeQueryGroupKey_amount;
             impl<
                 'args,
-            > sql_forge::EnhancedQueryGroupGet<__EnhancedQueryGroupKey_amount, i64>
-            for __EnhancedQueryGroup<'args> {
-                type Query = __EnhancedQuery_amount<'args>;
-                fn get(self, _: __EnhancedQueryGroupKey_amount) -> Self::Query {
+            > sql_forge::SqlForgeQueryGroupGet<__SqlForgeQueryGroupKey_amount, i64>
+            for __SqlForgeQueryGroup<'args> {
+                type Query = __SqlForgeQuery_amount<'args>;
+                fn get(self, _: __SqlForgeQueryGroupKey_amount) -> Self::Query {
                     self.amount
                 }
             }
-            struct __EnhancedQueryGroupKey_first_name;
+            struct __SqlForgeQueryGroupKey_first_name;
             impl<
                 'args,
-            > sql_forge::EnhancedQueryGroupGet<
-                __EnhancedQueryGroupKey_first_name,
+            > sql_forge::SqlForgeQueryGroupGet<
+                __SqlForgeQueryGroupKey_first_name,
                 String,
-            > for __EnhancedQueryGroup<'args> {
-                type Query = __EnhancedQuery_first_name<'args>;
-                fn get(self, _: __EnhancedQueryGroupKey_first_name) -> Self::Query {
+            > for __SqlForgeQueryGroup<'args> {
+                type Query = __SqlForgeQuery_first_name<'args>;
+                fn get(self, _: __SqlForgeQueryGroupKey_first_name) -> Self::Query {
                     self.first_name
                 }
             }
-            __EnhancedQueryGroup {
+            __SqlForgeQueryGroup {
                 amount: __sql_forge_value_amount,
                 first_name: __sql_forge_value_first_name,
             }
@@ -3441,9 +3860,9 @@ pub const combining_features_example: test::TestDescAndFn = test::TestDescAndFn 
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 362usize,
+        start_line: 416usize,
         start_col: 10usize,
-        end_line: 362usize,
+        end_line: 416usize,
         end_col: 36usize,
         compile_fail: false,
         no_run: false,
@@ -3735,10 +4154,10 @@ fn combining_features_example() {
                     }
                 }
             };
-            struct __EnhancedQuery_single<'args> {
+            struct __SqlForgeQuery_single<'args> {
                 inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
             }
-            impl<'args> __EnhancedQuery_single<'args> {
+            impl<'args> __SqlForgeQuery_single<'args> {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -3776,8 +4195,8 @@ fn combining_features_example() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::EnhancedQuery<Product>
-            for __EnhancedQuery_single<'args> {
+            impl<'args> sql_forge::SqlForgeQuery<Product>
+            for __SqlForgeQuery_single<'args> {
                 type Db = sqlx::MySql;
                 fn fetch_all<'e, E>(
                     self,
@@ -3790,7 +4209,7 @@ fn combining_features_example() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_all(self, executor)
+                    __SqlForgeQuery_single::fetch_all(self, executor)
                 }
                 fn fetch_one<'e, E>(
                     self,
@@ -3803,7 +4222,7 @@ fn combining_features_example() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_one(self, executor)
+                    __SqlForgeQuery_single::fetch_one(self, executor)
                 }
                 fn fetch_optional<'e, E>(
                     self,
@@ -3816,7 +4235,7 @@ fn combining_features_example() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_optional(self, executor)
+                    __SqlForgeQuery_single::fetch_optional(self, executor)
                 }
                 fn execute<'e, E>(
                     self,
@@ -3832,7 +4251,7 @@ fn combining_features_example() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::execute(self, executor)
+                    __SqlForgeQuery_single::execute(self, executor)
                 }
             }
             let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
@@ -3906,7 +4325,7 @@ fn combining_features_example() {
                 false => {}
             }
             __builder.push("\n        ");
-            let __sql_forge_value_single = __EnhancedQuery_single {
+            let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
             __sql_forge_value_single
@@ -3992,9 +4411,9 @@ pub const execute_only_query: test::TestDescAndFn = test::TestDescAndFn {
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 449usize,
+        start_line: 503usize,
         start_col: 10usize,
-        end_line: 449usize,
+        end_line: 503usize,
         end_col: 28usize,
         compile_fail: false,
         no_run: false,
@@ -4046,10 +4465,10 @@ fn execute_only_query() {
                     }
                 }
             };
-            struct __EnhancedQuery_single<'args> {
+            struct __SqlForgeQuery_single<'args> {
                 inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
             }
-            impl<'args> __EnhancedQuery_single<'args> {
+            impl<'args> __SqlForgeQuery_single<'args> {
                 async fn execute<'e, E>(
                     mut self,
                     executor: E,
@@ -4060,8 +4479,8 @@ fn execute_only_query() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::EnhancedQueryExecute
-            for __EnhancedQuery_single<'args> {
+            impl<'args> sql_forge::SqlForgeQueryExecute
+            for __SqlForgeQuery_single<'args> {
                 type Db = sqlx::MySql;
                 fn execute<'e, E>(
                     self,
@@ -4077,7 +4496,7 @@ fn execute_only_query() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::execute(self, executor)
+                    __SqlForgeQuery_single::execute(self, executor)
                 }
             }
             let __enhanced_runtime_id = 1i64;
@@ -4086,7 +4505,7 @@ fn execute_only_query() {
             );
             __builder.push("UPDATE products SET stock = 50 WHERE id = ");
             __builder.push_bind(__enhanced_runtime_id);
-            let __sql_forge_value_single = __EnhancedQuery_single {
+            let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
             __sql_forge_value_single
@@ -4134,10 +4553,10 @@ fn execute_only_query() {
                     }
                 }
             };
-            struct __EnhancedQuery_single<'args> {
+            struct __SqlForgeQuery_single<'args> {
                 inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
             }
-            impl<'args> __EnhancedQuery_single<'args> {
+            impl<'args> __SqlForgeQuery_single<'args> {
                 async fn execute<'e, E>(
                     mut self,
                     executor: E,
@@ -4148,8 +4567,8 @@ fn execute_only_query() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::EnhancedQueryExecute
-            for __EnhancedQuery_single<'args> {
+            impl<'args> sql_forge::SqlForgeQueryExecute
+            for __SqlForgeQuery_single<'args> {
                 type Db = sqlx::MySql;
                 fn execute<'e, E>(
                     self,
@@ -4165,7 +4584,7 @@ fn execute_only_query() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::execute(self, executor)
+                    __SqlForgeQuery_single::execute(self, executor)
                 }
             }
             let __enhanced_runtime_id = 1i64;
@@ -4176,7 +4595,7 @@ fn execute_only_query() {
                 .push("\n        UPDATE products SET stock = stock + 1 WHERE id = ");
             __builder.push_bind(__enhanced_runtime_id);
             __builder.push("\n        ");
-            let __sql_forge_value_single = __EnhancedQuery_single {
+            let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
             __sql_forge_value_single
@@ -4237,9 +4656,9 @@ pub const execute_only_insert_update_delete: test::TestDescAndFn = test::TestDes
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 481usize,
+        start_line: 535usize,
         start_col: 10usize,
-        end_line: 481usize,
+        end_line: 535usize,
         end_col: 43usize,
         compile_fail: false,
         no_run: false,
@@ -4291,10 +4710,10 @@ fn execute_only_insert_update_delete() {
                     }
                 }
             };
-            struct __EnhancedQuery_single<'args> {
+            struct __SqlForgeQuery_single<'args> {
                 inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
             }
-            impl<'args> __EnhancedQuery_single<'args> {
+            impl<'args> __SqlForgeQuery_single<'args> {
                 async fn execute<'e, E>(
                     mut self,
                     executor: E,
@@ -4305,8 +4724,8 @@ fn execute_only_insert_update_delete() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::EnhancedQueryExecute
-            for __EnhancedQuery_single<'args> {
+            impl<'args> sql_forge::SqlForgeQueryExecute
+            for __SqlForgeQuery_single<'args> {
                 type Db = sqlx::MySql;
                 fn execute<'e, E>(
                     self,
@@ -4322,7 +4741,7 @@ fn execute_only_insert_update_delete() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::execute(self, executor)
+                    __SqlForgeQuery_single::execute(self, executor)
                 }
             }
             let __enhanced_runtime_category = "Temporary";
@@ -4331,7 +4750,7 @@ fn execute_only_insert_update_delete() {
             );
             __builder.push("DELETE FROM products WHERE category = ");
             __builder.push_bind(__enhanced_runtime_category);
-            let __sql_forge_value_single = __EnhancedQuery_single {
+            let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
             __sql_forge_value_single
@@ -4410,10 +4829,10 @@ fn execute_only_insert_update_delete() {
                         }
                     }
                 };
-                struct __EnhancedQuery_single<'args> {
+                struct __SqlForgeQuery_single<'args> {
                     inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
                 }
-                impl<'args> __EnhancedQuery_single<'args> {
+                impl<'args> __SqlForgeQuery_single<'args> {
                     async fn execute<'e, E>(
                         mut self,
                         executor: E,
@@ -4427,8 +4846,8 @@ fn execute_only_insert_update_delete() {
                         self.inner.build().execute(executor).await
                     }
                 }
-                impl<'args> sql_forge::EnhancedQueryExecute
-                for __EnhancedQuery_single<'args> {
+                impl<'args> sql_forge::SqlForgeQueryExecute
+                for __SqlForgeQuery_single<'args> {
                     type Db = sqlx::MySql;
                     fn execute<'e, E>(
                         self,
@@ -4444,7 +4863,7 @@ fn execute_only_insert_update_delete() {
                         E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                         sqlx::MySql: 'e,
                     {
-                        __EnhancedQuery_single::execute(self, executor)
+                        __SqlForgeQuery_single::execute(self, executor)
                     }
                 }
                 let __enhanced_runtime_name = name;
@@ -4466,7 +4885,7 @@ fn execute_only_insert_update_delete() {
                 __builder.push(", ");
                 __builder.push_bind(__enhanced_runtime_category);
                 __builder.push(")\n            ");
-                let __sql_forge_value_single = __EnhancedQuery_single {
+                let __sql_forge_value_single = __SqlForgeQuery_single {
                     inner: __builder,
                 };
                 __sql_forge_value_single
@@ -4531,10 +4950,10 @@ fn execute_only_insert_update_delete() {
                     }
                 }
             };
-            struct __EnhancedQuery_single<'args> {
+            struct __SqlForgeQuery_single<'args> {
                 inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
             }
-            impl<'args> __EnhancedQuery_single<'args> {
+            impl<'args> __SqlForgeQuery_single<'args> {
                 async fn execute<'e, E>(
                     mut self,
                     executor: E,
@@ -4545,8 +4964,8 @@ fn execute_only_insert_update_delete() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::EnhancedQueryExecute
-            for __EnhancedQuery_single<'args> {
+            impl<'args> sql_forge::SqlForgeQueryExecute
+            for __SqlForgeQuery_single<'args> {
                 type Db = sqlx::MySql;
                 fn execute<'e, E>(
                     self,
@@ -4562,7 +4981,7 @@ fn execute_only_insert_update_delete() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::execute(self, executor)
+                    __SqlForgeQuery_single::execute(self, executor)
                 }
             }
             let __enhanced_runtime_new_price = price_new(4999, 2);
@@ -4578,7 +4997,7 @@ fn execute_only_insert_update_delete() {
             __builder.push(" AND name = ");
             __builder.push_bind(__enhanced_runtime_name);
             __builder.push("\n        ");
-            let __sql_forge_value_single = __EnhancedQuery_single {
+            let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
             __sql_forge_value_single
@@ -4664,10 +5083,10 @@ fn execute_only_insert_update_delete() {
                     }
                 }
             };
-            struct __EnhancedQuery_single<'args> {
+            struct __SqlForgeQuery_single<'args> {
                 inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
             }
-            impl<'args> __EnhancedQuery_single<'args> {
+            impl<'args> __SqlForgeQuery_single<'args> {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -4705,8 +5124,8 @@ fn execute_only_insert_update_delete() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::EnhancedQuery<TempRow>
-            for __EnhancedQuery_single<'args> {
+            impl<'args> sql_forge::SqlForgeQuery<TempRow>
+            for __SqlForgeQuery_single<'args> {
                 type Db = sqlx::MySql;
                 fn fetch_all<'e, E>(
                     self,
@@ -4719,7 +5138,7 @@ fn execute_only_insert_update_delete() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_all(self, executor)
+                    __SqlForgeQuery_single::fetch_all(self, executor)
                 }
                 fn fetch_one<'e, E>(
                     self,
@@ -4732,7 +5151,7 @@ fn execute_only_insert_update_delete() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_one(self, executor)
+                    __SqlForgeQuery_single::fetch_one(self, executor)
                 }
                 fn fetch_optional<'e, E>(
                     self,
@@ -4745,7 +5164,7 @@ fn execute_only_insert_update_delete() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_optional(self, executor)
+                    __SqlForgeQuery_single::fetch_optional(self, executor)
                 }
                 fn execute<'e, E>(
                     self,
@@ -4761,7 +5180,7 @@ fn execute_only_insert_update_delete() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::execute(self, executor)
+                    __SqlForgeQuery_single::execute(self, executor)
                 }
             }
             let __enhanced_runtime_cat = "Temporary";
@@ -4774,7 +5193,7 @@ fn execute_only_insert_update_delete() {
                 );
             __builder.push_bind(__enhanced_runtime_cat);
             __builder.push("\n        ORDER BY id\n        ");
-            let __sql_forge_value_single = __EnhancedQuery_single {
+            let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
             __sql_forge_value_single
@@ -4874,10 +5293,10 @@ fn execute_only_insert_update_delete() {
                     }
                 }
             };
-            struct __EnhancedQuery_single<'args> {
+            struct __SqlForgeQuery_single<'args> {
                 inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
             }
-            impl<'args> __EnhancedQuery_single<'args> {
+            impl<'args> __SqlForgeQuery_single<'args> {
                 async fn execute<'e, E>(
                     mut self,
                     executor: E,
@@ -4888,8 +5307,8 @@ fn execute_only_insert_update_delete() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::EnhancedQueryExecute
-            for __EnhancedQuery_single<'args> {
+            impl<'args> sql_forge::SqlForgeQueryExecute
+            for __SqlForgeQuery_single<'args> {
                 type Db = sqlx::MySql;
                 fn execute<'e, E>(
                     self,
@@ -4905,7 +5324,7 @@ fn execute_only_insert_update_delete() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::execute(self, executor)
+                    __SqlForgeQuery_single::execute(self, executor)
                 }
             }
             let __enhanced_runtime_category = "Temporary";
@@ -4915,7 +5334,7 @@ fn execute_only_insert_update_delete() {
             __builder.push("\n        DELETE FROM products\n        WHERE category = ");
             __builder.push_bind(__enhanced_runtime_category);
             __builder.push("\n        ");
-            let __sql_forge_value_single = __EnhancedQuery_single {
+            let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
             __sql_forge_value_single
@@ -4964,10 +5383,10 @@ fn execute_only_insert_update_delete() {
                     }
                 }
             };
-            struct __EnhancedQuery_single<'args> {
+            struct __SqlForgeQuery_single<'args> {
                 inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
             }
-            impl<'args> __EnhancedQuery_single<'args> {
+            impl<'args> __SqlForgeQuery_single<'args> {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -5005,7 +5424,7 @@ fn execute_only_insert_update_delete() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::EnhancedQuery<i64> for __EnhancedQuery_single<'args> {
+            impl<'args> sql_forge::SqlForgeQuery<i64> for __SqlForgeQuery_single<'args> {
                 type Db = sqlx::MySql;
                 fn fetch_all<'e, E>(
                     self,
@@ -5018,7 +5437,7 @@ fn execute_only_insert_update_delete() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_all(self, executor)
+                    __SqlForgeQuery_single::fetch_all(self, executor)
                 }
                 fn fetch_one<'e, E>(
                     self,
@@ -5031,7 +5450,7 @@ fn execute_only_insert_update_delete() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_one(self, executor)
+                    __SqlForgeQuery_single::fetch_one(self, executor)
                 }
                 fn fetch_optional<'e, E>(
                     self,
@@ -5044,7 +5463,7 @@ fn execute_only_insert_update_delete() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_optional(self, executor)
+                    __SqlForgeQuery_single::fetch_optional(self, executor)
                 }
                 fn execute<'e, E>(
                     self,
@@ -5060,7 +5479,7 @@ fn execute_only_insert_update_delete() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::execute(self, executor)
+                    __SqlForgeQuery_single::execute(self, executor)
                 }
             }
             let __enhanced_runtime_cat = "Temporary";
@@ -5069,7 +5488,7 @@ fn execute_only_insert_update_delete() {
             );
             __builder.push("SELECT COUNT(*) FROM products WHERE category = ");
             __builder.push_bind(__enhanced_runtime_cat);
-            let __sql_forge_value_single = __EnhancedQuery_single {
+            let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
             __sql_forge_value_single
@@ -5142,9 +5561,9 @@ pub const execute_batch: test::TestDescAndFn = test::TestDescAndFn {
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 587usize,
+        start_line: 641usize,
         start_col: 10usize,
-        end_line: 587usize,
+        end_line: 641usize,
         end_col: 23usize,
         compile_fail: false,
         no_run: false,
@@ -5196,10 +5615,10 @@ fn execute_batch() {
                     }
                 }
             };
-            struct __EnhancedQuery_single<'args> {
+            struct __SqlForgeQuery_single<'args> {
                 inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
             }
-            impl<'args> __EnhancedQuery_single<'args> {
+            impl<'args> __SqlForgeQuery_single<'args> {
                 async fn execute<'e, E>(
                     mut self,
                     executor: E,
@@ -5210,8 +5629,8 @@ fn execute_batch() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::EnhancedQueryExecute
-            for __EnhancedQuery_single<'args> {
+            impl<'args> sql_forge::SqlForgeQueryExecute
+            for __SqlForgeQuery_single<'args> {
                 type Db = sqlx::MySql;
                 fn execute<'e, E>(
                     self,
@@ -5227,7 +5646,7 @@ fn execute_batch() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::execute(self, executor)
+                    __SqlForgeQuery_single::execute(self, executor)
                 }
             }
             let __enhanced_runtime_category = "Batch";
@@ -5236,7 +5655,7 @@ fn execute_batch() {
             );
             __builder.push("DELETE FROM products WHERE category = ");
             __builder.push_bind(__enhanced_runtime_category);
-            let __sql_forge_value_single = __EnhancedQuery_single {
+            let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
             __sql_forge_value_single
@@ -5337,10 +5756,10 @@ fn execute_batch() {
                     }
                 }
             };
-            struct __EnhancedQuery_single<'args> {
+            struct __SqlForgeQuery_single<'args> {
                 inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
             }
-            impl<'args> __EnhancedQuery_single<'args> {
+            impl<'args> __SqlForgeQuery_single<'args> {
                 async fn execute<'e, E>(
                     mut self,
                     executor: E,
@@ -5351,8 +5770,8 @@ fn execute_batch() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::EnhancedQueryExecute
-            for __EnhancedQuery_single<'args> {
+            impl<'args> sql_forge::SqlForgeQueryExecute
+            for __SqlForgeQuery_single<'args> {
                 type Db = sqlx::MySql;
                 fn execute<'e, E>(
                     self,
@@ -5368,7 +5787,7 @@ fn execute_batch() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::execute(self, executor)
+                    __SqlForgeQuery_single::execute(self, executor)
                 }
             }
             let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
@@ -5393,7 +5812,7 @@ fn execute_batch() {
                 }
             }
             __builder.push("\n        ");
-            let __sql_forge_value_single = __EnhancedQuery_single {
+            let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
             __sql_forge_value_single
@@ -5459,10 +5878,10 @@ fn execute_batch() {
                     }
                 }
             };
-            struct __EnhancedQuery_single<'args> {
+            struct __SqlForgeQuery_single<'args> {
                 inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
             }
-            impl<'args> __EnhancedQuery_single<'args> {
+            impl<'args> __SqlForgeQuery_single<'args> {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -5503,8 +5922,8 @@ fn execute_batch() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::EnhancedQuery<BatchItem>
-            for __EnhancedQuery_single<'args> {
+            impl<'args> sql_forge::SqlForgeQuery<BatchItem>
+            for __SqlForgeQuery_single<'args> {
                 type Db = sqlx::MySql;
                 fn fetch_all<'e, E>(
                     self,
@@ -5517,7 +5936,7 @@ fn execute_batch() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_all(self, executor)
+                    __SqlForgeQuery_single::fetch_all(self, executor)
                 }
                 fn fetch_one<'e, E>(
                     self,
@@ -5530,7 +5949,7 @@ fn execute_batch() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_one(self, executor)
+                    __SqlForgeQuery_single::fetch_one(self, executor)
                 }
                 fn fetch_optional<'e, E>(
                     self,
@@ -5543,7 +5962,7 @@ fn execute_batch() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_optional(self, executor)
+                    __SqlForgeQuery_single::fetch_optional(self, executor)
                 }
                 fn execute<'e, E>(
                     self,
@@ -5559,7 +5978,7 @@ fn execute_batch() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::execute(self, executor)
+                    __SqlForgeQuery_single::execute(self, executor)
                 }
             }
             let __enhanced_runtime_cat = "Batch";
@@ -5572,7 +5991,7 @@ fn execute_batch() {
                 );
             __builder.push_bind(__enhanced_runtime_cat);
             __builder.push("\n        ORDER BY id\n        ");
-            let __sql_forge_value_single = __EnhancedQuery_single {
+            let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
             __sql_forge_value_single
@@ -5708,10 +6127,10 @@ fn execute_batch() {
                     }
                 }
             };
-            struct __EnhancedQuery_single<'args> {
+            struct __SqlForgeQuery_single<'args> {
                 inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
             }
-            impl<'args> __EnhancedQuery_single<'args> {
+            impl<'args> __SqlForgeQuery_single<'args> {
                 async fn execute<'e, E>(
                     mut self,
                     executor: E,
@@ -5722,8 +6141,8 @@ fn execute_batch() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::EnhancedQueryExecute
-            for __EnhancedQuery_single<'args> {
+            impl<'args> sql_forge::SqlForgeQueryExecute
+            for __SqlForgeQuery_single<'args> {
                 type Db = sqlx::MySql;
                 fn execute<'e, E>(
                     self,
@@ -5739,7 +6158,7 @@ fn execute_batch() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::execute(self, executor)
+                    __SqlForgeQuery_single::execute(self, executor)
                 }
             }
             let __enhanced_runtime_category = "Batch";
@@ -5748,7 +6167,7 @@ fn execute_batch() {
             );
             __builder.push("DELETE FROM products WHERE category = ");
             __builder.push_bind(__enhanced_runtime_category);
-            let __sql_forge_value_single = __EnhancedQuery_single {
+            let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
             __sql_forge_value_single
@@ -5817,9 +6236,9 @@ pub const execute_batch_full: test::TestDescAndFn = test::TestDescAndFn {
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 663usize,
+        start_line: 717usize,
         start_col: 10usize,
-        end_line: 663usize,
+        end_line: 717usize,
         end_col: 28usize,
         compile_fail: false,
         no_run: false,
@@ -5871,10 +6290,10 @@ fn execute_batch_full() {
                     }
                 }
             };
-            struct __EnhancedQuery_single<'args> {
+            struct __SqlForgeQuery_single<'args> {
                 inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
             }
-            impl<'args> __EnhancedQuery_single<'args> {
+            impl<'args> __SqlForgeQuery_single<'args> {
                 async fn execute<'e, E>(
                     mut self,
                     executor: E,
@@ -5885,8 +6304,8 @@ fn execute_batch_full() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::EnhancedQueryExecute
-            for __EnhancedQuery_single<'args> {
+            impl<'args> sql_forge::SqlForgeQueryExecute
+            for __SqlForgeQuery_single<'args> {
                 type Db = sqlx::MySql;
                 fn execute<'e, E>(
                     self,
@@ -5902,7 +6321,7 @@ fn execute_batch_full() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::execute(self, executor)
+                    __SqlForgeQuery_single::execute(self, executor)
                 }
             }
             let __enhanced_runtime_category = "BatchFull";
@@ -5911,7 +6330,7 @@ fn execute_batch_full() {
             );
             __builder.push("DELETE FROM products WHERE category = ");
             __builder.push_bind(__enhanced_runtime_category);
-            let __sql_forge_value_single = __EnhancedQuery_single {
+            let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
             __sql_forge_value_single
@@ -6054,10 +6473,10 @@ fn execute_batch_full() {
                     }
                 }
             };
-            struct __EnhancedQuery_single<'args> {
+            struct __SqlForgeQuery_single<'args> {
                 inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
             }
-            impl<'args> __EnhancedQuery_single<'args> {
+            impl<'args> __SqlForgeQuery_single<'args> {
                 async fn execute<'e, E>(
                     mut self,
                     executor: E,
@@ -6068,8 +6487,8 @@ fn execute_batch_full() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::EnhancedQueryExecute
-            for __EnhancedQuery_single<'args> {
+            impl<'args> sql_forge::SqlForgeQueryExecute
+            for __SqlForgeQuery_single<'args> {
                 type Db = sqlx::MySql;
                 fn execute<'e, E>(
                     self,
@@ -6085,7 +6504,7 @@ fn execute_batch_full() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::execute(self, executor)
+                    __SqlForgeQuery_single::execute(self, executor)
                 }
             }
             let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
@@ -6114,7 +6533,7 @@ fn execute_batch_full() {
                 }
             }
             __builder.push("\n        ");
-            let __sql_forge_value_single = __EnhancedQuery_single {
+            let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
             __sql_forge_value_single
@@ -6190,10 +6609,10 @@ fn execute_batch_full() {
                     }
                 }
             };
-            struct __EnhancedQuery_single<'args> {
+            struct __SqlForgeQuery_single<'args> {
                 inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
             }
-            impl<'args> __EnhancedQuery_single<'args> {
+            impl<'args> __SqlForgeQuery_single<'args> {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -6240,8 +6659,8 @@ fn execute_batch_full() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::EnhancedQuery<BatchFullItem>
-            for __EnhancedQuery_single<'args> {
+            impl<'args> sql_forge::SqlForgeQuery<BatchFullItem>
+            for __SqlForgeQuery_single<'args> {
                 type Db = sqlx::MySql;
                 fn fetch_all<'e, E>(
                     self,
@@ -6254,7 +6673,7 @@ fn execute_batch_full() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_all(self, executor)
+                    __SqlForgeQuery_single::fetch_all(self, executor)
                 }
                 fn fetch_one<'e, E>(
                     self,
@@ -6267,7 +6686,7 @@ fn execute_batch_full() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_one(self, executor)
+                    __SqlForgeQuery_single::fetch_one(self, executor)
                 }
                 fn fetch_optional<'e, E>(
                     self,
@@ -6280,7 +6699,7 @@ fn execute_batch_full() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::fetch_optional(self, executor)
+                    __SqlForgeQuery_single::fetch_optional(self, executor)
                 }
                 fn execute<'e, E>(
                     self,
@@ -6296,7 +6715,7 @@ fn execute_batch_full() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::execute(self, executor)
+                    __SqlForgeQuery_single::execute(self, executor)
                 }
             }
             let __enhanced_runtime_cat = "BatchFull";
@@ -6309,7 +6728,7 @@ fn execute_batch_full() {
                 );
             __builder.push_bind(__enhanced_runtime_cat);
             __builder.push("\n        ORDER BY id\n        ");
-            let __sql_forge_value_single = __EnhancedQuery_single {
+            let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
             __sql_forge_value_single
@@ -6471,10 +6890,10 @@ fn execute_batch_full() {
                     }
                 }
             };
-            struct __EnhancedQuery_single<'args> {
+            struct __SqlForgeQuery_single<'args> {
                 inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
             }
-            impl<'args> __EnhancedQuery_single<'args> {
+            impl<'args> __SqlForgeQuery_single<'args> {
                 async fn execute<'e, E>(
                     mut self,
                     executor: E,
@@ -6485,8 +6904,8 @@ fn execute_batch_full() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::EnhancedQueryExecute
-            for __EnhancedQuery_single<'args> {
+            impl<'args> sql_forge::SqlForgeQueryExecute
+            for __SqlForgeQuery_single<'args> {
                 type Db = sqlx::MySql;
                 fn execute<'e, E>(
                     self,
@@ -6502,7 +6921,7 @@ fn execute_batch_full() {
                     E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
                     sqlx::MySql: 'e,
                 {
-                    __EnhancedQuery_single::execute(self, executor)
+                    __SqlForgeQuery_single::execute(self, executor)
                 }
             }
             let __enhanced_runtime_category = "BatchFull";
@@ -6511,7 +6930,7 @@ fn execute_batch_full() {
             );
             __builder.push("DELETE FROM products WHERE category = ");
             __builder.push_bind(__enhanced_runtime_category);
-            let __sql_forge_value_single = __EnhancedQuery_single {
+            let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
             __sql_forge_value_single
@@ -6553,6 +6972,7 @@ pub fn main() -> () {
             &execute_only_insert_update_delete,
             &execute_only_query,
             &grouped_sections,
+            &grouped_sections_with_nested_matches,
             &list_parameter_in_clause,
             &list_parameter_with_empty_guard,
             &multiple_results_group,

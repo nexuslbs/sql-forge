@@ -1,0 +1,32 @@
+{
+  "db_name": "SQLite",
+  "query": "\n        SELECT t1.id AS field_1, COALESCE(o.name, '') AS field_2, COALESCE('org', '') AS field_3\n        FROM users t1\n         JOIN organisations o ON o.id = t1.id \n        WHERE 1 = 1\n        ",
+  "describe": {
+    "columns": [
+      {
+        "name": "field_1",
+        "ordinal": 0,
+        "type_info": "Integer"
+      },
+      {
+        "name": "field_2",
+        "ordinal": 1,
+        "type_info": "Text"
+      },
+      {
+        "name": "field_3",
+        "ordinal": 2,
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "a0fbc1632f4372a1b3e80ffd538e404c5b72636b05a98bf01b0b3fb6acca8deb"
+}
