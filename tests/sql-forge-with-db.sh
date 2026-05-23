@@ -9,3 +9,4 @@ cargo check --tests
 cargo clippy --tests
 cargo sqlx prepare -- --tests
 cargo test
+bash /app/tests/checksum.sh > "$ENV_DIR/checksums.txt"

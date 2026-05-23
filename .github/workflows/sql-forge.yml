@@ -89,16 +89,14 @@ jobs:
       - name: Install sqlx-cli
         run: cargo install sqlx-cli --no-default-features --features native-tls,mysql,postgres,sqlite
 
-      - name: Install cargo-expand
-        run: cargo install cargo-expand
-
-      - name: cargo expand and compare with repo copy
+      - name: Compare source checksums with repo copy
         run: |
-          cargo expand --test tests > tests/${{ matrix.db-type }}/tests_expanded.ci.rs
-          if ! diff -q tests/${{ matrix.db-type }}/tests_expanded.rs tests/${{ matrix.db-type }}/tests_expanded.ci.rs; then
-            echo "ERROR: tests/${{ matrix.db-type }}/tests_expanded.rs is outdated."
+          ENV_DIR="tests/${{ matrix.db-type }}"
+          bash tests/checksum.sh > "$ENV_DIR/checksums.ci.txt"
+          if ! diff -q "$ENV_DIR/checksums.txt" "$ENV_DIR/checksums.ci.txt"; then
+            echo "ERROR: $ENV_DIR/checksums.txt is outdated."
             echo "Regenerate it by running in the rust service from the docker-compose file: sql-forge-test"
-            diff tests/${{ matrix.db-type }}/tests_expanded.rs tests/${{ matrix.db-type }}/tests_expanded.ci.rs
+            diff "$ENV_DIR/checksums.txt" "$ENV_DIR/checksums.ci.txt"
             exit 1
           fi
 
