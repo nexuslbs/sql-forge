@@ -4,6 +4,7 @@ extern crate std;
 use std::prelude::rust_2021::*;
 use sql_forge::db_type;
 use sql_forge::sql_forge;
+use std::any::TypeId;
 pub type AppDb = sqlx::Postgres;
 pub type DbPool = sqlx::Pool<AppDb>;
 type Price = i64;
@@ -220,6 +221,55 @@ struct Filter {
 fn db_url() -> String {
     std::env::var("DATABASE_URL").expect("DATABASE_URL not defined")
 }
+extern crate test;
+#[rustc_test_marker = "db_type_matches_env_db_type"]
+#[doc(hidden)]
+pub const db_type_matches_env_db_type: test::TestDescAndFn = test::TestDescAndFn {
+    desc: test::TestDesc {
+        name: test::StaticTestName("db_type_matches_env_db_type"),
+        ignore: false,
+        ignore_message: ::core::option::Option::None,
+        source_file: "tests/tests.rs",
+        start_line: 56usize,
+        start_col: 4usize,
+        end_line: 56usize,
+        end_col: 31usize,
+        compile_fail: false,
+        no_run: false,
+        should_panic: test::ShouldPanic::No,
+        test_type: test::TestType::IntegrationTest,
+    },
+    testfn: test::StaticTestFn(
+        #[coverage(off)]
+        || test::assert_test_result(db_type_matches_env_db_type()),
+    ),
+};
+fn db_type_matches_env_db_type() {
+    let env_db_type = std::env::var("ENV_DB_TYPE").expect("ENV_DB_TYPE not defined");
+    let expected = match env_db_type.as_str() {
+        "mysql" => TypeId::of::<sqlx::MySql>(),
+        "postgres" => TypeId::of::<sqlx::Postgres>(),
+        "sqlite" => TypeId::of::<sqlx::Sqlite>(),
+        other => {
+            ::core::panicking::panic_fmt(
+                format_args!("unsupported ENV_DB_TYPE: {0}", other),
+            );
+        }
+    };
+    match (&TypeId::of::<AppDb>(), &expected) {
+        (left_val, right_val) => {
+            if !(*left_val == *right_val) {
+                let kind = ::core::panicking::AssertKind::Eq;
+                ::core::panicking::assert_failed(
+                    kind,
+                    &*left_val,
+                    &*right_val,
+                    ::core::option::Option::None,
+                );
+            }
+        }
+    };
+}
 async fn pool() -> DbPool {
     sqlx::Pool::<AppDb>::connect(&db_url())
         .await
@@ -234,9 +284,9 @@ pub const basic_query_with_inline_params: test::TestDescAndFn = test::TestDescAn
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 61usize,
+        start_line: 76usize,
         start_col: 10usize,
-        end_line: 61usize,
+        end_line: 76usize,
         end_col: 40usize,
         compile_fail: false,
         no_run: false,
@@ -584,9 +634,9 @@ pub const scalar_output: test::TestDescAndFn = test::TestDescAndFn {
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 80usize,
+        start_line: 95usize,
         start_col: 10usize,
-        end_line: 80usize,
+        end_line: 95usize,
         end_col: 23usize,
         compile_fail: false,
         no_run: false,
@@ -814,9 +864,9 @@ pub const struct_source_params: test::TestDescAndFn = test::TestDescAndFn {
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 96usize,
+        start_line: 111usize,
         start_col: 10usize,
-        end_line: 96usize,
+        end_line: 111usize,
         end_col: 30usize,
         compile_fail: false,
         no_run: false,
@@ -1099,9 +1149,9 @@ pub const section_dynamic_where: test::TestDescAndFn = test::TestDescAndFn {
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 117usize,
+        start_line: 132usize,
         start_col: 10usize,
-        end_line: 117usize,
+        end_line: 132usize,
         end_col: 31usize,
         compile_fail: false,
         no_run: false,
@@ -1379,9 +1429,9 @@ pub const section_with_local_params: test::TestDescAndFn = test::TestDescAndFn {
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 148usize,
+        start_line: 163usize,
         start_col: 10usize,
-        end_line: 148usize,
+        end_line: 163usize,
         end_col: 35usize,
         compile_fail: false,
         no_run: false,
@@ -1632,9 +1682,9 @@ pub const grouped_sections: test::TestDescAndFn = test::TestDescAndFn {
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 171usize,
+        start_line: 186usize,
         start_col: 10usize,
-        end_line: 171usize,
+        end_line: 186usize,
         end_col: 26usize,
         compile_fail: false,
         no_run: false,
@@ -1951,9 +2001,9 @@ pub const grouped_sections_with_nested_matches: test::TestDescAndFn = test::Test
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 211usize,
+        start_line: 226usize,
         start_col: 10usize,
-        end_line: 211usize,
+        end_line: 226usize,
         end_col: 46usize,
         compile_fail: false,
         no_run: false,
@@ -2384,9 +2434,9 @@ pub const list_parameter_in_clause: test::TestDescAndFn = test::TestDescAndFn {
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 265usize,
+        start_line: 280usize,
         start_col: 10usize,
-        end_line: 265usize,
+        end_line: 280usize,
         end_col: 34usize,
         compile_fail: false,
         no_run: false,
@@ -2748,9 +2798,9 @@ pub const list_parameter_with_empty_guard: test::TestDescAndFn = test::TestDescA
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 286usize,
+        start_line: 301usize,
         start_col: 10usize,
-        end_line: 286usize,
+        end_line: 301usize,
         end_col: 41usize,
         compile_fail: false,
         no_run: false,
@@ -3113,9 +3163,9 @@ pub const multiple_results_group: test::TestDescAndFn = test::TestDescAndFn {
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 312usize,
+        start_line: 327usize,
         start_col: 10usize,
-        end_line: 312usize,
+        end_line: 327usize,
         end_col: 32usize,
         compile_fail: false,
         no_run: false,
@@ -3822,9 +3872,9 @@ pub const multiple_results_scalar_key: test::TestDescAndFn = test::TestDescAndFn
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 375usize,
+        start_line: 390usize,
         start_col: 10usize,
-        end_line: 375usize,
+        end_line: 390usize,
         end_col: 37usize,
         compile_fail: false,
         no_run: false,
@@ -4318,9 +4368,9 @@ pub const combining_features_example: test::TestDescAndFn = test::TestDescAndFn 
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 416usize,
+        start_line: 431usize,
         start_col: 10usize,
-        end_line: 416usize,
+        end_line: 431usize,
         end_col: 36usize,
         compile_fail: false,
         no_run: false,
@@ -5069,9 +5119,9 @@ pub const execute_only_query: test::TestDescAndFn = test::TestDescAndFn {
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 503usize,
+        start_line: 518usize,
         start_col: 10usize,
-        end_line: 503usize,
+        end_line: 518usize,
         end_col: 28usize,
         compile_fail: false,
         no_run: false,
@@ -5357,9 +5407,9 @@ pub const execute_only_insert_update_delete: test::TestDescAndFn = test::TestDes
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 535usize,
+        start_line: 550usize,
         start_col: 10usize,
-        end_line: 535usize,
+        end_line: 550usize,
         end_col: 43usize,
         compile_fail: false,
         no_run: false,
@@ -6482,9 +6532,9 @@ pub const execute_batch: test::TestDescAndFn = test::TestDescAndFn {
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 641usize,
+        start_line: 656usize,
         start_col: 10usize,
-        end_line: 641usize,
+        end_line: 656usize,
         end_col: 23usize,
         compile_fail: false,
         no_run: false,
@@ -7337,9 +7387,9 @@ pub const execute_batch_full: test::TestDescAndFn = test::TestDescAndFn {
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 717usize,
+        start_line: 732usize,
         start_col: 10usize,
-        end_line: 717usize,
+        end_line: 732usize,
         end_col: 28usize,
         compile_fail: false,
         no_run: false,
@@ -8359,6 +8409,37 @@ fn execute_batch_full() {
             .block_on(body);
     }
 }
+extern crate test;
+#[rustc_test_marker = "compile_fail"]
+#[doc(hidden)]
+pub const compile_fail: test::TestDescAndFn = test::TestDescAndFn {
+    desc: test::TestDesc {
+        name: test::StaticTestName("compile_fail"),
+        ignore: false,
+        ignore_message: ::core::option::Option::None,
+        source_file: "tests/tests.rs",
+        start_line: 802usize,
+        start_col: 4usize,
+        end_line: 802usize,
+        end_col: 16usize,
+        compile_fail: false,
+        no_run: false,
+        should_panic: test::ShouldPanic::No,
+        test_type: test::TestType::IntegrationTest,
+    },
+    testfn: test::StaticTestFn(
+        #[coverage(off)]
+        || test::assert_test_result(compile_fail()),
+    ),
+};
+fn compile_fail() {
+    let db_type = std::env::var("ENV_DB_TYPE").expect("ENV_DB_TYPE not defined");
+    let pattern = ::alloc::__export::must_use({
+        ::alloc::fmt::format(format_args!("tests/{0}/tmp-ui/*.rs", db_type))
+    });
+    let tests = trybuild::TestCases::new();
+    tests.compile_fail(&pattern);
+}
 #[rustc_main]
 #[coverage(off)]
 #[doc(hidden)]
@@ -8368,6 +8449,8 @@ pub fn main() -> () {
         &[
             &basic_query_with_inline_params,
             &combining_features_example,
+            &compile_fail,
+            &db_type_matches_env_db_type,
             &execute_batch,
             &execute_batch_full,
             &execute_only_insert_update_delete,

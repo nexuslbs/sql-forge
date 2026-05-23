@@ -4,3 +4,4 @@ sql_forge_test.db
 /.sqlx/
 /tmp/
 **/checksums.ci.txt
+**/tmp-ui/**

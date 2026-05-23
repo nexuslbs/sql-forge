@@ -1,0 +1,5 @@
+error: sql_forge!: SQL contains {( ... )} batch section but no batch source argument (..expr) was provided
+ --> tests/postgres/tmp-ui/batch_sql_without_source.rs:5:9
+  |
+5 |         "INSERT INTO products (name, price, stock, category) VALUES {(:name, :price, 1, 'BatchError')}",
+  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

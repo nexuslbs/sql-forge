@@ -1340,10 +1340,14 @@ fn render_runtime_fragment(
                 steps.push(quote! { __builder.push(#lit_str); });
             }
             TextPart::Param { name, is_list } => {
-                let local_ident = local_params
-                    .get(&name)
-                    .cloned()
-                    .unwrap_or_else(|| format_ident!("__enhanced_runtime_{}", name));
+                let Some(local_ident) = local_params.get(&name).cloned() else {
+                    return Err(syn::Error::new(
+                        fragment.span,
+                        format!("sql_forge!: parameter :{} has no mapping", name),
+                    )
+                    .to_compile_error()
+                    .into());
+                };
 
                 if is_list {
                     steps.push(quote! {
@@ -2049,7 +2053,7 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
                         let section_validator_context = ValidatorRenderContext {
                             local_params: &local_params,
                             top_level_params: &declared_params,
-                            allow_top_level_fallback: true,
+                            allow_top_level_fallback: false,
                             use_dollar_params,
                             sql_span: fragment.span,
                             list_count,

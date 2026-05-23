@@ -1,0 +1,5 @@
+error: sql_forge!: list parameters (:name[]) are not allowed inside {( ... )} batch sections; use plain parameters (:name) instead
+  --> tests/postgres/tmp-ui/batch_list_param_not_supported.rs:11:9
+   |
+11 |         "INSERT INTO products (name) VALUES {(:name[])}",
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

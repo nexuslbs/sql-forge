@@ -1,5 +1,6 @@
 use sql_forge::db_type;
 use sql_forge::sql_forge;
+use std::any::TypeId;
 
 pub type AppDb = db_type!();
 pub type DbPool = sqlx::Pool<AppDb>;
@@ -49,6 +50,20 @@ struct Filter {
 
 fn db_url() -> String {
     std::env::var("DATABASE_URL").expect("DATABASE_URL not defined")
+}
+
+#[test]
+fn db_type_matches_env_db_type() {
+    let env_db_type = std::env::var("ENV_DB_TYPE").expect("ENV_DB_TYPE not defined");
+
+    let expected = match env_db_type.as_str() {
+        "mysql" => TypeId::of::<sqlx::MySql>(),
+        "postgres" => TypeId::of::<sqlx::Postgres>(),
+        "sqlite" => TypeId::of::<sqlx::Sqlite>(),
+        other => panic!("unsupported ENV_DB_TYPE: {other}"),
+    };
+
+    assert_eq!(TypeId::of::<AppDb>(), expected);
 }
 
 async fn pool() -> DbPool {
@@ -781,4 +796,12 @@ async fn execute_batch_full() {
     .execute(&pool)
     .await
     .expect("delete batch full failed");
+}
+
+#[test]
+fn compile_fail() {
+    let db_type = std::env::var("ENV_DB_TYPE").expect("ENV_DB_TYPE not defined");
+    let pattern = format!("tests/{db_type}/tmp-ui/*.rs");
+    let tests = trybuild::TestCases::new();
+    tests.compile_fail(&pattern);
 }

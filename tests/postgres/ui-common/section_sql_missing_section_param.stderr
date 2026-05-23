@@ -1,0 +1,5 @@
+error: sql_forge!: parameter :id has no mapping
+  --> tests/postgres/tmp-ui/section_sql_missing_section_param.rs:11:23
+   |
+11 |             #filter = " WHERE id = :id ",
+   |                       ^^^^^^^^^^^^^^^^^^

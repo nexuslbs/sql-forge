@@ -1,0 +1,11 @@
+error[E0609]: no field `price` on type `BatchName`
+  --> tests/postgres/tmp-ui/batch_wrong_item_field_names.rs:10:13
+   |
+10 |       let _ = sql_forge!(
+   |  _____________^
+11 | |         "INSERT INTO products (name, price) VALUES {(:name, :price)}",
+12 | |         ..items
+13 | |     );
+   | |_____^ unknown field
+   |
+   = note: this error originates in the macro `sql_forge` (in Nightly builds, run with -Z macro-backtrace for more info)

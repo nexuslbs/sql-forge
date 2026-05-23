@@ -1,0 +1,14 @@
+error: error returned from database: (code: 14) unable to open database file
+  --> tests/sqlite/tmp-ui/multiple_models_static_mismatch.rs:6:13
+   |
+ 6 |       let _ = sql_forge!(
+   |  _____________^
+ 7 | |         sqlx::Postgres,
+ 8 | |         (
+ 9 | |             >user = support::User,
+...  |
+12 | |         "SELECT id, name FROM users LIMIT 1",
+13 | |     );
+   | |_____^
+   |
+   = note: this error originates in the macro `$crate::sqlx_macros::expand_query` which comes from the expansion of the macro `sql_forge` (in Nightly builds, run with -Z macro-backtrace for more info)

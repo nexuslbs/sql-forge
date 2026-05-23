@@ -90,14 +90,16 @@ jobs:
       - name: Install sqlx-cli
         run: cargo install sqlx-cli --no-default-features --features native-tls,mysql,postgres,sqlite
 
-      - name: Compare source checksums with repo copy
+      - name: Install cargo-expand
+        run: cargo install cargo-expand
+
+      - name: cargo expand and compare with repo copy
         run: |
-          ENV_DIR="tests/${{ matrix.db-type }}"
-          bash tests/checksum.sh > "$ENV_DIR/checksums.ci.txt"
-          if ! diff -q "$ENV_DIR/checksums.txt" "$ENV_DIR/checksums.ci.txt"; then
-            echo "ERROR: $ENV_DIR/checksums.txt is outdated."
+          cargo expand --test tests > tests/${{ matrix.db-type }}/tests_expanded.ci.rs
+          if ! diff -q tests/${{ matrix.db-type }}/tests_expanded.rs tests/${{ matrix.db-type }}/tests_expanded.ci.rs; then
+            echo "ERROR: tests/${{ matrix.db-type }}/tests_expanded.rs is outdated."
             echo "Regenerate it by running in the rust service from the docker-compose file: sql-forge-test"
-            diff "$ENV_DIR/checksums.txt" "$ENV_DIR/checksums.ci.txt"
+            diff tests/${{ matrix.db-type }}/tests_expanded.rs tests/${{ matrix.db-type }}/tests_expanded.ci.rs
             exit 1
           fi
 
@@ -109,6 +111,24 @@ jobs:
 
       - name: cargo clippy
         run: cargo clippy --tests -- -D warnings
+
+      - name: Prepare trybuild tmp-ui fixtures
+        run: |
+          TMP_UI_DIR="tests/${{ matrix.db-type }}/tmp-ui"
+          UI_SRC_DIR="tests/ui"
+          UI_COMMON_DIR="tests/${{ matrix.db-type }}/ui-common"
+
+          rm -rf "$TMP_UI_DIR"
+          mkdir -p "$TMP_UI_DIR"
+
+          cp -r "$UI_SRC_DIR/." "$TMP_UI_DIR/"
+
+          if [ -d "$UI_COMMON_DIR" ]; then
+            (
+              cd "$UI_COMMON_DIR"
+              find . -type f -name '*.stderr' -exec cp --parents {} "$GITHUB_WORKSPACE/$TMP_UI_DIR" \;
+            )
+          fi
 
       - name: cargo test
         run: cargo test

@@ -1,7 +1,13 @@
 #!/bin/bash
 set -euo pipefail
 
-export SQLX_OFFLINE_DIR="$ENV_DIR/.sqlx"
+export ENV_DIR="tests/$ENV_DB_TYPE"
+export SQLX_OFFLINE_DIR="/app/$ENV_DIR/.sqlx"
+export TRYBUILD=overwrite
+
+rm -rf "$ENV_DIR/tmp-ui"
+mkdir -p "$ENV_DIR/tmp-ui"
+cp -r tests/ui/. "$ENV_DIR/tmp-ui/"
 
 cargo fmt --all -- --check
 cargo expand --test tests > "$ENV_DIR/tests_expanded.rs"
@@ -10,3 +16,7 @@ cargo clippy --tests -- -D warnings
 cargo sqlx prepare -- --tests
 cargo test
 bash /app/tests/checksum.sh > "$ENV_DIR/checksums.txt"
+
+rm -rf "$ENV_DIR/ui-common"
+mkdir -p "$ENV_DIR/ui-common"
+cp -r "$ENV_DIR/tmp-ui/." "$ENV_DIR/ui-common/"
