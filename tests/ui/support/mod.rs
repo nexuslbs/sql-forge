@@ -21,3 +21,8 @@ pub struct BatchNamePrice {
     pub name: String,
     pub price: i64,
 }
+
+pub struct BatchIdCategory {
+    pub id: i64,
+    pub category: String,
+}

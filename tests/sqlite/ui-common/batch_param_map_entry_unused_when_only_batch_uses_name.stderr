@@ -1,0 +1,5 @@
+error: sql_forge!: parameter :category is unused in the SQL template
+  --> tests/sqlite/tmp-ui/batch_param_map_entry_unused_when_only_batch_uses_name.rs:13:12
+   |
+13 |         ( :category = "TopLevel" ),
+   |            ^^^^^^^^

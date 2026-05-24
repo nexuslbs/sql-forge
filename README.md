@@ -91,7 +91,7 @@ When any of the above is configured, the first macro argument may be the model t
 
 ### Named parameters (`:name`)
 
-Placeholders are written as `:name` inside the SQL. Each `:name` is replaced by a `push_bind` call at runtime and by a `?` placeholder for compile-time validation.
+Placeholders are written as `:name` inside the SQL. Each `:name` is replaced by a `push_bind` call at runtime and by database-specific placeholders for compile-time validation: `?` for MySQL and SQLite, and `$1`, `$2`, ... for Postgres.
 
 ### Inline map
 
@@ -609,7 +609,7 @@ For example, with two sections having 3 and 10 variants respectively, 10 validat
 
 The same idea is also used recursively inside grouped sections: if a grouped arm contains nested `match` values for multiple tuple slots, those slots are cycled together by index within that arm instead of generating every cartesian pairing.
 
-List parameters are validated using index access to the first element (`.as_slice()[0]`), as if provided 3 times. The validator closure is never called at runtime, it exists solely to drive `query_as!`/`query_scalar!` compile-time type checking. This means that `IN (:list[])` would be validated as `IN (?, ?, ?)` (or `IN ($1, $2, $3)` in Postgres) using the first list element in a closure that is never called, used only for compile-time validation (the runtime query will use the full list with a QueryBuilder `push_bind`).
+List parameters are validated using index access to the first element (`.as_slice()[0]`), as if provided 3 times. The validator closure is never called at runtime, it exists solely to drive `query_as!`/`query_scalar!` compile-time type checking. This means that `IN (:list[])` would be validated as `IN (?, ?, ?)` (or `IN ($1, $2, $3)` in Postgres) using the first list element in a closure that is never called, used only for compile-time validation (the runtime query will use the full list and call `QueryBuilder::push_bind` for each item).
 
 ---
 
@@ -793,7 +793,7 @@ sql_forge!(
             false => "",
         },
         #field_2 = match needs_t2_field {
-            true => "t2.name AS field_2", // requires join_t2 = true
+            true => "t2.name AS field_2", // requires include_t2 = true
             false => "t1.name AS field_2",
         },
     )
@@ -801,6 +801,8 @@ sql_forge!(
 ```
 
 **Recommended grouped version for Case 1**
+
+This rewrite preserves the intended dependency: `needs_t2_field` is only consulted when `include_t2` is `true`. If the original logic can produce `needs_t2_field = true` while `include_t2 = false`, that logic is already inconsistent and should be reconsidered.
 
 ```rust
 sql_forge!(
@@ -815,7 +817,10 @@ sql_forge!(
         #(join_t2, field_2) = match include_t2 {
             true => (
                 " JOIN t2 ON t2.t1_id = t1.id ",
-                "t2.name AS field_2",
+                match needs_t2_field {
+                    true => "t2.name AS field_2",
+                    false => "t1.name AS field_2",
+                },
             ),
             false => ("", "t1.name AS field_2"),
         }
@@ -826,7 +831,7 @@ sql_forge!(
 **Case 2: may be rejected, even though runtime logic would work (conservative validation)**
 
 ```rust
-// ⚠ Not recommended: runtime implies safety, but compile-time still checks all variants.
+// ⚠ Not recommended: runtime implies safety, but compile-time still checks impossible variants.
 sql_forge!(
     Row,
     r#"
@@ -874,7 +879,7 @@ sql_forge!(
 );
 ```
 
-Grouping keeps related fragments synchronized, avoids skipped problematic combinations, and reduces fragile query shapes during maintenance.
+Grouping keeps related fragments synchronized, avoids skipped problematic combinations, and reduces fragile query shapes during maintenance, but it should be used only when there is a real dependency between sections.
 
 ---
 
@@ -883,17 +888,20 @@ Grouping keeps related fragments synchronized, avoids skipped problematic combin
 Before pushing changes, run the full local validation flow with Docker:
 
 ```sh
-docker compose exec rust sql-forge-test
+docker compose exec rust sql-forge
 ```
 
 This command is the expected end-to-end local check for the project. It runs the full backend matrix flow and refreshes generated artifacts that are used by tests and reviews.
 
 After it finishes, verify any generated or changed artifacts before pushing, especially:
 
-- `.stderr` files under `tests/{db_type}/tmp-ui`
+- SQLx metadata files under `tests/{db_type}/.sqlx`
+- `.stderr` files under `tests/{db_type}/ui-common`
 - `.stderr` files under `tests/{db_type}/ui`
 - expanded Rust files under `tests/{db_type}/tests_expanded.rs`
 
 Those files can change when the macro expansion, validation behavior, expected compile-fail output, or relevant dependency and tool versions change. Review them carefully to confirm that the errors and expansions are still correct.
 
 Only commit those generated changes when they make sense for the current state of the codebase, for example when a compile-fail test still fails for the right reason and an expanded file still reflects the intended macro expansion.
+
+Commit these artifacts only when they make sense for the current state of the codebase, e.g., when a test fails for the expected reason or an expansion remains semantically correct.
