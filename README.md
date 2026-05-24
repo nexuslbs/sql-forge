@@ -1,8 +1,8 @@
 # sql_forge
 
-A proc-macro that combines **compile-time SQL validation** (via `sqlx::query_as!` / `sqlx::query_scalar!`) with a **runtime `QueryBuilder`** for dynamic queries.
+A proc-macro that uses `sqlx` under the hood, supports MySQL, PostgreSQL, and SQLite, and combines **compile-time SQL validation** (via `sqlx::query_as!` / `sqlx::query_scalar!`) with a **runtime `QueryBuilder`** for dynamic queries.
 
-Write SQL with named parameters and optional sections that are swapped in at runtime, while still getting sqlx's full type-checking at compile time.
+Write SQL with named parameters and optional sections that are swapped in at runtime, while still getting sqlx's full type-checking at compile time. For compile-time safety, `sql_forge!` uses a smart-cycling strategy to validate dynamic grouped shapes without exploding them combinatorially, while runtime query construction is handled with `QueryBuilder`.
 
 ---
 
@@ -203,7 +203,7 @@ sql_forge!(
 )
 ```
 
-Grouped section items can themselves contain nested `match` expressions. When that happens, `sql_forge!` applies the same smart-cycling idea inside that grouped arm: sibling nested matches are aligned by index instead of expanded as a cartesian product.
+Grouped section items can themselves contain nested `match` expressions. When that happens, `sql_forge!` applies the same smart-cycling idea inside that grouped arm for static compile-time validation: sibling nested matches are aligned by index instead of expanded as a cartesian product.
 
 For example, this arm:
 
@@ -221,12 +221,12 @@ true => (
 )
 ```
 
-produces two aligned variants, not four cartesian combinations:
+produces two aligned variants, not four cartesian combinations, for compile-time checking:
 
 - variant 0: `(" JOIN ...", "o.name AS org_name", "'org' AS org_kind")`
 - variant 1: `(" JOIN ...", "users.name AS org_name", "'user' AS org_kind")`
 
-This keeps validation and runtime behavior consistent with the grouped structure while avoiding combinatorial explosion.
+This keeps compile-time validation tractable while avoiding combinatorial explosion. Runtime behavior still follows the grouped structure exactly as written in the source code.
 
 ---
 
@@ -290,10 +290,10 @@ let users: Vec<User> = sql_forge!(
     (
         #filter = match ids.is_empty() {
             true  => "1 = 0",
-                false => (
-                    "id IN (:ids[])",
-                    ( :ids = ids ),
-                ),
+            false => (
+                "id IN (:ids[])",
+                ( :ids = ids ),
+            ),
         }
     )
 )
@@ -359,7 +359,7 @@ pub type AppDb = db_type!(); // or explicitly sqlx::MySql, sqlx::Postgres, etc.
 fn users_by_ids_query(ids: Vec<i32>) -> impl SqlForgeQuery<User, Db = AppDb> {
     sql_forge!(
         User,
-        "SELECT id, name FROM users WHERE id IN (:ids)",
+        "SELECT id, name FROM users WHERE id IN (:ids[])",
         ( :ids = ids )
     )
 }
@@ -451,7 +451,7 @@ In the section map, the special expression `{>key_name}` evaluates to `true` whe
             "",
         ),
         false => (
-            "items.id, items.name, items.price",
+            "items.id, items.name, items.price, categories.name AS category",
             "JOIN categories ON categories.id = items.category_id",
         ),
     },
@@ -466,20 +466,16 @@ use crate::models::ListAndAmount;
 
 pub type AppDb = sqlx::MySql;
 
-struct AmountResult {
-    total: i64,
-}
-
 fn build_item_query(
     category_id: i32,
     min_price: f64,
 ) -> ListAndAmount<
-    impl SqlForgeQuery<AmountResult, Db = AppDb>,
+    impl SqlForgeQuery<i64, Db = AppDb>,
     impl SqlForgeQuery<Item, Db = AppDb>,
 > {
     let group = sql_forge!(
         (
-            >amount = AmountResult,
+            >amount = i64,
             >list   = Item,
         ),
         r#"
@@ -497,7 +493,7 @@ fn build_item_query(
         (
             #(fields, joins, order_limit) = match {>amount} {
                 true => (
-                    "COUNT(*) AS total",
+                    "COUNT(*)",
                     "",
                     "",
                 ),
@@ -506,7 +502,8 @@ fn build_item_query(
                     items.id,
                     items.name,
                     items.price,
-                    items.stock
+                    items.stock,
+                    categories.name AS category
                     "#,
                     "JOIN categories ON categories.id = items.category_id",
                     (
@@ -539,7 +536,7 @@ The group struct exposes each key as a field. Pass the field to any SQLx executo
 let q = build_item_query(10, 5.0);
 
 // Execute the count query
-let total: AmountResult = q.amount.fetch_one(&pool).await?;
+let total: i64 = q.amount.fetch_one(&pool).await?;
 
 // Execute the list query
 let items: Vec<Item> = q.list.fetch_all(&pool).await?;
@@ -552,7 +549,7 @@ Keys can also use `scalar Type` for primitive/scalar output:
 ```rust
 sql_forge!(
     (
-        >amount = scalar i64,
+        >amount = scalar AmountWrapper,
         >list   = Item,
     ),
     "SELECT {#fields} FROM items WHERE ...",
@@ -560,7 +557,7 @@ sql_forge!(
 )
 ```
 
-When the key type is marked as `scalar`, the macro generates a `query_scalar!` validator instead of `query_as!`. This is equivalent to using a standalone `scalar i64` in a single-result query.
+When the key type is marked as `scalar`, the macro generates a `query_scalar!` validator instead of `query_as!`. This is equivalent to using a standalone `scalar AmountWrapper` in a single-result query.
 
 ### Return type pattern
 
@@ -685,6 +682,10 @@ A colon that appears **inside a SQL string literal** in the template (e.g. `"abc
 indistinguishable from a parameter placeholder at the text level and will cause a parse error
 or an unexpected parameter name.
 
+This also affects MySQL-specific alias text such as ```SELECT 1 AS `my_field:String` ```.
+The parser still sees `:String` as a parameter token, so that alias form is not supported
+inside a `sql_forge!` SQL template. You can add a whitespace to avoid that: ```SELECT 1 AS `my_field: String` ```.
+
 **Workaround:** pass the value as a bind parameter and use the `:parameter` placeholder in the
 template instead of embedding the literal directly.
 
@@ -728,6 +729,44 @@ let _query = sql_forge!(
     User,
     r#"SELECT id, name FROM users WHERE name = :name"#,
     ( :name = "abc{#def" )
+);
+```
+
+---
+
+### String literals containing `{(` or `)}`
+
+The macro also scans the SQL template text for `{( ... )}` batch sections.
+A `{(` sequence anywhere in the template starts batch parsing, even if it appeared only as part
+of a string literal. A `)}` sequence is only special while the parser is already inside a batch
+section, where it can prematurely terminate or unbalance the batch body.
+
+In practice, both markers should be avoided inside inline literals. Pass those values as bind
+parameters instead.
+
+| ❌ Inline literal (breaks)                          | ✅ Bind parameter (correct)                         |
+| --------------------------------------------------- | -------------------------------------------------- |
+| `WHERE name = "abc{(def"` in the SQL string        | `WHERE name = :name` with `( :name = "abc{(def" )` |
+| `VALUES {("abc)}")}` inside a batch SQL template   | `VALUES {(:name)}` with `..items` and `item.name`  |
+
+```rust
+// ❌ will fail, as the macro sees "{(" as the start of a batch section
+// sql_forge!(User, r#"SELECT ... WHERE name = "abc{(def""#);
+
+// ❌ inside a batch section, ")}" can terminate or unbalance batch parsing
+// sql_forge!(
+//     r#"INSERT INTO products (name) VALUES {("abc)}")}"#,
+//     ..items
+// );
+
+// ✅ bind the value instead of embedding either marker directly
+let items = vec![BatchName {
+    name: "abc)}".to_string(),
+}];
+
+let _query = sql_forge!(
+    r#"INSERT INTO products (name) VALUES {(:name)}"#,
+    ..items,
 );
 ```
 

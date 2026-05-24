@@ -1,0 +1,11 @@
+error: error returned from database: (code: 1) unrecognized token: "}"
+  --> tests/sqlite/tmp-ui/caveat_string_literal_batch_close.rs:10:13
+   |
+10 |       let _ = sql_forge!(
+   |  _____________^
+11 | |         r#"INSERT INTO products (name) VALUES {("abc)}")}"#,
+12 | |         ..items,
+13 | |     );
+   | |_____^
+   |
+   = note: this error originates in the macro `$crate::sqlx_macros::expand_query` which comes from the expansion of the macro `sql_forge` (in Nightly builds, run with -Z macro-backtrace for more info)

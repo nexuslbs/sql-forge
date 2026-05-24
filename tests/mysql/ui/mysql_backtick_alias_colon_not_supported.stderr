@@ -1,0 +1,5 @@
+error: sql_forge!: parameter :String has no mapping
+  --> tests/mysql/ui/mysql_backtick_alias_colon_not_supported.rs:11:9
+   |
+11 |         "SELECT 1 AS `my_field:String`",
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

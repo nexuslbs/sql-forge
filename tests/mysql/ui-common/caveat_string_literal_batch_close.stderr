@@ -1,0 +1,11 @@
+error: error returned from database: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'abc), ("abc)")}' at line 1
+  --> tests/mysql/tmp-ui/caveat_string_literal_batch_close.rs:10:13
+   |
+10 |       let _ = sql_forge!(
+   |  _____________^
+11 | |         r#"INSERT INTO products (name) VALUES {("abc)}")}"#,
+12 | |         ..items,
+13 | |     );
+   | |_____^
+   |
+   = note: this error originates in the macro `$crate::sqlx_macros::expand_query` which comes from the expansion of the macro `sql_forge` (in Nightly builds, run with -Z macro-backtrace for more info)

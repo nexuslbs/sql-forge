@@ -1,0 +1,5 @@
+error: sql_forge!: batch section {( ... )} without closing }
+ --> tests/sqlite/tmp-ui/caveat_string_literal_batch_open.rs:8:9
+  |
+8 |         r#"SELECT id, name FROM users WHERE name = "abc{(def""#,
+  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
