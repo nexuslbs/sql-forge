@@ -10,6 +10,7 @@ use std::fmt::Write;
 use std::fs;
 use std::path::Path;
 use syn::parse::{Parse, ParseStream};
+use syn::parse_quote;
 use syn::spanned::Spanned;
 use syn::{
     Expr, ExprBlock, ExprGroup, ExprLit, ExprParen, Ident, Lit, LitStr, Pat, Stmt, Token, Type,
@@ -1119,11 +1120,25 @@ fn collect_section_case_matrix(
                             continue;
                         }
                     }
-                    case_matrix.extend(collect_section_case_matrix(arm.value, width, active_key)?);
+                    let mut arm_cases = collect_section_case_matrix(arm.value, width, active_key)?;
+                    wrap_section_case_matrix_for_match_arm(
+                        &mut arm_cases,
+                        &expr,
+                        &arm.pat,
+                        arm.guard.as_ref(),
+                    );
+                    case_matrix.extend(arm_cases);
                 }
             } else {
                 for arm in arms {
-                    case_matrix.extend(collect_section_case_matrix(arm.value, width, active_key)?);
+                    let mut arm_cases = collect_section_case_matrix(arm.value, width, active_key)?;
+                    wrap_section_case_matrix_for_match_arm(
+                        &mut arm_cases,
+                        &expr,
+                        &arm.pat,
+                        arm.guard.as_ref(),
+                    );
+                    case_matrix.extend(arm_cases);
                 }
             }
 
@@ -1132,6 +1147,104 @@ fn collect_section_case_matrix(
             }
 
             Ok(case_matrix)
+        }
+    }
+}
+
+/// This function rewrites a section-local validator expression so it stays inside the same
+/// match arm scope that originally introduced it
+fn wrap_expr_for_match_arm(expr: Expr, match_expr: &Expr, pat: &Pat, guard: Option<&Expr>) -> Expr {
+    let match_expr = match_expr.clone();
+    let pat = pat.clone();
+    let pattern_binds_values = match &pat {
+        Pat::Ident(_) => true,
+        Pat::Or(pat_or) => pat_or
+            .cases
+            .iter()
+            .any(|case| matches!(case, Pat::Ident(_))),
+        Pat::Paren(pat_paren) => matches!(pat_paren.pat.as_ref(), Pat::Ident(_)),
+        Pat::Reference(pat_reference) => matches!(pat_reference.pat.as_ref(), Pat::Ident(_)),
+        Pat::Slice(pat_slice) => pat_slice
+            .elems
+            .iter()
+            .any(|elem| matches!(elem, Pat::Ident(_))),
+        Pat::Struct(pat_struct) => pat_struct
+            .fields
+            .iter()
+            .any(|field| matches!(*field.pat, Pat::Ident(_))),
+        Pat::Tuple(pat_tuple) => pat_tuple
+            .elems
+            .iter()
+            .any(|elem| matches!(elem, Pat::Ident(_))),
+        Pat::TupleStruct(pat_tuple_struct) => pat_tuple_struct
+            .elems
+            .iter()
+            .any(|elem| matches!(elem, Pat::Ident(_))),
+        Pat::Type(pat_type) => matches!(pat_type.pat.as_ref(), Pat::Ident(_)),
+        _ => false,
+    };
+
+    if pattern_binds_values {
+        if let Some(guard) = guard.cloned() {
+            parse_quote! {
+                match &(#match_expr) {
+                    #pat if #guard => { #expr },
+                    _ => unreachable!("sql_forge!: validator arm mismatch"),
+                }
+            }
+        } else {
+            parse_quote! {
+                match &(#match_expr) {
+                    #pat => { #expr },
+                    _ => unreachable!("sql_forge!: validator arm mismatch"),
+                }
+            }
+        }
+    } else if let Some(guard) = guard.cloned() {
+        parse_quote! {
+            match &(#match_expr) {
+                #pat if #guard => { &(#expr) },
+                _ => unreachable!("sql_forge!: validator arm mismatch"),
+            }
+        }
+    } else {
+        parse_quote! {
+            match &(#match_expr) {
+                #pat => { &(#expr) },
+                _ => unreachable!("sql_forge!: validator arm mismatch"),
+            }
+        }
+    }
+}
+
+fn wrap_params_source_for_match_arm(
+    params: &mut ParamsSource,
+    match_expr: &Expr,
+    pat: &Pat,
+    guard: Option<&Expr>,
+) {
+    match params {
+        ParamsSource::None => {}
+        ParamsSource::Map(entries) => {
+            for entry in entries {
+                entry.expr = wrap_expr_for_match_arm(entry.expr.clone(), match_expr, pat, guard);
+            }
+        }
+        ParamsSource::Struct(expr) => {
+            **expr = wrap_expr_for_match_arm((**expr).clone(), match_expr, pat, guard);
+        }
+    }
+}
+
+fn wrap_section_case_matrix_for_match_arm(
+    case_matrix: &mut [Vec<SectionFragment>],
+    match_expr: &Expr,
+    pat: &Pat,
+    guard: Option<&Expr>,
+) {
+    for row in case_matrix {
+        for fragment in row {
+            wrap_params_source_for_match_arm(&mut fragment.params, match_expr, pat, guard);
         }
     }
 }
@@ -1252,9 +1365,15 @@ fn build_param_bindings(
             for name in used_param_names {
                 let local_ident = format_ident!("__enhanced_{}_{}", prefix, name);
                 let field_ident = format_ident!("{}", name);
-                bindings.push(quote! {
-                    let #local_ident = #source_ident.#field_ident;
-                });
+                if for_validator {
+                    bindings.push(quote! {
+                        let #local_ident = &#source_ident.#field_ident;
+                    });
+                } else {
+                    bindings.push(quote! {
+                        let #local_ident = #source_ident.#field_ident;
+                    });
+                }
                 declared_params.insert(name.to_string(), local_ident);
             }
         }
@@ -1279,14 +1398,16 @@ struct ValidatorRenderContext<'a> {
 fn render_validator_args(
     sql: &str,
     param_offset: &mut usize,
+    arg_index: &mut usize,
     context: &ValidatorRenderContext<'_>,
-) -> Result<(String, Vec<TokenStream2>), TokenStream> {
+) -> Result<(String, Vec<TokenStream2>, Vec<TokenStream2>), TokenStream> {
     let (rendered_sql, occurrences) = render_validator_text(
         sql,
         context.use_dollar_params,
         param_offset,
         context.list_count,
     );
+    let mut setup = Vec::<TokenStream2>::new();
     let mut args = Vec::<TokenStream2>::new();
 
     for (name, is_list) in occurrences {
@@ -1310,14 +1431,29 @@ fn render_validator_args(
 
         if is_list {
             for _ in 0..context.list_count {
-                args.push(quote! { *(#local_ident).as_slice().first().unwrap_or(&0i64) });
+                let value_ident = format_ident!("__enhanced_validator_arg_{}", *arg_index);
+                *arg_index += 1;
+                setup.push(quote! {
+                    let #value_ident = sql_forge::sql_forge_validator_value(
+                        (#local_ident)
+                            .as_slice()
+                            .first()
+                            .expect("sql_forge!: list parameters used in validation must have at least one representative element")
+                    );
+                });
+                args.push(quote! { #value_ident });
             }
         } else {
-            args.push(quote! { #local_ident });
+            let value_ident = format_ident!("__enhanced_validator_arg_{}", *arg_index);
+            *arg_index += 1;
+            setup.push(quote! {
+                let #value_ident = sql_forge::sql_forge_validator_value(#local_ident);
+            });
+            args.push(quote! { #value_ident });
         }
     }
 
-    Ok((rendered_sql, args))
+    Ok((rendered_sql, setup, args))
 }
 
 // =============================================================================
@@ -1979,6 +2115,7 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
             let mut case_setup = Vec::<TokenStream2>::new();
             let mut case_args = Vec::<TokenStream2>::new();
             let mut param_offset = 0usize;
+            let mut arg_index = 0usize;
             let empty_params = HashMap::<String, syn::Ident>::new();
             let root_validator_context = ValidatorRenderContext {
                 local_params: &empty_params,
@@ -1992,15 +2129,17 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
             for segment in &segments {
                 match segment {
                     Segment::Text(text) => {
-                        let (chunk_sql, chunk_args) = match render_validator_args(
+                        let (chunk_sql, chunk_setup, chunk_args) = match render_validator_args(
                             text,
                             &mut param_offset,
+                            &mut arg_index,
                             &root_validator_context,
                         ) {
                             Ok(value) => value,
                             Err(err) => return err,
                         };
                         sql_case.push_str(&chunk_sql);
+                        case_setup.extend(chunk_setup);
                         case_args.extend(chunk_args);
                     }
                     Segment::Section { name } => {
@@ -2033,9 +2172,10 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
                             sql_span: fragment.span,
                             list_count,
                         };
-                        let (chunk_sql, chunk_args) = match render_validator_args(
+                        let (chunk_sql, chunk_setup, chunk_args) = match render_validator_args(
                             &fragment.sql,
                             &mut param_offset,
+                            &mut arg_index,
                             &section_validator_context,
                         ) {
                             Ok(value) => value,
@@ -2043,6 +2183,7 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
                         };
                         sql_case.push_str(&chunk_sql);
                         case_setup.extend(bindings);
+                        case_setup.extend(chunk_setup);
                         case_args.extend(chunk_args);
                     }
                     Segment::Batch { parts } => {

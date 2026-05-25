@@ -7,6 +7,16 @@ pub type DbPool = sqlx::Pool<AppDb>;
 
 type Price = i64;
 
+#[derive(Debug, PartialEq, Eq, sqlx::Type)]
+#[sqlx(transparent)]
+struct UserId(pub i64);
+
+impl sql_forge::SqlForgeValidatorValue<i64> for UserId {
+    fn sql_forge_validator_value(&self) -> i64 {
+        self.0
+    }
+}
+
 fn price_new(v: i64, scale: u32) -> Price {
     v * 10i64.pow(2 - scale)
 }
@@ -295,6 +305,38 @@ async fn list_parameter_in_clause() {
     assert_eq!(users[0].id, 1);
     assert_eq!(users[1].id, 3);
     assert_eq!(users[2].id, 5);
+}
+
+#[tokio::test]
+async fn list_parameter_in_main_sql_with_match_filter() {
+    let pool = pool().await;
+
+    let ids = vec![UserId(1), UserId(3), UserId(4), UserId(5)];
+    let min_id = Some(3i64);
+    let expected_ids = [UserId(3), UserId(4), UserId(5)];
+
+    let users: Vec<User> = sql_forge!(
+        User,
+        "SELECT id, name FROM users WHERE id IN (:ids[]) {#filter} ORDER BY id",
+        ( :ids = ids ),
+        (
+            #filter = match min_id {
+                Some(min_id) => (
+                    " AND id >= :min_id",
+                    ( :min_id = min_id ),
+                ),
+                None => "",
+            },
+        )
+    )
+    .fetch_all(&pool)
+    .await
+    .expect("list param with match filter query failed");
+
+    assert_eq!(users.len(), expected_ids.len());
+    for (user, expected_id) in users.iter().zip(expected_ids) {
+        assert_eq!(user.id, expected_id.0);
+    }
 }
 
 #[tokio::test]
