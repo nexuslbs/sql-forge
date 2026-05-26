@@ -1,4 +1,4 @@
-error: error returned from database: missing FROM-clause entry for table "o"
+error: error returned from database: missing FROM-clause entry for table "o" at line 3757
   --> tests/postgres/tmp-ui/caveat_conservative_rejection.rs:13:13
    |
 13 |       let _ = sql_forge!(

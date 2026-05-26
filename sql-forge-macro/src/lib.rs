@@ -2594,8 +2594,8 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
         };
         let trait_impl = if model_opt.is_none() {
             quote! {
-                impl<'args> sql_forge::SqlForgeQueryExecute
-                    for #query_ident<'args>
+                impl sql_forge::SqlForgeQueryExecute
+                    for #query_ident
                 {
                     type Db = #db;
 
@@ -2611,8 +2611,8 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
             }
         } else {
             quote! {
-                impl<'args> sql_forge::SqlForgeQuery<#final_type>
-                    for #query_ident<'args>
+                impl sql_forge::SqlForgeQuery<#final_type>
+                    for #query_ident
                 {
                     type Db = #db;
 
@@ -2656,11 +2656,11 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
         };
 
         generated_query_defs.push(quote! {
-            struct #query_ident<'args> {
-                inner: sqlx::QueryBuilder<'args, #db>,
+            struct #query_ident {
+                inner: sqlx::QueryBuilder<#db>,
             }
 
-            impl<'args> #query_ident<'args> {
+            impl #query_ident {
                 #exec_methods
             }
 
@@ -2678,11 +2678,11 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
         if let Some(key) = result_key {
             let method_ident = format_ident!("{}", key);
             group_field_defs.push(quote! {
-                #method_ident: #query_ident<'args>
+                #method_ident: #query_ident
             });
-            group_field_tys.push(quote! { #query_ident<'args> });
+            group_field_tys.push(quote! { #query_ident });
             group_method_defs.push(quote! {
-                pub fn #method_ident(self) -> #query_ident<'args> {
+                pub fn #method_ident(self) -> #query_ident {
                     self.#method_ident
                 }
             });
@@ -2691,8 +2691,8 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
             group_trait_impls.push(quote! {
                 struct #key_ty_ident;
 
-                impl<'args> sql_forge::SqlForgeQueryGroupGet<#key_ty_ident, #final_type> for __SqlForgeQueryGroup<'args> {
-                    type Query = #query_ident<'args>;
+                impl sql_forge::SqlForgeQueryGroupGet<#key_ty_ident, #final_type> for __SqlForgeQueryGroup {
+                    type Query = #query_ident;
 
                     fn get(self, _: #key_ty_ident) -> Self::Query {
                         self.#method_ident
@@ -2741,11 +2741,11 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
             #( #generated_query_defs )*
             #( #generated_query_values )*
 
-            struct __SqlForgeQueryGroup<'args> {
+            struct __SqlForgeQueryGroup {
                 #( #group_field_defs, )*
             }
 
-            impl<'args> __SqlForgeQueryGroup<'args> {
+            impl __SqlForgeQueryGroup {
                 #( #group_method_defs )*
 
                 pub fn into_parts(self) -> ( #( #group_field_tys ),* ) {
@@ -2753,7 +2753,7 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
                 }
             }
 
-            impl<'args> sql_forge::SqlForgeQueryGroup for __SqlForgeQueryGroup<'args> {
+            impl sql_forge::SqlForgeQueryGroup for __SqlForgeQueryGroup {
                 type Db = #db;
             }
 

@@ -9,7 +9,14 @@
         "type_info": {
           "type": "LongLong",
           "flags": "NOT_NULL | PRIMARY_KEY | AUTO_INCREMENT",
+          "collation": 63,
           "max_size": 20
+        },
+        "origin": {
+          "Table": {
+            "table": "sql_forge_test.users",
+            "name": "id"
+          }
         }
       },
       {
@@ -18,8 +25,10 @@
         "type_info": {
           "type": "VarString",
           "flags": "NOT_NULL",
+          "collation": 255,
           "max_size": 1020
-        }
+        },
+        "origin": "Expression"
       },
       {
         "ordinal": 2,
@@ -27,8 +36,10 @@
         "type_info": {
           "type": "VarString",
           "flags": "NOT_NULL",
+          "collation": 255,
           "max_size": 28
-        }
+        },
+        "origin": "Expression"
       }
     ],
     "parameters": {

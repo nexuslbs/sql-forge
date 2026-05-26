@@ -10,13 +10,12 @@ error[E0277]: the trait bound `i64: From<std::string::String>` is not satisfied
    |
    = help: the following other types implement trait `From<T>`:
              `i64` implements `From<bool>`
+             `i64` implements `From<crypto_bigint::int::Int<1>>`
              `i64` implements `From<i16>`
              `i64` implements `From<i32>`
              `i64` implements `From<i8>`
              `i64` implements `From<u16>`
              `i64` implements `From<u32>`
              `i64` implements `From<u8>`
-             `i64` implements `From<zerocopy::byteorder::I16<O>>`
-           and $N others
    = note: required for `std::string::String` to implement `Into<i64>`
    = note: this error originates in the macro `$crate::sqlx_macros::expand_query` which comes from the expansion of the macro `sql_forge` (in Nightly builds, run with -Z macro-backtrace for more info)

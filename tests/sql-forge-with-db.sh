@@ -12,7 +12,7 @@ cargo expand --test tests > "$ENV_DIR/tests_expanded.rs"
 cargo check --tests
 cargo clippy --tests -- -D warnings
 cargo sqlx prepare -- --tests
-cargo test
+cargo test 2>/dev/null
 bash /app/tests/checksum.sh > "$ENV_DIR/checksums.txt"
 
 rm -rf "$ENV_DIR/ui-common"

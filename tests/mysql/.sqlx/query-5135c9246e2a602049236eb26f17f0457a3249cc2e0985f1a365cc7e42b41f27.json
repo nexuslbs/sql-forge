@@ -9,7 +9,14 @@
         "type_info": {
           "type": "LongLong",
           "flags": "NOT_NULL | PRIMARY_KEY | AUTO_INCREMENT",
+          "collation": 63,
           "max_size": 20
+        },
+        "origin": {
+          "Table": {
+            "table": "sql_forge_test.users",
+            "name": "id"
+          }
         }
       }
     ],

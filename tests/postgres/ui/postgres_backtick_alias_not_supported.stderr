@@ -1,4 +1,4 @@
-error: error returned from database: syntax error at or near "`"
+error: error returned from database: syntax error at or near "`" at line 1236
   --> tests/postgres/ui/postgres_backtick_alias_not_supported.rs:9:13
    |
  9 |       let _ = sql_forge!(

@@ -1,3 +1,5 @@
+#![forbid(unsafe_code)]
+
 mod traits;
 
 pub use sql_forge_macro::db_type;

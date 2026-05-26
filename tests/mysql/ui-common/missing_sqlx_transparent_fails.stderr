@@ -16,13 +16,13 @@ help: the trait `sqlx::Encode<'_, MySql>` is not implemented for `RawId`
    | ^^^^^^^^^^^^^^^^
    = help: the following other types implement trait `sqlx::Encode<'q, DB>`:
              `&'a str` implements `sqlx::Encode<'a, sqlx::Any>`
-             `&'q [u8]` implements `sqlx::Encode<'q, Sqlite>`
+             `&'q JsonRawValue` implements `sqlx::Encode<'q, DB>`
              `&'q [u8]` implements `sqlx::Encode<'q, sqlx::Any>`
-             `&'q str` implements `sqlx::Encode<'q, Sqlite>`
              `&T` implements `sqlx::Encode<'q, DB>`
              `&[T]` implements `sqlx::Encode<'q, Postgres>`
              `&[u8]` implements `sqlx::Encode<'_, MySql>`
              `&[u8]` implements `sqlx::Encode<'_, Postgres>`
+             `&[u8]` implements `sqlx::Encode<'_, Sqlite>`
            and $N others
    = note: required for `&RawId` to implement `sqlx::Encode<'_, MySql>`
    = note: this error originates in the macro `$crate::sqlx_macros::expand_query` which comes from the expansion of the macro `sql_forge` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -59,11 +59,11 @@ help: the trait `sqlx::Type<MySql>` is not implemented for `RawId`
 note: required by a bound in `sqlx::Arguments::add`
   --> $CARGO/sqlx-core-$VERSION/src/arguments.rs
    |
-   |     fn add<T>(&mut self, value: T) -> Result<(), BoxDynError>
+   |     fn add<'t, T>(&mut self, value: T) -> Result<(), BoxDynError>
    |        --- required by a bound in this associated function
    |     where
-   |         T: 'q + Encode<'q, Self::Database> + Type<Self::Database>;
-   |                                              ^^^^^^^^^^^^^^^^^^^^ required by this bound in `Arguments::add`
+   |         T: Encode<'t, Self::Database> + Type<Self::Database>;
+   |                                         ^^^^^^^^^^^^^^^^^^^^ required by this bound in `Arguments::add`
    = note: this error originates in the macro `$crate::sqlx_macros::expand_query` which comes from the expansion of the macro `sql_forge` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `RawId: sqlx::Encode<'_, MySql>` is not satisfied
@@ -84,22 +84,22 @@ help: the trait `sqlx::Encode<'_, MySql>` is not implemented for `RawId`
    | ^^^^^^^^^^^^^^^^
    = help: the following other types implement trait `sqlx::Encode<'q, DB>`:
              `&'a str` implements `sqlx::Encode<'a, sqlx::Any>`
-             `&'q [u8]` implements `sqlx::Encode<'q, Sqlite>`
+             `&'q JsonRawValue` implements `sqlx::Encode<'q, DB>`
              `&'q [u8]` implements `sqlx::Encode<'q, sqlx::Any>`
-             `&'q str` implements `sqlx::Encode<'q, Sqlite>`
              `&T` implements `sqlx::Encode<'q, DB>`
              `&[T]` implements `sqlx::Encode<'q, Postgres>`
              `&[u8]` implements `sqlx::Encode<'_, MySql>`
              `&[u8]` implements `sqlx::Encode<'_, Postgres>`
+             `&[u8]` implements `sqlx::Encode<'_, Sqlite>`
            and $N others
-note: required by a bound in `Separated::<'qb, 'args, DB, Sep>::push_bind`
+note: required by a bound in `Separated::<'_, DB, Sep>::push_bind`
   --> $CARGO/sqlx-core-$VERSION/src/query_builder.rs
    |
-   |     pub fn push_bind<T>(&mut self, value: T) -> &mut Self
+   |     pub fn push_bind<'t, T>(&mut self, value: T) -> &mut Self
    |            --------- required by a bound in this associated function
    |     where
-   |         T: 'args + Encode<'args, DB> + Type<DB>,
-   |                    ^^^^^^^^^^^^^^^^^ required by this bound in `Separated::<'qb, 'args, DB, Sep>::push_bind`
+   |         T: Encode<'t, DB> + Type<DB>,
+   |            ^^^^^^^^^^^^^^ required by this bound in `Separated::<'_, DB, Sep>::push_bind`
    = note: this error originates in the macro `sql_forge` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `RawId: sqlx::Type<MySql>` is not satisfied
@@ -128,12 +128,12 @@ help: the trait `sqlx::Type<MySql>` is not implemented for `RawId`
              `(T1, T2, T3, T4, T5, T6)` implements `sqlx::Type<Postgres>`
              `(T1, T2, T3, T4, T5, T6, T7)` implements `sqlx::Type<Postgres>`
            and $N others
-note: required by a bound in `Separated::<'qb, 'args, DB, Sep>::push_bind`
+note: required by a bound in `Separated::<'_, DB, Sep>::push_bind`
   --> $CARGO/sqlx-core-$VERSION/src/query_builder.rs
    |
-   |     pub fn push_bind<T>(&mut self, value: T) -> &mut Self
+   |     pub fn push_bind<'t, T>(&mut self, value: T) -> &mut Self
    |            --------- required by a bound in this associated function
    |     where
-   |         T: 'args + Encode<'args, DB> + Type<DB>,
-   |                                        ^^^^^^^^ required by this bound in `Separated::<'qb, 'args, DB, Sep>::push_bind`
+   |         T: Encode<'t, DB> + Type<DB>,
+   |                             ^^^^^^^^ required by this bound in `Separated::<'_, DB, Sep>::push_bind`
    = note: this error originates in the macro `sql_forge` (in Nightly builds, run with -Z macro-backtrace for more info)

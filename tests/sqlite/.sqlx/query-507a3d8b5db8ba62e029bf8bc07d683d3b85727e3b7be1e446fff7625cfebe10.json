@@ -6,12 +6,24 @@
       {
         "name": "name",
         "ordinal": 0,
-        "type_info": "Text"
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "products",
+            "name": "name"
+          }
+        }
       },
       {
         "name": "price",
         "ordinal": 1,
-        "type_info": "Integer"
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "products",
+            "name": "price"
+          }
+        }
       }
     ],
     "parameters": {

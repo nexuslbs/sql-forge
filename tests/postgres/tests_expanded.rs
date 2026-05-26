@@ -17,7 +17,7 @@ where
 {
     fn encode_by_ref(
         &self,
-        buf: &mut <DB as ::sqlx::database::Database>::ArgumentBuffer<'q>,
+        buf: &mut <DB as ::sqlx::database::Database>::ArgumentBuffer,
     ) -> ::std::result::Result<::sqlx::encode::IsNull, ::sqlx::error::BoxDynError> {
         <i64 as ::sqlx::encode::Encode<'q, DB>>::encode_by_ref(&self.0, buf)
     }
@@ -41,7 +41,7 @@ where
             dyn ::std::error::Error + 'static + ::std::marker::Send + ::std::marker::Sync,
         >,
     > {
-        <i64 as ::sqlx::decode::Decode<'r, DB>>::decode(value).map(Self)
+        <i64 as ::sqlx::decode::Decode<'r, DB>>::decode(value).map(|val| Self { 0: val })
     }
 }
 #[automatically_derived]
@@ -471,9 +471,7 @@ fn basic_query_with_inline_params() {
                                             "internal error: entered unreachable code",
                                         );
                                     }
-                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                        '_,
-                                    >::default();
+                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
                                             3usize,
@@ -529,10 +527,10 @@ fn basic_query_with_inline_params() {
                     }
                 }
             };
-            struct __SqlForgeQuery_single<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_single<'args> {
+            impl __SqlForgeQuery_single {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -570,8 +568,7 @@ fn basic_query_with_inline_params() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQuery<User>
-            for __SqlForgeQuery_single<'args> {
+            impl sql_forge::SqlForgeQuery<User> for __SqlForgeQuery_single {
                 type Db = sqlx::Postgres;
                 fn fetch_all<'e, E>(
                     self,
@@ -779,9 +776,7 @@ fn scalar_output() {
                                         "internal error: entered unreachable code",
                                     );
                                 }
-                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                    '_,
-                                >::default();
+                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                 query_args
                                     .reserve(
                                         1usize,
@@ -807,10 +802,10 @@ fn scalar_output() {
                     }
                 }
             };
-            struct __SqlForgeQuery_single<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_single<'args> {
+            impl __SqlForgeQuery_single {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -848,7 +843,7 @@ fn scalar_output() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQuery<i64> for __SqlForgeQuery_single<'args> {
+            impl sql_forge::SqlForgeQuery<i64> for __SqlForgeQuery_single {
                 type Db = sqlx::Postgres;
                 fn fetch_all<'e, E>(
                     self,
@@ -1041,9 +1036,7 @@ fn struct_source_params() {
                                             "internal error: entered unreachable code",
                                         );
                                     }
-                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                        '_,
-                                    >::default();
+                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
                                             2usize,
@@ -1093,10 +1086,10 @@ fn struct_source_params() {
                     }
                 }
             };
-            struct __SqlForgeQuery_single<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_single<'args> {
+            impl __SqlForgeQuery_single {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -1134,8 +1127,7 @@ fn struct_source_params() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQuery<User>
-            for __SqlForgeQuery_single<'args> {
+            impl sql_forge::SqlForgeQuery<User> for __SqlForgeQuery_single {
                 type Db = sqlx::Postgres;
                 fn fetch_all<'e, E>(
                     self,
@@ -1306,9 +1298,7 @@ fn section_dynamic_where() {
                                             "internal error: entered unreachable code",
                                         );
                                     }
-                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                        '_,
-                                    >::default();
+                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
                                             1usize,
@@ -1367,10 +1357,10 @@ fn section_dynamic_where() {
                     }
                 }
             };
-            struct __SqlForgeQuery_single<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_single<'args> {
+            impl __SqlForgeQuery_single {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -1408,8 +1398,7 @@ fn section_dynamic_where() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQuery<Product>
-            for __SqlForgeQuery_single<'args> {
+            impl sql_forge::SqlForgeQuery<Product> for __SqlForgeQuery_single {
                 type Db = sqlx::Postgres;
                 fn fetch_all<'e, E>(
                     self,
@@ -1589,9 +1578,7 @@ fn section_with_local_params() {
                                             "internal error: entered unreachable code",
                                         );
                                     }
-                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                        '_,
-                                    >::default();
+                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
                                             1usize,
@@ -1632,10 +1619,10 @@ fn section_with_local_params() {
                     }
                 }
             };
-            struct __SqlForgeQuery_single<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_single<'args> {
+            impl __SqlForgeQuery_single {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -1673,8 +1660,7 @@ fn section_with_local_params() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQuery<User>
-            for __SqlForgeQuery_single<'args> {
+            impl sql_forge::SqlForgeQuery<User> for __SqlForgeQuery_single {
                 type Db = sqlx::Postgres;
                 fn fetch_all<'e, E>(
                     self,
@@ -1844,9 +1830,7 @@ fn grouped_sections() {
                                         _,
                                         ::sqlx::error::BoxDynError,
                                     >::Ok(
-                                        <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                            '_,
-                                        >::default(),
+                                        <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default(),
                                     );
                                     ::sqlx::__query_with_result::<
                                         sqlx::postgres::Postgres,
@@ -1884,9 +1868,7 @@ fn grouped_sections() {
                                         _,
                                         ::sqlx::error::BoxDynError,
                                     >::Ok(
-                                        <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                            '_,
-                                        >::default(),
+                                        <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default(),
                                     );
                                     ::sqlx::__query_with_result::<
                                         sqlx::postgres::Postgres,
@@ -1916,10 +1898,10 @@ fn grouped_sections() {
                     }
                 }
             };
-            struct __SqlForgeQuery_single<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_single<'args> {
+            impl __SqlForgeQuery_single {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -1957,7 +1939,7 @@ fn grouped_sections() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQuery<Row> for __SqlForgeQuery_single<'args> {
+            impl sql_forge::SqlForgeQuery<Row> for __SqlForgeQuery_single {
                 type Db = sqlx::Postgres;
                 fn fetch_all<'e, E>(
                     self,
@@ -2168,9 +2150,7 @@ fn grouped_sections_with_nested_matches() {
                                         _,
                                         ::sqlx::error::BoxDynError,
                                     >::Ok(
-                                        <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                            '_,
-                                        >::default(),
+                                        <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default(),
                                     );
                                     ::sqlx::__query_with_result::<
                                         sqlx::postgres::Postgres,
@@ -2219,9 +2199,7 @@ fn grouped_sections_with_nested_matches() {
                                         _,
                                         ::sqlx::error::BoxDynError,
                                     >::Ok(
-                                        <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                            '_,
-                                        >::default(),
+                                        <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default(),
                                     );
                                     ::sqlx::__query_with_result::<
                                         sqlx::postgres::Postgres,
@@ -2270,9 +2248,7 @@ fn grouped_sections_with_nested_matches() {
                                         _,
                                         ::sqlx::error::BoxDynError,
                                     >::Ok(
-                                        <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                            '_,
-                                        >::default(),
+                                        <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default(),
                                     );
                                     ::sqlx::__query_with_result::<
                                         sqlx::postgres::Postgres,
@@ -2313,10 +2289,10 @@ fn grouped_sections_with_nested_matches() {
                     }
                 }
             };
-            struct __SqlForgeQuery_single<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_single<'args> {
+            impl __SqlForgeQuery_single {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -2354,7 +2330,7 @@ fn grouped_sections_with_nested_matches() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQuery<Row> for __SqlForgeQuery_single<'args> {
+            impl sql_forge::SqlForgeQuery<Row> for __SqlForgeQuery_single {
                 type Db = sqlx::Postgres;
                 fn fetch_all<'e, E>(
                     self,
@@ -2665,9 +2641,7 @@ fn list_parameter_in_clause() {
                                             "internal error: entered unreachable code",
                                         );
                                     }
-                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                        '_,
-                                    >::default();
+                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
                                             3usize,
@@ -2723,10 +2697,10 @@ fn list_parameter_in_clause() {
                     }
                 }
             };
-            struct __SqlForgeQuery_single<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_single<'args> {
+            impl __SqlForgeQuery_single {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -2764,8 +2738,7 @@ fn list_parameter_in_clause() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQuery<User>
-            for __SqlForgeQuery_single<'args> {
+            impl sql_forge::SqlForgeQuery<User> for __SqlForgeQuery_single {
                 type Db = sqlx::Postgres;
                 fn fetch_all<'e, E>(
                     self,
@@ -3084,9 +3057,7 @@ fn list_parameter_in_main_sql_with_match_filter() {
                                             "internal error: entered unreachable code",
                                         );
                                     }
-                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                        '_,
-                                    >::default();
+                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
                                             4usize,
@@ -3239,9 +3210,7 @@ fn list_parameter_in_main_sql_with_match_filter() {
                                             "internal error: entered unreachable code",
                                         );
                                     }
-                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                        '_,
-                                    >::default();
+                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
                                             3usize,
@@ -3297,10 +3266,10 @@ fn list_parameter_in_main_sql_with_match_filter() {
                     }
                 }
             };
-            struct __SqlForgeQuery_single<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_single<'args> {
+            impl __SqlForgeQuery_single {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -3338,8 +3307,7 @@ fn list_parameter_in_main_sql_with_match_filter() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQuery<User>
-            for __SqlForgeQuery_single<'args> {
+            impl sql_forge::SqlForgeQuery<User> for __SqlForgeQuery_single {
                 type Db = sqlx::Postgres;
                 fn fetch_all<'e, E>(
                     self,
@@ -3517,9 +3485,7 @@ fn list_parameter_with_empty_guard() {
                                         _,
                                         ::sqlx::error::BoxDynError,
                                     >::Ok(
-                                        <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                            '_,
-                                        >::default(),
+                                        <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default(),
                                     );
                                     ::sqlx::__query_with_result::<
                                         sqlx::postgres::Postgres,
@@ -3650,9 +3616,7 @@ fn list_parameter_with_empty_guard() {
                                             "internal error: entered unreachable code",
                                         );
                                     }
-                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                        '_,
-                                    >::default();
+                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
                                             3usize,
@@ -3708,10 +3672,10 @@ fn list_parameter_with_empty_guard() {
                     }
                 }
             };
-            struct __SqlForgeQuery_single<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_single<'args> {
+            impl __SqlForgeQuery_single {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -3749,8 +3713,7 @@ fn list_parameter_with_empty_guard() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQuery<User>
-            for __SqlForgeQuery_single<'args> {
+            impl sql_forge::SqlForgeQuery<User> for __SqlForgeQuery_single {
                 type Db = sqlx::Postgres;
                 fn fetch_all<'e, E>(
                     self,
@@ -3958,9 +3921,7 @@ fn multiple_results_group() {
                                             "internal error: entered unreachable code",
                                         );
                                     }
-                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                        '_,
-                                    >::default();
+                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
                                             2usize,
@@ -4132,9 +4093,7 @@ fn multiple_results_group() {
                                             "internal error: entered unreachable code",
                                         );
                                     }
-                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                        '_,
-                                    >::default();
+                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
                                             4usize,
@@ -4206,10 +4165,10 @@ fn multiple_results_group() {
                     }
                 }
             };
-            struct __SqlForgeQuery_amount<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_amount {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_amount<'args> {
+            impl __SqlForgeQuery_amount {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -4250,8 +4209,7 @@ fn multiple_results_group() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQuery<AmountResult>
-            for __SqlForgeQuery_amount<'args> {
+            impl sql_forge::SqlForgeQuery<AmountResult> for __SqlForgeQuery_amount {
                 type Db = sqlx::Postgres;
                 fn fetch_all<'e, E>(
                     self,
@@ -4309,10 +4267,10 @@ fn multiple_results_group() {
                     __SqlForgeQuery_amount::execute(self, executor)
                 }
             }
-            struct __SqlForgeQuery_list<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_list {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_list<'args> {
+            impl __SqlForgeQuery_list {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -4350,7 +4308,7 @@ fn multiple_results_group() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQuery<Item> for __SqlForgeQuery_list<'args> {
+            impl sql_forge::SqlForgeQuery<Item> for __SqlForgeQuery_list {
                 type Db = sqlx::Postgres;
                 fn fetch_all<'e, E>(
                     self,
@@ -4500,44 +4458,40 @@ fn multiple_results_group() {
             let __sql_forge_value_list = __SqlForgeQuery_list {
                 inner: __builder,
             };
-            struct __SqlForgeQueryGroup<'args> {
-                amount: __SqlForgeQuery_amount<'args>,
-                list: __SqlForgeQuery_list<'args>,
+            struct __SqlForgeQueryGroup {
+                amount: __SqlForgeQuery_amount,
+                list: __SqlForgeQuery_list,
             }
-            impl<'args> __SqlForgeQueryGroup<'args> {
-                pub fn amount(self) -> __SqlForgeQuery_amount<'args> {
+            impl __SqlForgeQueryGroup {
+                pub fn amount(self) -> __SqlForgeQuery_amount {
                     self.amount
                 }
-                pub fn list(self) -> __SqlForgeQuery_list<'args> {
+                pub fn list(self) -> __SqlForgeQuery_list {
                     self.list
                 }
                 pub fn into_parts(
                     self,
-                ) -> (__SqlForgeQuery_amount<'args>, __SqlForgeQuery_list<'args>) {
+                ) -> (__SqlForgeQuery_amount, __SqlForgeQuery_list) {
                     (self.amount, self.list)
                 }
             }
-            impl<'args> sql_forge::SqlForgeQueryGroup for __SqlForgeQueryGroup<'args> {
+            impl sql_forge::SqlForgeQueryGroup for __SqlForgeQueryGroup {
                 type Db = sqlx::Postgres;
             }
             struct __SqlForgeQueryGroupKey_amount;
-            impl<
-                'args,
-            > sql_forge::SqlForgeQueryGroupGet<
+            impl sql_forge::SqlForgeQueryGroupGet<
                 __SqlForgeQueryGroupKey_amount,
                 AmountResult,
-            > for __SqlForgeQueryGroup<'args> {
-                type Query = __SqlForgeQuery_amount<'args>;
+            > for __SqlForgeQueryGroup {
+                type Query = __SqlForgeQuery_amount;
                 fn get(self, _: __SqlForgeQueryGroupKey_amount) -> Self::Query {
                     self.amount
                 }
             }
             struct __SqlForgeQueryGroupKey_list;
-            impl<
-                'args,
-            > sql_forge::SqlForgeQueryGroupGet<__SqlForgeQueryGroupKey_list, Item>
-            for __SqlForgeQueryGroup<'args> {
-                type Query = __SqlForgeQuery_list<'args>;
+            impl sql_forge::SqlForgeQueryGroupGet<__SqlForgeQueryGroupKey_list, Item>
+            for __SqlForgeQueryGroup {
+                type Query = __SqlForgeQuery_list;
                 fn get(self, _: __SqlForgeQueryGroupKey_list) -> Self::Query {
                     self.list
                 }
@@ -4677,9 +4631,7 @@ fn multiple_results_scalar_key() {
                                         "internal error: entered unreachable code",
                                     );
                                 }
-                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                    '_,
-                                >::default();
+                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                 query_args
                                     .reserve(
                                         1usize,
@@ -4739,9 +4691,7 @@ fn multiple_results_scalar_key() {
                                         "internal error: entered unreachable code",
                                     );
                                 }
-                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                    '_,
-                                >::default();
+                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                 query_args
                                     .reserve(
                                         1usize,
@@ -4770,10 +4720,10 @@ fn multiple_results_scalar_key() {
                     }
                 }
             };
-            struct __SqlForgeQuery_amount<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_amount {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_amount<'args> {
+            impl __SqlForgeQuery_amount {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -4811,7 +4761,7 @@ fn multiple_results_scalar_key() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQuery<i64> for __SqlForgeQuery_amount<'args> {
+            impl sql_forge::SqlForgeQuery<i64> for __SqlForgeQuery_amount {
                 type Db = sqlx::Postgres;
                 fn fetch_all<'e, E>(
                     self,
@@ -4869,10 +4819,10 @@ fn multiple_results_scalar_key() {
                     __SqlForgeQuery_amount::execute(self, executor)
                 }
             }
-            struct __SqlForgeQuery_first_name<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_first_name {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_first_name<'args> {
+            impl __SqlForgeQuery_first_name {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -4913,8 +4863,7 @@ fn multiple_results_scalar_key() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQuery<String>
-            for __SqlForgeQuery_first_name<'args> {
+            impl sql_forge::SqlForgeQuery<String> for __SqlForgeQuery_first_name {
                 type Db = sqlx::Postgres;
                 fn fetch_all<'e, E>(
                     self,
@@ -5014,44 +4963,40 @@ fn multiple_results_scalar_key() {
             let __sql_forge_value_first_name = __SqlForgeQuery_first_name {
                 inner: __builder,
             };
-            struct __SqlForgeQueryGroup<'args> {
-                amount: __SqlForgeQuery_amount<'args>,
-                first_name: __SqlForgeQuery_first_name<'args>,
+            struct __SqlForgeQueryGroup {
+                amount: __SqlForgeQuery_amount,
+                first_name: __SqlForgeQuery_first_name,
             }
-            impl<'args> __SqlForgeQueryGroup<'args> {
-                pub fn amount(self) -> __SqlForgeQuery_amount<'args> {
+            impl __SqlForgeQueryGroup {
+                pub fn amount(self) -> __SqlForgeQuery_amount {
                     self.amount
                 }
-                pub fn first_name(self) -> __SqlForgeQuery_first_name<'args> {
+                pub fn first_name(self) -> __SqlForgeQuery_first_name {
                     self.first_name
                 }
                 pub fn into_parts(
                     self,
-                ) -> (__SqlForgeQuery_amount<'args>, __SqlForgeQuery_first_name<'args>) {
+                ) -> (__SqlForgeQuery_amount, __SqlForgeQuery_first_name) {
                     (self.amount, self.first_name)
                 }
             }
-            impl<'args> sql_forge::SqlForgeQueryGroup for __SqlForgeQueryGroup<'args> {
+            impl sql_forge::SqlForgeQueryGroup for __SqlForgeQueryGroup {
                 type Db = sqlx::Postgres;
             }
             struct __SqlForgeQueryGroupKey_amount;
-            impl<
-                'args,
-            > sql_forge::SqlForgeQueryGroupGet<__SqlForgeQueryGroupKey_amount, i64>
-            for __SqlForgeQueryGroup<'args> {
-                type Query = __SqlForgeQuery_amount<'args>;
+            impl sql_forge::SqlForgeQueryGroupGet<__SqlForgeQueryGroupKey_amount, i64>
+            for __SqlForgeQueryGroup {
+                type Query = __SqlForgeQuery_amount;
                 fn get(self, _: __SqlForgeQueryGroupKey_amount) -> Self::Query {
                     self.amount
                 }
             }
             struct __SqlForgeQueryGroupKey_first_name;
-            impl<
-                'args,
-            > sql_forge::SqlForgeQueryGroupGet<
+            impl sql_forge::SqlForgeQueryGroupGet<
                 __SqlForgeQueryGroupKey_first_name,
                 String,
-            > for __SqlForgeQueryGroup<'args> {
-                type Query = __SqlForgeQuery_first_name<'args>;
+            > for __SqlForgeQueryGroup {
+                type Query = __SqlForgeQuery_first_name;
                 fn get(self, _: __SqlForgeQueryGroupKey_first_name) -> Self::Query {
                     self.first_name
                 }
@@ -5346,9 +5291,7 @@ fn combining_features_example() {
                                             "internal error: entered unreachable code",
                                         );
                                     }
-                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                        '_,
-                                    >::default();
+                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
                                             5usize,
@@ -5439,9 +5382,7 @@ fn combining_features_example() {
                                         _,
                                         ::sqlx::error::BoxDynError,
                                     >::Ok(
-                                        <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                            '_,
-                                        >::default(),
+                                        <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default(),
                                     );
                                     ::sqlx::__query_with_result::<
                                         sqlx::postgres::Postgres,
@@ -5675,9 +5616,7 @@ fn combining_features_example() {
                                             "internal error: entered unreachable code",
                                         );
                                     }
-                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                        '_,
-                                    >::default();
+                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
                                             5usize,
@@ -5760,10 +5699,10 @@ fn combining_features_example() {
                     }
                 }
             };
-            struct __SqlForgeQuery_single<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_single<'args> {
+            impl __SqlForgeQuery_single {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -5801,8 +5740,7 @@ fn combining_features_example() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQuery<Product>
-            for __SqlForgeQuery_single<'args> {
+            impl sql_forge::SqlForgeQuery<Product> for __SqlForgeQuery_single {
                 type Db = sqlx::Postgres;
                 fn fetch_all<'e, E>(
                     self,
@@ -6067,9 +6005,7 @@ fn execute_only_query() {
                                         "internal error: entered unreachable code",
                                     );
                                 }
-                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                    '_,
-                                >::default();
+                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                 query_args
                                     .reserve(
                                         1usize,
@@ -6097,10 +6033,10 @@ fn execute_only_query() {
                     }
                 }
             };
-            struct __SqlForgeQuery_single<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_single<'args> {
+            impl __SqlForgeQuery_single {
                 async fn execute<'e, E>(
                     mut self,
                     executor: E,
@@ -6111,8 +6047,7 @@ fn execute_only_query() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQueryExecute
-            for __SqlForgeQuery_single<'args> {
+            impl sql_forge::SqlForgeQueryExecute for __SqlForgeQuery_single {
                 type Db = sqlx::Postgres;
                 fn execute<'e, E>(
                     self,
@@ -6178,9 +6113,7 @@ fn execute_only_query() {
                                         "internal error: entered unreachable code",
                                     );
                                 }
-                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                    '_,
-                                >::default();
+                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                 query_args
                                     .reserve(
                                         1usize,
@@ -6208,10 +6141,10 @@ fn execute_only_query() {
                     }
                 }
             };
-            struct __SqlForgeQuery_single<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_single<'args> {
+            impl __SqlForgeQuery_single {
                 async fn execute<'e, E>(
                     mut self,
                     executor: E,
@@ -6222,8 +6155,7 @@ fn execute_only_query() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQueryExecute
-            for __SqlForgeQuery_single<'args> {
+            impl sql_forge::SqlForgeQueryExecute for __SqlForgeQuery_single {
                 type Db = sqlx::Postgres;
                 fn execute<'e, E>(
                     self,
@@ -6361,9 +6293,7 @@ fn execute_only_insert_update_delete() {
                                         "internal error: entered unreachable code",
                                     );
                                 }
-                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                    '_,
-                                >::default();
+                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                 query_args
                                     .reserve(
                                         1usize,
@@ -6388,10 +6318,10 @@ fn execute_only_insert_update_delete() {
                     }
                 }
             };
-            struct __SqlForgeQuery_single<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_single<'args> {
+            impl __SqlForgeQuery_single {
                 async fn execute<'e, E>(
                     mut self,
                     executor: E,
@@ -6402,8 +6332,7 @@ fn execute_only_insert_update_delete() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQueryExecute
-            for __SqlForgeQuery_single<'args> {
+            impl sql_forge::SqlForgeQueryExecute for __SqlForgeQuery_single {
                 type Db = sqlx::Postgres;
                 fn execute<'e, E>(
                     self,
@@ -6551,9 +6480,7 @@ fn execute_only_insert_update_delete() {
                                             "internal error: entered unreachable code",
                                         );
                                     }
-                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                        '_,
-                                    >::default();
+                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
                                             4usize,
@@ -6599,10 +6526,10 @@ fn execute_only_insert_update_delete() {
                         }
                     }
                 };
-                struct __SqlForgeQuery_single<'args> {
-                    inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+                struct __SqlForgeQuery_single {
+                    inner: sqlx::QueryBuilder<sqlx::Postgres>,
                 }
-                impl<'args> __SqlForgeQuery_single<'args> {
+                impl __SqlForgeQuery_single {
                     async fn execute<'e, E>(
                         mut self,
                         executor: E,
@@ -6616,8 +6543,7 @@ fn execute_only_insert_update_delete() {
                         self.inner.build().execute(executor).await
                     }
                 }
-                impl<'args> sql_forge::SqlForgeQueryExecute
-                for __SqlForgeQuery_single<'args> {
+                impl sql_forge::SqlForgeQueryExecute for __SqlForgeQuery_single {
                     type Db = sqlx::Postgres;
                     fn execute<'e, E>(
                         self,
@@ -6747,9 +6673,7 @@ fn execute_only_insert_update_delete() {
                                         "internal error: entered unreachable code",
                                     );
                                 }
-                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                    '_,
-                                >::default();
+                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                 query_args
                                     .reserve(
                                         3usize,
@@ -6789,10 +6713,10 @@ fn execute_only_insert_update_delete() {
                     }
                 }
             };
-            struct __SqlForgeQuery_single<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_single<'args> {
+            impl __SqlForgeQuery_single {
                 async fn execute<'e, E>(
                     mut self,
                     executor: E,
@@ -6803,8 +6727,7 @@ fn execute_only_insert_update_delete() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQueryExecute
-            for __SqlForgeQuery_single<'args> {
+            impl sql_forge::SqlForgeQueryExecute for __SqlForgeQuery_single {
                 type Db = sqlx::Postgres;
                 fn execute<'e, E>(
                     self,
@@ -6899,9 +6822,7 @@ fn execute_only_insert_update_delete() {
                                             "internal error: entered unreachable code",
                                         );
                                     }
-                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                        '_,
-                                    >::default();
+                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
                                             1usize,
@@ -6945,10 +6866,10 @@ fn execute_only_insert_update_delete() {
                     }
                 }
             };
-            struct __SqlForgeQuery_single<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_single<'args> {
+            impl __SqlForgeQuery_single {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -6986,8 +6907,7 @@ fn execute_only_insert_update_delete() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQuery<TempRow>
-            for __SqlForgeQuery_single<'args> {
+            impl sql_forge::SqlForgeQuery<TempRow> for __SqlForgeQuery_single {
                 type Db = sqlx::Postgres;
                 fn fetch_all<'e, E>(
                     self,
@@ -7148,9 +7068,7 @@ fn execute_only_insert_update_delete() {
                                         "internal error: entered unreachable code",
                                     );
                                 }
-                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                    '_,
-                                >::default();
+                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                 query_args
                                     .reserve(
                                         1usize,
@@ -7178,10 +7096,10 @@ fn execute_only_insert_update_delete() {
                     }
                 }
             };
-            struct __SqlForgeQuery_single<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_single<'args> {
+            impl __SqlForgeQuery_single {
                 async fn execute<'e, E>(
                     mut self,
                     executor: E,
@@ -7192,8 +7110,7 @@ fn execute_only_insert_update_delete() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQueryExecute
-            for __SqlForgeQuery_single<'args> {
+            impl sql_forge::SqlForgeQueryExecute for __SqlForgeQuery_single {
                 type Db = sqlx::Postgres;
                 fn execute<'e, E>(
                     self,
@@ -7260,9 +7177,7 @@ fn execute_only_insert_update_delete() {
                                         "internal error: entered unreachable code",
                                     );
                                 }
-                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                    '_,
-                                >::default();
+                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                 query_args
                                     .reserve(
                                         1usize,
@@ -7291,10 +7206,10 @@ fn execute_only_insert_update_delete() {
                     }
                 }
             };
-            struct __SqlForgeQuery_single<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_single<'args> {
+            impl __SqlForgeQuery_single {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -7332,7 +7247,7 @@ fn execute_only_insert_update_delete() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQuery<i64> for __SqlForgeQuery_single<'args> {
+            impl sql_forge::SqlForgeQuery<i64> for __SqlForgeQuery_single {
                 type Db = sqlx::Postgres;
                 fn fetch_all<'e, E>(
                     self,
@@ -7519,9 +7434,7 @@ fn execute_batch() {
                                         "internal error: entered unreachable code",
                                     );
                                 }
-                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                    '_,
-                                >::default();
+                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                 query_args
                                     .reserve(
                                         1usize,
@@ -7546,10 +7459,10 @@ fn execute_batch() {
                     }
                 }
             };
-            struct __SqlForgeQuery_single<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_single<'args> {
+            impl __SqlForgeQuery_single {
                 async fn execute<'e, E>(
                     mut self,
                     executor: E,
@@ -7560,8 +7473,7 @@ fn execute_batch() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQueryExecute
-            for __SqlForgeQuery_single<'args> {
+            impl sql_forge::SqlForgeQueryExecute for __SqlForgeQuery_single {
                 type Db = sqlx::Postgres;
                 fn execute<'e, E>(
                     self,
@@ -7747,9 +7659,7 @@ fn execute_batch() {
                                         "internal error: entered unreachable code",
                                     );
                                 }
-                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                    '_,
-                                >::default();
+                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                 query_args
                                     .reserve(
                                         6usize,
@@ -7807,10 +7717,10 @@ fn execute_batch() {
                     }
                 }
             };
-            struct __SqlForgeQuery_single<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_single<'args> {
+            impl __SqlForgeQuery_single {
                 async fn execute<'e, E>(
                     mut self,
                     executor: E,
@@ -7821,8 +7731,7 @@ fn execute_batch() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQueryExecute
-            for __SqlForgeQuery_single<'args> {
+            impl sql_forge::SqlForgeQueryExecute for __SqlForgeQuery_single {
                 type Db = sqlx::Postgres;
                 fn execute<'e, E>(
                     self,
@@ -7906,9 +7815,7 @@ fn execute_batch() {
                                             "internal error: entered unreachable code",
                                         );
                                     }
-                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                        '_,
-                                    >::default();
+                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
                                             1usize,
@@ -7952,10 +7859,10 @@ fn execute_batch() {
                     }
                 }
             };
-            struct __SqlForgeQuery_single<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_single<'args> {
+            impl __SqlForgeQuery_single {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -7996,8 +7903,7 @@ fn execute_batch() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQuery<BatchItem>
-            for __SqlForgeQuery_single<'args> {
+            impl sql_forge::SqlForgeQuery<BatchItem> for __SqlForgeQuery_single {
                 type Db = sqlx::Postgres;
                 fn fetch_all<'e, E>(
                     self,
@@ -8197,9 +8103,7 @@ fn execute_batch() {
                                         "internal error: entered unreachable code",
                                     );
                                 }
-                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                    '_,
-                                >::default();
+                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                 query_args
                                     .reserve(
                                         1usize,
@@ -8224,10 +8128,10 @@ fn execute_batch() {
                     }
                 }
             };
-            struct __SqlForgeQuery_single<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_single<'args> {
+            impl __SqlForgeQuery_single {
                 async fn execute<'e, E>(
                     mut self,
                     executor: E,
@@ -8238,8 +8142,7 @@ fn execute_batch() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQueryExecute
-            for __SqlForgeQuery_single<'args> {
+            impl sql_forge::SqlForgeQueryExecute for __SqlForgeQuery_single {
                 type Db = sqlx::Postgres;
                 fn execute<'e, E>(
                     self,
@@ -8383,9 +8286,7 @@ fn execute_batch_full() {
                                         "internal error: entered unreachable code",
                                     );
                                 }
-                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                    '_,
-                                >::default();
+                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                 query_args
                                     .reserve(
                                         1usize,
@@ -8410,10 +8311,10 @@ fn execute_batch_full() {
                     }
                 }
             };
-            struct __SqlForgeQuery_single<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_single<'args> {
+            impl __SqlForgeQuery_single {
                 async fn execute<'e, E>(
                     mut self,
                     executor: E,
@@ -8424,8 +8325,7 @@ fn execute_batch_full() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQueryExecute
-            for __SqlForgeQuery_single<'args> {
+            impl sql_forge::SqlForgeQueryExecute for __SqlForgeQuery_single {
                 type Db = sqlx::Postgres;
                 fn execute<'e, E>(
                     self,
@@ -8737,9 +8637,7 @@ fn execute_batch_full() {
                                         "internal error: entered unreachable code",
                                     );
                                 }
-                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                    '_,
-                                >::default();
+                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                 query_args
                                     .reserve(
                                         12usize,
@@ -8833,10 +8731,10 @@ fn execute_batch_full() {
                     }
                 }
             };
-            struct __SqlForgeQuery_single<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_single<'args> {
+            impl __SqlForgeQuery_single {
                 async fn execute<'e, E>(
                     mut self,
                     executor: E,
@@ -8847,8 +8745,7 @@ fn execute_batch_full() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQueryExecute
-            for __SqlForgeQuery_single<'args> {
+            impl sql_forge::SqlForgeQueryExecute for __SqlForgeQuery_single {
                 type Db = sqlx::Postgres;
                 fn execute<'e, E>(
                     self,
@@ -8936,9 +8833,7 @@ fn execute_batch_full() {
                                             "internal error: entered unreachable code",
                                         );
                                     }
-                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                        '_,
-                                    >::default();
+                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
                                             1usize,
@@ -8992,10 +8887,10 @@ fn execute_batch_full() {
                     }
                 }
             };
-            struct __SqlForgeQuery_single<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_single<'args> {
+            impl __SqlForgeQuery_single {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -9042,8 +8937,7 @@ fn execute_batch_full() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQuery<BatchFullItem>
-            for __SqlForgeQuery_single<'args> {
+            impl sql_forge::SqlForgeQuery<BatchFullItem> for __SqlForgeQuery_single {
                 type Db = sqlx::Postgres;
                 fn fetch_all<'e, E>(
                     self,
@@ -9269,9 +9163,7 @@ fn execute_batch_full() {
                                         "internal error: entered unreachable code",
                                     );
                                 }
-                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                    '_,
-                                >::default();
+                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                 query_args
                                     .reserve(
                                         1usize,
@@ -9296,10 +9188,10 @@ fn execute_batch_full() {
                     }
                 }
             };
-            struct __SqlForgeQuery_single<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_single<'args> {
+            impl __SqlForgeQuery_single {
                 async fn execute<'e, E>(
                     mut self,
                     executor: E,
@@ -9310,8 +9202,7 @@ fn execute_batch_full() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQueryExecute
-            for __SqlForgeQuery_single<'args> {
+            impl sql_forge::SqlForgeQueryExecute for __SqlForgeQuery_single {
                 type Db = sqlx::Postgres;
                 fn execute<'e, E>(
                     self,
@@ -9470,9 +9361,7 @@ fn section_match_bound_variable_no_warning() {
                                             "internal error: entered unreachable code",
                                         );
                                     }
-                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                        '_,
-                                    >::default();
+                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
                                             1usize,
@@ -9539,9 +9428,7 @@ fn section_match_bound_variable_no_warning() {
                                         _,
                                         ::sqlx::error::BoxDynError,
                                     >::Ok(
-                                        <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                            '_,
-                                        >::default(),
+                                        <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default(),
                                     );
                                     ::sqlx::__query_with_result::<
                                         sqlx::postgres::Postgres,
@@ -9586,10 +9473,10 @@ fn section_match_bound_variable_no_warning() {
                     }
                 }
             };
-            struct __SqlForgeQuery_single<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_single<'args> {
+            impl __SqlForgeQuery_single {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -9627,8 +9514,7 @@ fn section_match_bound_variable_no_warning() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQuery<Product>
-            for __SqlForgeQuery_single<'args> {
+            impl sql_forge::SqlForgeQuery<Product> for __SqlForgeQuery_single {
                 type Db = sqlx::Postgres;
                 fn fetch_all<'e, E>(
                     self,
@@ -9878,9 +9764,7 @@ fn section_nested_match_outer_var_used() {
                                             "internal error: entered unreachable code",
                                         );
                                     }
-                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                        '_,
-                                    >::default();
+                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
                                             2usize,
@@ -9982,9 +9866,7 @@ fn section_nested_match_outer_var_used() {
                                             "internal error: entered unreachable code",
                                         );
                                     }
-                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                        '_,
-                                    >::default();
+                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
                                             1usize,
@@ -10036,9 +9918,7 @@ fn section_nested_match_outer_var_used() {
                                         _,
                                         ::sqlx::error::BoxDynError,
                                     >::Ok(
-                                        <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::<
-                                            '_,
-                                        >::default(),
+                                        <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default(),
                                     );
                                     ::sqlx::__query_with_result::<
                                         sqlx::postgres::Postgres,
@@ -10068,10 +9948,10 @@ fn section_nested_match_outer_var_used() {
                     }
                 }
             };
-            struct __SqlForgeQuery_single<'args> {
-                inner: sqlx::QueryBuilder<'args, sqlx::Postgres>,
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
             }
-            impl<'args> __SqlForgeQuery_single<'args> {
+            impl __SqlForgeQuery_single {
                 async fn fetch_all<'e, E>(
                     mut self,
                     executor: E,
@@ -10109,8 +9989,7 @@ fn section_nested_match_outer_var_used() {
                     self.inner.build().execute(executor).await
                 }
             }
-            impl<'args> sql_forge::SqlForgeQuery<User>
-            for __SqlForgeQuery_single<'args> {
+            impl sql_forge::SqlForgeQuery<User> for __SqlForgeQuery_single {
                 type Db = sqlx::Postgres;
                 fn fetch_all<'e, E>(
                     self,
