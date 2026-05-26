@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n        SELECT\n            p.id,\n            p.name,\n            p.price,\n            p.stock,\n            p.category\n        FROM products p\n        WHERE 1 = 1\n         AND p.category = NULL \n         AND p.price >= NULL \n         AND p.price <= NULL \n         AND p.stock > 0 \n         ORDER BY p.id ASC \n         LIMIT NULL OFFSET NULL \n        ",
+  "query": "SELECT id, name, price, stock, category FROM products WHERE 1=1  AND price <= $1 ORDER BY id",
   "describe": {
     "columns": [
       {
@@ -30,7 +30,9 @@
       }
     ],
     "parameters": {
-      "Left": []
+      "Left": [
+        "Int8"
+      ]
     },
     "nullable": [
       false,
@@ -40,5 +42,5 @@
       false
     ]
   },
-  "hash": "24111a31fe68bcd6ecb4663ddf867e2947bec1a24ab12b73ea94e8ea30cf2165"
+  "hash": "6135e006da9059cdbaccbb27f96110f1e332cf0b6dec066322961d55b6792ef7"
 }

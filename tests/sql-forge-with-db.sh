@@ -4,6 +4,8 @@ set -euo pipefail
 rm -rf "$ENV_DIR/tmp-ui"
 mkdir -p "$ENV_DIR/tmp-ui"
 cp -r tests/ui/. "$ENV_DIR/tmp-ui/"
+rm -rf "$ENV_DIR/.sqlx"
+mkdir -p "$ENV_DIR/.sqlx"
 
 cargo fmt --all -- --check
 cargo expand --test tests > "$ENV_DIR/tests_expanded.rs"

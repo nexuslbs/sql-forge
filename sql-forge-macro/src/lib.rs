@@ -1186,17 +1186,21 @@ fn wrap_expr_for_match_arm(expr: Expr, match_expr: &Expr, pat: &Pat, guard: Opti
     };
 
     if pattern_binds_values {
+        let pat_refs: Vec<TokenStream2> = pat_var_idents(&pat)
+            .into_iter()
+            .map(|ident| quote! { let _ = &#ident; })
+            .collect();
         if let Some(guard) = guard.cloned() {
             parse_quote! {
                 match &(#match_expr) {
-                    #pat if #guard => { #expr },
+                    #pat if #guard => { #( #pat_refs )* #expr },
                     _ => unreachable!("sql_forge!: validator arm mismatch"),
                 }
             }
         } else {
             parse_quote! {
                 match &(#match_expr) {
-                    #pat => { #expr },
+                    #pat => { #( #pat_refs )* #expr },
                     _ => unreachable!("sql_forge!: validator arm mismatch"),
                 }
             }
@@ -1521,6 +1525,70 @@ fn render_runtime_fragment(
     Ok(quote! { #( #steps )* })
 }
 
+fn is_pat_binding(ident: &Ident) -> bool {
+    let name = ident.to_string();
+    !name.is_empty()
+        && name
+            .chars()
+            .next()
+            .is_some_and(|c| c.is_ascii_lowercase() || c == '_')
+}
+
+fn pat_var_idents(pat: &Pat) -> Vec<Ident> {
+    let mut names = Vec::new();
+    fn walk(p: &Pat, names: &mut Vec<Ident>) {
+        match p {
+            Pat::Ident(pi) if is_pat_binding(&pi.ident) => names.push(pi.ident.clone()),
+            Pat::Tuple(pt) => pt.elems.iter().for_each(|e| walk(e, names)),
+            Pat::Struct(ps) => ps.fields.iter().for_each(|f| walk(&f.pat, names)),
+            Pat::TupleStruct(pts) => pts.elems.iter().for_each(|e| walk(e, names)),
+            Pat::Or(po) => po.cases.iter().for_each(|c| walk(c, names)),
+            Pat::Paren(pp) => walk(&pp.pat, names),
+            Pat::Reference(pr) => walk(&pr.pat, names),
+            Pat::Slice(psl) => psl.elems.iter().for_each(|e| walk(e, names)),
+            Pat::Type(pt) => walk(&pt.pat, names),
+            _ => {}
+        }
+    }
+    walk(pat, &mut names);
+    names
+}
+
+fn section_value_refers_to(value: &SectionValue, name: &str) -> bool {
+    match value {
+        SectionValue::Single(f) => {
+            if collect_used_param_names_in_sql(&f.sql)
+                .iter()
+                .any(|n| n == name)
+            {
+                return true;
+            }
+            if let ParamsSource::Map(entries) = &f.params {
+                for e in entries {
+                    let expr = &e.expr;
+                    let expr_str = quote! { #expr }.to_string();
+                    if expr_str.trim() == name {
+                        return true;
+                    }
+                }
+            }
+            false
+        }
+        SectionValue::Grouped(vals) => vals.iter().any(|v| section_value_refers_to(v, name)),
+        SectionValue::Match { arms, .. } => arms.iter().any(|arm| {
+            let pat_vars: HashSet<_> = pat_var_idents(&arm.pat)
+                .into_iter()
+                .map(|i| i.to_string())
+                .collect();
+            if pat_vars.contains(name) {
+                false
+            } else {
+                section_value_refers_to(&arm.value, name)
+            }
+        }),
+    }
+}
+
 fn build_section_runtime_action(
     value: &SectionValue,
     section_idx: usize,
@@ -1551,7 +1619,17 @@ fn build_section_runtime_action(
                         section_idx,
                         &format!("{}_{}", prefix, arm_idx),
                     )?;
-                    Ok::<TokenStream2, TokenStream>(quote! { #pat #guard_tokens => #body })
+                    let noop_refs: Vec<TokenStream2> = pat_var_idents(pat)
+                        .into_iter()
+                        .filter(|ident| section_value_refers_to(&arm.value, &ident.to_string()))
+                        .map(|ident| quote! { ::core::hint::black_box(&#ident); })
+                        .collect();
+                    Ok::<TokenStream2, TokenStream>(quote! {
+                        #pat #guard_tokens => {
+                            #( #noop_refs )*
+                            #body
+                        }
+                    })
                 })
                 .collect();
             let arm_tokens = arm_tokens?;

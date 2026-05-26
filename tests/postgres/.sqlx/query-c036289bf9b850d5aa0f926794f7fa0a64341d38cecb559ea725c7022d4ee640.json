@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT id, name FROM users WHERE id <= NULL LIMIT NULL",
+  "query": "SELECT id, name FROM users WHERE 1=1 ORDER BY id ",
   "describe": {
     "columns": [
       {
@@ -22,5 +22,5 @@
       false
     ]
   },
-  "hash": "ffced57ae1fde90c61aa322024410e140244d8ab81434475018e5fd60986bba7"
+  "hash": "c036289bf9b850d5aa0f926794f7fa0a64341d38cecb559ea725c7022d4ee640"
 }

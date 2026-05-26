@@ -2713,7 +2713,10 @@ fn list_parameter_in_main_sql_with_match_filter() {
                                 "sql_forge!: list parameters used in validation must have at least one representative element",
                             );
                         let __enhanced_section_case_single_0_filter_min_id = &(match &(min_id) {
-                            Some(min_id) => min_id,
+                            Some(min_id) => {
+                                let _ = &min_id;
+                                min_id
+                            }
                             _ => {
                                 ::core::panicking::panic_fmt(
                                     format_args!(
@@ -2993,9 +2996,12 @@ fn list_parameter_in_main_sql_with_match_filter() {
             __builder.push(") ");
             match min_id {
                 Some(min_id) => {
-                    let __enhanced_section_filter_0_min_id = min_id;
-                    __builder.push(" AND id >= ");
-                    __builder.push_bind(__enhanced_section_filter_0_min_id);
+                    ::core::hint::black_box(&min_id);
+                    {
+                        let __enhanced_section_filter_0_min_id = min_id;
+                        __builder.push(" AND id >= ");
+                        __builder.push_bind(__enhanced_section_filter_0_min_id);
+                    }
                 }
                 None => {}
             }
@@ -7733,6 +7739,760 @@ fn compile_fail() {
     tests.compile_fail(&pattern);
 }
 extern crate test;
+#[rustc_test_marker = "section_match_bound_variable_no_warning"]
+#[doc(hidden)]
+pub const section_match_bound_variable_no_warning: test::TestDescAndFn = test::TestDescAndFn {
+    desc: test::TestDesc {
+        name: test::StaticTestName("section_match_bound_variable_no_warning"),
+        ignore: false,
+        ignore_message: ::core::option::Option::None,
+        source_file: "tests/tests.rs",
+        start_line: 846usize,
+        start_col: 10usize,
+        end_line: 846usize,
+        end_col: 49usize,
+        compile_fail: false,
+        no_run: false,
+        should_panic: test::ShouldPanic::No,
+        test_type: test::TestType::IntegrationTest,
+    },
+    testfn: test::StaticTestFn(
+        #[coverage(off)]
+        || test::assert_test_result(section_match_bound_variable_no_warning()),
+    ),
+};
+fn section_match_bound_variable_no_warning() {
+    let body = async {
+        let pool = pool().await;
+        let max_price = Some(price_new(15000, 2));
+        let products: Vec<Product> = {
+            let _sql_forge_validator = || {
+                {
+                    type __EnhancedModel = Product;
+                    {
+                        let __enhanced_section_case_single_0_filter_price_max_price = &(match &(max_price) {
+                            Some(max_price) => {
+                                let _ = &max_price;
+                                max_price
+                            }
+                            _ => {
+                                ::core::panicking::panic_fmt(
+                                    format_args!(
+                                        "internal error: entered unreachable code: {0}",
+                                        format_args!("sql_forge!: validator arm mismatch"),
+                                    ),
+                                );
+                            }
+                        });
+                        let __enhanced_validator_arg_0 = __enhanced_section_case_single_0_filter_price_max_price;
+                        let _ = {
+                            {
+                                #[allow(clippy::all)]
+                                {
+                                    use ::sqlx::Arguments as _;
+                                    let arg0 = &(__enhanced_validator_arg_0);
+                                    let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::<
+                                        '_,
+                                    >::default();
+                                    query_args
+                                        .reserve(
+                                            1usize,
+                                            0
+                                                + ::sqlx::encode::Encode::<
+                                                    sqlx::mysql::MySql,
+                                                >::size_hint(arg0),
+                                        );
+                                    let query_args = ::core::result::Result::<
+                                        _,
+                                        ::sqlx::error::BoxDynError,
+                                    >::Ok(query_args)
+                                        .and_then(move |mut query_args| {
+                                            query_args.add(arg0).map(move |()| query_args)
+                                        });
+                                    ::sqlx::__query_with_result::<
+                                        sqlx::mysql::MySql,
+                                        _,
+                                    >(
+                                            "SELECT id, name, price, stock, category FROM products WHERE 1=1  AND price <= ? ORDER BY id",
+                                            query_args,
+                                        )
+                                        .try_map(|row: sqlx::mysql::MySqlRow| {
+                                            use ::sqlx::Row as _;
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_id = row
+                                                .try_get_unchecked::<i64, _>(0usize)?
+                                                .into();
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_name = row
+                                                .try_get_unchecked::<String, _>(1usize)?
+                                                .into();
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_price = row
+                                                .try_get_unchecked::<i64, _>(2usize)?
+                                                .into();
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_stock = row
+                                                .try_get_unchecked::<i32, _>(3usize)?
+                                                .into();
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_category = row
+                                                .try_get_unchecked::<String, _>(4usize)?
+                                                .into();
+                                            ::std::result::Result::Ok(__EnhancedModel {
+                                                id: sqlx_query_as_id,
+                                                name: sqlx_query_as_name,
+                                                price: sqlx_query_as_price,
+                                                stock: sqlx_query_as_stock,
+                                                category: sqlx_query_as_category,
+                                            })
+                                        })
+                                }
+                            }
+                        };
+                    }
+                    {
+                        let _ = {
+                            {
+                                #[allow(clippy::all)]
+                                {
+                                    use ::sqlx::Arguments as _;
+                                    let query_args = ::core::result::Result::<
+                                        _,
+                                        ::sqlx::error::BoxDynError,
+                                    >::Ok(
+                                        <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::<
+                                            '_,
+                                        >::default(),
+                                    );
+                                    ::sqlx::__query_with_result::<
+                                        sqlx::mysql::MySql,
+                                        _,
+                                    >(
+                                            "SELECT id, name, price, stock, category FROM products WHERE 1=1  ORDER BY id",
+                                            query_args,
+                                        )
+                                        .try_map(|row: sqlx::mysql::MySqlRow| {
+                                            use ::sqlx::Row as _;
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_id = row
+                                                .try_get_unchecked::<i64, _>(0usize)?
+                                                .into();
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_name = row
+                                                .try_get_unchecked::<String, _>(1usize)?
+                                                .into();
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_price = row
+                                                .try_get_unchecked::<i64, _>(2usize)?
+                                                .into();
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_stock = row
+                                                .try_get_unchecked::<i32, _>(3usize)?
+                                                .into();
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_category = row
+                                                .try_get_unchecked::<String, _>(4usize)?
+                                                .into();
+                                            ::std::result::Result::Ok(__EnhancedModel {
+                                                id: sqlx_query_as_id,
+                                                name: sqlx_query_as_name,
+                                                price: sqlx_query_as_price,
+                                                stock: sqlx_query_as_stock,
+                                                category: sqlx_query_as_category,
+                                            })
+                                        })
+                                }
+                            }
+                        };
+                    }
+                }
+            };
+            struct __SqlForgeQuery_single<'args> {
+                inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
+            }
+            impl<'args> __SqlForgeQuery_single<'args> {
+                async fn fetch_all<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<Vec<Product>, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::MySql>,
+                {
+                    self.inner.build_query_as::<Product>().fetch_all(executor).await
+                }
+                async fn fetch_one<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<Product, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::MySql>,
+                {
+                    self.inner.build_query_as::<Product>().fetch_one(executor).await
+                }
+                async fn fetch_optional<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<Option<Product>, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::MySql>,
+                {
+                    self.inner.build_query_as::<Product>().fetch_optional(executor).await
+                }
+                async fn execute<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<<sqlx::MySql as sqlx::Database>::QueryResult, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::MySql>,
+                {
+                    self.inner.build().execute(executor).await
+                }
+            }
+            impl<'args> sql_forge::SqlForgeQuery<Product>
+            for __SqlForgeQuery_single<'args> {
+                type Db = sqlx::MySql;
+                fn fetch_all<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<Vec<Product>, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
+                    sqlx::MySql: 'e,
+                {
+                    __SqlForgeQuery_single::fetch_all(self, executor)
+                }
+                fn fetch_one<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<Product, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
+                    sqlx::MySql: 'e,
+                {
+                    __SqlForgeQuery_single::fetch_one(self, executor)
+                }
+                fn fetch_optional<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<Option<Product>, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
+                    sqlx::MySql: 'e,
+                {
+                    __SqlForgeQuery_single::fetch_optional(self, executor)
+                }
+                fn execute<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<
+                        <sqlx::MySql as sqlx::Database>::QueryResult,
+                        sqlx::Error,
+                    >,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
+                    sqlx::MySql: 'e,
+                {
+                    __SqlForgeQuery_single::execute(self, executor)
+                }
+            }
+            let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
+                "",
+            );
+            __builder
+                .push(
+                    "SELECT id, name, price, stock, category FROM products WHERE 1=1 ",
+                );
+            match max_price {
+                Some(max_price) => {
+                    ::core::hint::black_box(&max_price);
+                    {
+                        let __enhanced_section_filter_price_0_max_price = max_price;
+                        __builder.push(" AND price <= ");
+                        __builder.push_bind(__enhanced_section_filter_price_0_max_price);
+                    }
+                }
+                None => {}
+            }
+            __builder.push(" ORDER BY id");
+            let __sql_forge_value_single = __SqlForgeQuery_single {
+                inner: __builder,
+            };
+            __sql_forge_value_single
+        }
+            .fetch_all(&pool)
+            .await
+            .expect("section match pattern query failed");
+        for p in &products {
+            if !(p.price <= 15000) {
+                ::core::panicking::panic("assertion failed: p.price <= 15000")
+            }
+        }
+    };
+    let mut body = body;
+    #[allow(unused_mut)]
+    let mut body = unsafe { ::tokio::macros::support::Pin::new_unchecked(&mut body) };
+    let body: ::core::pin::Pin<&mut dyn ::core::future::Future<Output = ()>> = body;
+    #[allow(
+        clippy::expect_used,
+        clippy::diverging_sub_expression,
+        clippy::needless_return,
+        clippy::unwrap_in_result
+    )]
+    {
+        use tokio::runtime::Builder;
+        return Builder::new_current_thread()
+            .enable_all()
+            .build()
+            .expect("Failed building the Runtime")
+            .block_on(body);
+    }
+}
+extern crate test;
+#[rustc_test_marker = "section_nested_match_outer_var_used"]
+#[doc(hidden)]
+pub const section_nested_match_outer_var_used: test::TestDescAndFn = test::TestDescAndFn {
+    desc: test::TestDesc {
+        name: test::StaticTestName("section_nested_match_outer_var_used"),
+        ignore: false,
+        ignore_message: ::core::option::Option::None,
+        source_file: "tests/tests.rs",
+        start_line: 873usize,
+        start_col: 10usize,
+        end_line: 873usize,
+        end_col: 45usize,
+        compile_fail: false,
+        no_run: false,
+        should_panic: test::ShouldPanic::No,
+        test_type: test::TestType::IntegrationTest,
+    },
+    testfn: test::StaticTestFn(
+        #[coverage(off)]
+        || test::assert_test_result(section_nested_match_outer_var_used()),
+    ),
+};
+fn section_nested_match_outer_var_used() {
+    let body = async {
+        let pool = pool().await;
+        let limit_val = Some(3i64);
+        let start_val = Some(0i64);
+        let users: Vec<User> = {
+            let _sql_forge_validator = || {
+                {
+                    type __EnhancedModel = User;
+                    {
+                        let __enhanced_section_case_single_0_limit_start = &(match &(limit_val) {
+                            Some(limit) => {
+                                let _ = &limit;
+                                match &(start_val) {
+                                    Some(start) => {
+                                        let _ = &start;
+                                        start
+                                    }
+                                    _ => {
+                                        ::core::panicking::panic_fmt(
+                                            format_args!(
+                                                "internal error: entered unreachable code: {0}",
+                                                format_args!("sql_forge!: validator arm mismatch"),
+                                            ),
+                                        );
+                                    }
+                                }
+                            }
+                            _ => {
+                                ::core::panicking::panic_fmt(
+                                    format_args!(
+                                        "internal error: entered unreachable code: {0}",
+                                        format_args!("sql_forge!: validator arm mismatch"),
+                                    ),
+                                );
+                            }
+                        });
+                        let __enhanced_section_case_single_0_limit_limit = &(match &(limit_val) {
+                            Some(limit) => {
+                                let _ = &limit;
+                                match &(start_val) {
+                                    Some(start) => {
+                                        let _ = &start;
+                                        limit
+                                    }
+                                    _ => {
+                                        ::core::panicking::panic_fmt(
+                                            format_args!(
+                                                "internal error: entered unreachable code: {0}",
+                                                format_args!("sql_forge!: validator arm mismatch"),
+                                            ),
+                                        );
+                                    }
+                                }
+                            }
+                            _ => {
+                                ::core::panicking::panic_fmt(
+                                    format_args!(
+                                        "internal error: entered unreachable code: {0}",
+                                        format_args!("sql_forge!: validator arm mismatch"),
+                                    ),
+                                );
+                            }
+                        });
+                        let __enhanced_validator_arg_0 = __enhanced_section_case_single_0_limit_limit;
+                        let __enhanced_validator_arg_1 = __enhanced_section_case_single_0_limit_start;
+                        let _ = {
+                            {
+                                #[allow(clippy::all)]
+                                {
+                                    use ::sqlx::Arguments as _;
+                                    let arg0 = &(__enhanced_validator_arg_0);
+                                    let arg1 = &(__enhanced_validator_arg_1);
+                                    let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::<
+                                        '_,
+                                    >::default();
+                                    query_args
+                                        .reserve(
+                                            2usize,
+                                            0
+                                                + ::sqlx::encode::Encode::<
+                                                    sqlx::mysql::MySql,
+                                                >::size_hint(arg0)
+                                                + ::sqlx::encode::Encode::<
+                                                    sqlx::mysql::MySql,
+                                                >::size_hint(arg1),
+                                        );
+                                    let query_args = ::core::result::Result::<
+                                        _,
+                                        ::sqlx::error::BoxDynError,
+                                    >::Ok(query_args)
+                                        .and_then(move |mut query_args| {
+                                            query_args.add(arg0).map(move |()| query_args)
+                                        })
+                                        .and_then(move |mut query_args| {
+                                            query_args.add(arg1).map(move |()| query_args)
+                                        });
+                                    ::sqlx::__query_with_result::<
+                                        sqlx::mysql::MySql,
+                                        _,
+                                    >(
+                                            "SELECT id, name FROM users WHERE 1=1 ORDER BY id  LIMIT ? OFFSET ? ",
+                                            query_args,
+                                        )
+                                        .try_map(|row: sqlx::mysql::MySqlRow| {
+                                            use ::sqlx::Row as _;
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_id = row
+                                                .try_get_unchecked::<i64, _>(0usize)?
+                                                .into();
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_name = row
+                                                .try_get_unchecked::<String, _>(1usize)?
+                                                .into();
+                                            ::std::result::Result::Ok(__EnhancedModel {
+                                                id: sqlx_query_as_id,
+                                                name: sqlx_query_as_name,
+                                            })
+                                        })
+                                }
+                            }
+                        };
+                    }
+                    {
+                        let __enhanced_section_case_single_1_limit_limit = &(match &(limit_val) {
+                            Some(limit) => {
+                                let _ = &limit;
+                                match &(start_val) {
+                                    None => limit,
+                                    _ => {
+                                        ::core::panicking::panic_fmt(
+                                            format_args!(
+                                                "internal error: entered unreachable code: {0}",
+                                                format_args!("sql_forge!: validator arm mismatch"),
+                                            ),
+                                        );
+                                    }
+                                }
+                            }
+                            _ => {
+                                ::core::panicking::panic_fmt(
+                                    format_args!(
+                                        "internal error: entered unreachable code: {0}",
+                                        format_args!("sql_forge!: validator arm mismatch"),
+                                    ),
+                                );
+                            }
+                        });
+                        let __enhanced_validator_arg_0 = __enhanced_section_case_single_1_limit_limit;
+                        let _ = {
+                            {
+                                #[allow(clippy::all)]
+                                {
+                                    use ::sqlx::Arguments as _;
+                                    let arg0 = &(__enhanced_validator_arg_0);
+                                    let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::<
+                                        '_,
+                                    >::default();
+                                    query_args
+                                        .reserve(
+                                            1usize,
+                                            0
+                                                + ::sqlx::encode::Encode::<
+                                                    sqlx::mysql::MySql,
+                                                >::size_hint(arg0),
+                                        );
+                                    let query_args = ::core::result::Result::<
+                                        _,
+                                        ::sqlx::error::BoxDynError,
+                                    >::Ok(query_args)
+                                        .and_then(move |mut query_args| {
+                                            query_args.add(arg0).map(move |()| query_args)
+                                        });
+                                    ::sqlx::__query_with_result::<
+                                        sqlx::mysql::MySql,
+                                        _,
+                                    >(
+                                            "SELECT id, name FROM users WHERE 1=1 ORDER BY id  LIMIT ? ",
+                                            query_args,
+                                        )
+                                        .try_map(|row: sqlx::mysql::MySqlRow| {
+                                            use ::sqlx::Row as _;
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_id = row
+                                                .try_get_unchecked::<i64, _>(0usize)?
+                                                .into();
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_name = row
+                                                .try_get_unchecked::<String, _>(1usize)?
+                                                .into();
+                                            ::std::result::Result::Ok(__EnhancedModel {
+                                                id: sqlx_query_as_id,
+                                                name: sqlx_query_as_name,
+                                            })
+                                        })
+                                }
+                            }
+                        };
+                    }
+                    {
+                        let _ = {
+                            {
+                                #[allow(clippy::all)]
+                                {
+                                    use ::sqlx::Arguments as _;
+                                    let query_args = ::core::result::Result::<
+                                        _,
+                                        ::sqlx::error::BoxDynError,
+                                    >::Ok(
+                                        <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::<
+                                            '_,
+                                        >::default(),
+                                    );
+                                    ::sqlx::__query_with_result::<
+                                        sqlx::mysql::MySql,
+                                        _,
+                                    >(
+                                            "SELECT id, name FROM users WHERE 1=1 ORDER BY id ",
+                                            query_args,
+                                        )
+                                        .try_map(|row: sqlx::mysql::MySqlRow| {
+                                            use ::sqlx::Row as _;
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_id = row
+                                                .try_get_unchecked::<i64, _>(0usize)?
+                                                .into();
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_name = row
+                                                .try_get_unchecked::<String, _>(1usize)?
+                                                .into();
+                                            ::std::result::Result::Ok(__EnhancedModel {
+                                                id: sqlx_query_as_id,
+                                                name: sqlx_query_as_name,
+                                            })
+                                        })
+                                }
+                            }
+                        };
+                    }
+                }
+            };
+            struct __SqlForgeQuery_single<'args> {
+                inner: sqlx::QueryBuilder<'args, sqlx::MySql>,
+            }
+            impl<'args> __SqlForgeQuery_single<'args> {
+                async fn fetch_all<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<Vec<User>, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::MySql>,
+                {
+                    self.inner.build_query_as::<User>().fetch_all(executor).await
+                }
+                async fn fetch_one<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<User, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::MySql>,
+                {
+                    self.inner.build_query_as::<User>().fetch_one(executor).await
+                }
+                async fn fetch_optional<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<Option<User>, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::MySql>,
+                {
+                    self.inner.build_query_as::<User>().fetch_optional(executor).await
+                }
+                async fn execute<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<<sqlx::MySql as sqlx::Database>::QueryResult, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::MySql>,
+                {
+                    self.inner.build().execute(executor).await
+                }
+            }
+            impl<'args> sql_forge::SqlForgeQuery<User>
+            for __SqlForgeQuery_single<'args> {
+                type Db = sqlx::MySql;
+                fn fetch_all<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<Vec<User>, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
+                    sqlx::MySql: 'e,
+                {
+                    __SqlForgeQuery_single::fetch_all(self, executor)
+                }
+                fn fetch_one<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<User, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
+                    sqlx::MySql: 'e,
+                {
+                    __SqlForgeQuery_single::fetch_one(self, executor)
+                }
+                fn fetch_optional<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<Option<User>, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
+                    sqlx::MySql: 'e,
+                {
+                    __SqlForgeQuery_single::fetch_optional(self, executor)
+                }
+                fn execute<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<
+                        <sqlx::MySql as sqlx::Database>::QueryResult,
+                        sqlx::Error,
+                    >,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::MySql> + Send + 'e,
+                    sqlx::MySql: 'e,
+                {
+                    __SqlForgeQuery_single::execute(self, executor)
+                }
+            }
+            let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
+                "",
+            );
+            __builder.push("SELECT id, name FROM users WHERE 1=1 ORDER BY id ");
+            match limit_val {
+                Some(limit) => {
+                    ::core::hint::black_box(&limit);
+                    match start_val {
+                        Some(start) => {
+                            ::core::hint::black_box(&start);
+                            {
+                                let __enhanced_section_limit_0_0_start = start;
+                                let __enhanced_section_limit_0_0_limit = limit;
+                                __builder.push(" LIMIT ");
+                                __builder.push_bind(__enhanced_section_limit_0_0_limit);
+                                __builder.push(" OFFSET ");
+                                __builder.push_bind(__enhanced_section_limit_0_0_start);
+                                __builder.push(" ");
+                            }
+                        }
+                        None => {
+                            let __enhanced_section_limit_0_1_limit = limit;
+                            __builder.push(" LIMIT ");
+                            __builder.push_bind(__enhanced_section_limit_0_1_limit);
+                            __builder.push(" ");
+                        }
+                    }
+                }
+                None => {}
+            }
+            let __sql_forge_value_single = __SqlForgeQuery_single {
+                inner: __builder,
+            };
+            __sql_forge_value_single
+        }
+            .fetch_all(&pool)
+            .await
+            .expect("nested match query failed");
+        if !!users.is_empty() {
+            ::core::panicking::panic("assertion failed: !users.is_empty()")
+        }
+        if !(users.len() <= 3) {
+            ::core::panicking::panic("assertion failed: users.len() <= 3")
+        }
+        for (i, user) in users.iter().enumerate() {
+            if !(user.id >= i as i64) {
+                ::core::panicking::panic("assertion failed: user.id >= i as i64")
+            }
+        }
+    };
+    let mut body = body;
+    #[allow(unused_mut)]
+    let mut body = unsafe { ::tokio::macros::support::Pin::new_unchecked(&mut body) };
+    let body: ::core::pin::Pin<&mut dyn ::core::future::Future<Output = ()>> = body;
+    #[allow(
+        clippy::expect_used,
+        clippy::diverging_sub_expression,
+        clippy::needless_return,
+        clippy::unwrap_in_result
+    )]
+    {
+        use tokio::runtime::Builder;
+        return Builder::new_current_thread()
+            .enable_all()
+            .build()
+            .expect("Failed building the Runtime")
+            .block_on(body);
+    }
+}
+extern crate test;
 #[rustc_test_marker = "compile_fail_specific"]
 #[doc(hidden)]
 pub const compile_fail_specific: test::TestDescAndFn = test::TestDescAndFn {
@@ -7741,9 +8501,9 @@ pub const compile_fail_specific: test::TestDescAndFn = test::TestDescAndFn {
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 846usize,
+        start_line: 910usize,
         start_col: 4usize,
-        end_line: 846usize,
+        end_line: 910usize,
         end_col: 25usize,
         compile_fail: false,
         no_run: false,
@@ -7788,6 +8548,8 @@ pub fn main() -> () {
             &multiple_results_scalar_key,
             &scalar_output,
             &section_dynamic_where,
+            &section_match_bound_variable_no_warning,
+            &section_nested_match_outer_var_used,
             &section_with_local_params,
             &struct_source_params,
         ],

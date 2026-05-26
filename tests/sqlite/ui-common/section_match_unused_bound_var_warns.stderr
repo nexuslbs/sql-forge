@@ -1,0 +1,11 @@
+error: unused variable: `limit`
+  --> tests/sqlite/tmp-ui/section_match_unused_bound_var_warns.rs:14:22
+   |
+14 |                 Some(limit) => "",  // `limit` bound but NOT used in params (SQL is "")
+   |                      ^^^^^ help: if this is intentional, prefix it with an underscore: `_limit`
+   |
+note: the lint level is defined here
+  --> tests/sqlite/tmp-ui/section_match_unused_bound_var_warns.rs:1:9
+   |
+ 1 | #![deny(unused_variables)]
+   |         ^^^^^^^^^^^^^^^^

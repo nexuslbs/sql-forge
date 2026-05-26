@@ -842,6 +842,70 @@ fn compile_fail() {
     tests.compile_fail(&pattern);
 }
 
+#[tokio::test]
+async fn section_match_bound_variable_no_warning() {
+    let pool = pool().await;
+    let max_price = Some(price_new(15000, 2));
+
+    let products: Vec<Product> = sql_forge!(
+        Product,
+        "SELECT id, name, price, stock, category FROM products WHERE 1=1 {#filter_price} ORDER BY id",
+        (
+            #filter_price = match max_price {
+                Some(max_price) => (
+                    " AND price <= :max_price",
+                    ( :max_price = max_price ),
+                ),
+                None => "",
+            },
+        )
+    )
+    .fetch_all(&pool)
+    .await
+    .expect("section match pattern query failed");
+
+    for p in &products {
+        assert!(p.price <= 15000);
+    }
+}
+
+#[tokio::test]
+async fn section_nested_match_outer_var_used() {
+    let pool = pool().await;
+
+    let limit_val = Some(3i64);
+    let start_val = Some(0i64);
+
+    let users: Vec<User> = sql_forge!(
+        User,
+        "SELECT id, name FROM users WHERE 1=1 ORDER BY id {#limit}",
+        (
+            #limit = match limit_val {
+                Some(limit) => match start_val {
+                    Some(start) => (
+                        " LIMIT :limit OFFSET :start ",
+                        ( :start = start, :limit = limit ),
+                    ),
+                    None => (
+                        " LIMIT :limit ",
+                        ( :limit = limit ),
+                    ),
+                },
+                None => "",
+            },
+        )
+    )
+    .fetch_all(&pool)
+    .await
+    .expect("nested match query failed");
+
+    assert!(!users.is_empty());
+    assert!(users.len() <= 3);
+    for (i, user) in users.iter().enumerate() {
+        assert!(user.id >= i as i64);
+    }
+}
+
 #[test]
 fn compile_fail_specific() {
     let db_type = std::env::var("ENV_DB_TYPE").expect("ENV_DB_TYPE not defined");
