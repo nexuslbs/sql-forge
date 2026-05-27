@@ -10,8 +10,8 @@ Write SQL with named parameters and optional sections that are swapped in at run
 
 ```toml
 [dependencies]
-sql-forge = "0.1"
-sqlx = { version = "0.8", features = ["mysql", "runtime-tokio"] }  # or postgres / sqlite
+sql-forge = "0.4.1"
+sqlx = { version = "0.9.0", features = ["mysql", "runtime-tokio"] }  # or postgres / sqlite
 ```
 
 Import the macro:
