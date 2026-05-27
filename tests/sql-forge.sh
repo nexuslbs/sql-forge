@@ -1,6 +1,11 @@
 #!/bin/bash
 set -euo pipefail
 
+if [ "${1:-}" == '--build' ]; then
+  # Useful when the script fails due to Cargo.lock version mismatch
+  env-mysql cargo build
+fi
+
 echo "##############################################"
 echo "############ VERIFY DEPENDENCIES #############"
 echo "##############################################"
