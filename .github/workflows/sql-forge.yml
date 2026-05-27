@@ -69,6 +69,15 @@ jobs:
           toolchain: 1.95.0
           components: rustfmt, clippy
 
+      - name: Verify README sqlx version matches Cargo.toml
+        run: |
+          CARGOTOML_VERSION=$(awk '/^\[dependencies\]/ { in_deps = 1; next } /^\[/ { in_deps = 0 } in_deps && /^sqlx = / { gsub(/.*version = "/, ""); gsub(/".*/, ""); print; exit }' Cargo.toml)
+          README_VERSION=$(grep '^sqlx = { version = ' README.md | head -1 | sed 's/.*version = "\([^"]*\)".*/\1/')
+          if [ "$CARGOTOML_VERSION" != "$README_VERSION" ]; then
+            echo "ERROR: README.md sqlx version ($README_VERSION) does not match Cargo.toml sqlx version ($CARGOTOML_VERSION)"
+            exit 1
+          fi
+
       - name: Wait for database and init
         run: |
           if [ "${{ matrix.db-type }}" = "mysql" ]; then
