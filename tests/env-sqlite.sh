@@ -1,6 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
+export RUSTFLAGS="--cfg sql_forge_db_sqlite ${RUSTFLAGS:-}"
 export ENV_DB_TYPE="sqlite"
 export DATABASE_URL="sqlite:/app/sql_forge_test.db"
 export SQL_FORGE_DB_TYPE="sqlx::Sqlite"

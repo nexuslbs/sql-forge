@@ -210,6 +210,7 @@ enum MapKind {
 // Section value parsing (string fragments, match, grouped tuples)
 // =============================================================================
 
+/// Determines whether a parenthesized argument is a result map, params map, or sections map.
 fn detect_parenthesized_map_kind(input: ParseStream<'_>) -> syn::Result<Option<MapKind>> {
     let fork = input.fork();
     let content;
@@ -249,6 +250,7 @@ impl Parse for ResultAssign {
     }
 }
 
+/// Parses a parenthesized result map like `(>name = Model, ...)`.
 fn parse_result_map(input: ParseStream<'_>) -> syn::Result<Vec<ResultAssign>> {
     let content;
     syn::parenthesized!(content in input);
@@ -269,6 +271,7 @@ fn parse_result_map(input: ParseStream<'_>) -> syn::Result<Vec<ResultAssign>> {
     Ok(results)
 }
 
+/// Parses a parenthesized parameter map like `(:name = expr, ...)`.
 fn parse_param_map(input: ParseStream<'_>) -> syn::Result<Vec<ParamAssign>> {
     let content;
     syn::parenthesized!(content in input);
@@ -285,6 +288,7 @@ fn parse_param_map(input: ParseStream<'_>) -> syn::Result<Vec<ParamAssign>> {
     Ok(params)
 }
 
+/// Parses a parenthesized section map like `(#name = expr, ...)`.
 fn parse_section_map(input: ParseStream<'_>) -> syn::Result<Vec<SectionAssign>> {
     let content;
     syn::parenthesized!(content in input);
@@ -301,18 +305,13 @@ fn parse_section_map(input: ParseStream<'_>) -> syn::Result<Vec<SectionAssign>> 
     Ok(sections)
 }
 
-fn parse_params_source_expr(
-    input: ParseStream<'_>,
-    allow_sections: bool,
-) -> syn::Result<ParamsSource> {
+/// Parses a parameter source: either a struct expression or a parenthesized map.
+fn parse_params_source_expr(input: ParseStream<'_>) -> syn::Result<ParamsSource> {
     if input.peek(syn::token::Paren) {
         match detect_parenthesized_map_kind(input)? {
             Some(MapKind::Results) => Err(input
                 .error("sql_forge!: result maps are only allowed as the macro result argument")),
             Some(MapKind::Params) => Ok(ParamsSource::Map(parse_param_map(input)?)),
-            Some(MapKind::Sections) if allow_sections => {
-                Err(input.error("sql_forge!: section maps are not allowed here"))
-            }
             Some(MapKind::Sections) => Err(input.error(
                 "sql_forge!: use :name = expr for section-local parameters, not #name = expr",
             )),
@@ -323,6 +322,7 @@ fn parse_params_source_expr(
     }
 }
 
+/// Parses a section fragment: a string literal or `(string_literal, params)` tuple.
 fn parse_section_fragment(input: ParseStream<'_>) -> syn::Result<SectionFragment> {
     if input.peek(syn::token::Paren) {
         let fork = input.fork();
@@ -331,7 +331,7 @@ fn parse_section_fragment(input: ParseStream<'_>) -> syn::Result<SectionFragment
 
         if let Ok(first_expr) = content.parse::<Expr>() {
             if extract_lit_str(&first_expr).is_some() && content.parse::<Token![,]>().is_ok() {
-                let _ = parse_params_source_expr(&content, false)?;
+                let _ = parse_params_source_expr(&content)?;
                 if content.peek(Token![,]) {
                     content.parse::<Token![,]>()?;
                 }
@@ -344,7 +344,7 @@ fn parse_section_fragment(input: ParseStream<'_>) -> syn::Result<SectionFragment
                     })?;
                     let span = first_expr.span();
                     content.parse::<Token![,]>()?;
-                    let params = parse_params_source_expr(&content, false)?;
+                    let params = parse_params_source_expr(&content)?;
                     if content.peek(Token![,]) {
                         content.parse::<Token![,]>()?;
                     }
@@ -371,6 +371,7 @@ fn parse_section_fragment(input: ParseStream<'_>) -> syn::Result<SectionFragment
     })
 }
 
+/// Parses a section value which may be a single fragment, grouped tuple, or match expression.
 fn parse_section_value(input: ParseStream<'_>, width: usize) -> syn::Result<SectionValue> {
     if input.peek(Token![match]) {
         input.parse::<Token![match]>()?;
@@ -387,6 +388,7 @@ fn parse_section_value(input: ParseStream<'_>, width: usize) -> syn::Result<Sect
                 None
             };
             content.parse::<Token![=>]>()?;
+            // Recursive call in the match arm value allows nested match expressions.
             let value = parse_section_value(&content, width)?;
             if content.peek(Token![,]) {
                 content.parse::<Token![,]>()?;
@@ -404,6 +406,8 @@ fn parse_section_value(input: ParseStream<'_>, width: usize) -> syn::Result<Sect
     syn::parenthesized!(content in input);
     let mut items = Vec::new();
     while !content.is_empty() {
+        // Recursive call for a section value tuple item (representing a single section).
+        // Allows match expressions returning a single section.
         items.push(parse_section_value(&content, 1)?);
         if content.is_empty() {
             break;
@@ -455,7 +459,11 @@ impl Parse for SqlForgeInput {
             let first_ty: Type = input.parse()?;
             input.parse::<Token![,]>()?;
 
-            if input.peek(LitStr) {
+            if input.peek(LitStr) && is_db_type(&first_ty) {
+                let db = first_ty;
+                let sql = parse_sql_template(input)?;
+                (Some(db), ResultSpec::None, false, sql)
+            } else if input.peek(LitStr) {
                 let model = first_ty;
                 let sql = parse_sql_template(input)?;
                 (None, ResultSpec::Single(Box::new(model)), false, sql)
@@ -575,6 +583,7 @@ impl Parse for SqlForgeInput {
 // Database type resolution
 // =============================================================================
 
+/// Resolves the database type from `SQL_FORGE_DB_TYPE` env var or `Cargo.toml` metadata.
 fn resolve_db_from_env() -> Result<Type, String> {
     if let Ok(val) = std::env::var("SQL_FORGE_DB_TYPE") {
         return syn::parse_str::<Type>(&val).map_err(|err| {
@@ -627,6 +636,7 @@ fn resolve_db_from_env() -> Result<Type, String> {
     })
 }
 
+/// Returns true if the database type uses dollar-parameter placeholders (Postgres).
 fn uses_dollar_params(db: &Type) -> bool {
     let Type::Path(type_path) = db else {
         return false;
@@ -638,6 +648,23 @@ fn uses_dollar_params(db: &Type) -> bool {
         .is_some_and(|s| s.ident == "Postgres")
 }
 
+/// Returns true if the type is a sqlx database type (sqlx::MySql, sqlx::Postgres, sqlx::Sqlite).
+fn is_db_type(ty: &Type) -> bool {
+    let Type::Path(type_path) = ty else {
+        return false;
+    };
+    if type_path.qself.is_some() {
+        return false;
+    }
+    let segs = &type_path.path.segments;
+    if segs.len() != 2 {
+        return false;
+    }
+    segs[0].ident == "sqlx"
+        && ["MySql", "Postgres", "Sqlite"].contains(&segs[1].ident.to_string().as_str())
+}
+
+/// Returns true if a type is a standard Rust built-in scalar (i32, String, etc.).
 fn is_builtin_scalar_type(ty: &Type) -> bool {
     let Type::Path(type_path) = ty else {
         return false;
@@ -667,6 +694,7 @@ fn is_builtin_scalar_type(ty: &Type) -> bool {
         || ident == "String"
 }
 
+/// If the given model type is a built-in scalar, returns the type; otherwise None.
 fn scalar_output_type(model: &Type) -> Option<&Type> {
     if is_builtin_scalar_type(model) {
         return Some(model);
@@ -674,6 +702,7 @@ fn scalar_output_type(model: &Type) -> Option<&Type> {
     None
 }
 
+/// Appends text to the last `Segment::Text` or pushes a new one.
 fn push_text_segment(out: &mut Vec<Segment>, text: String) {
     if text.is_empty() {
         return;
@@ -684,6 +713,7 @@ fn push_text_segment(out: &mut Vec<Segment>, text: String) {
     }
 }
 
+/// Parses a SQL literal into segments (text, `{#section}`, `{(batch)}`).
 fn parse_literal_segments(sql: &str) -> Result<Vec<Segment>, String> {
     let mut out = Vec::new();
     let mut text = String::new();
@@ -781,14 +811,17 @@ fn parse_literal_segments(sql: &str) -> Result<Vec<Segment>, String> {
 // SQL template parsing: {#sections} and :param placeholders
 // =============================================================================
 
+/// Returns true if the character can start an identifier.
 fn is_ident_start(ch: char) -> bool {
     ch == '_' || ch.is_ascii_alphabetic()
 }
 
+/// Returns true if the character can continue an identifier.
 fn is_ident_continue(ch: char) -> bool {
     is_ident_start(ch) || ch.is_ascii_digit()
 }
 
+/// Strips suffix markers from a backtick-quoted alias identifier.
 fn sanitize_backticked_alias_ident(content: &str) -> String {
     let mut split_at = content.len();
     for (idx, ch) in content.char_indices() {
@@ -810,6 +843,7 @@ fn sanitize_backticked_alias_ident(content: &str) -> String {
     }
 }
 
+/// Sanitizes backtick-quoted alias identifiers in runtime SQL text.
 fn sanitize_runtime_sql_text(text: &str) -> String {
     let mut out = String::with_capacity(text.len());
     let mut chars = text.chars().peekable();
@@ -845,6 +879,7 @@ fn sanitize_runtime_sql_text(text: &str) -> String {
     out
 }
 
+/// Splits SQL text into literal text and `:param` placeholder parts.
 fn parse_text_parts(text: &str) -> Vec<TextPart> {
     let mut parts = Vec::new();
     let mut last = 0usize;
@@ -904,6 +939,7 @@ fn parse_text_parts(text: &str) -> Vec<TextPart> {
     parts
 }
 
+/// Renders SQL text for the compile-time validator, replacing `:param` with DB-specific placeholders.
 fn render_validator_text(
     text: &str,
     use_dollar_params: bool,
@@ -943,6 +979,7 @@ fn render_validator_text(
     (out_sql, occurrences)
 }
 
+/// Unwraps parenthesized, grouped, and single-expression block expressions.
 fn strip_expr(expr: &Expr) -> &Expr {
     match expr {
         Expr::Paren(ExprParen { expr, .. }) => strip_expr(expr),
@@ -960,6 +997,7 @@ fn strip_expr(expr: &Expr) -> &Expr {
     }
 }
 
+/// Extracts the string value from a string literal expression.
 fn extract_lit_str(expr: &Expr) -> Option<String> {
     match strip_expr(expr) {
         Expr::Lit(ExprLit {
@@ -973,6 +1011,7 @@ fn extract_lit_str(expr: &Expr) -> Option<String> {
 // Preprocessing: {>key} compile-time result flags
 // =============================================================================
 
+/// Generates a `__enhanced_result_flag_{name}` identifier for `{>name}` result key flags.
 fn result_flag_ident(name: &str) -> syn::Ident {
     format_ident!("__enhanced_result_flag_{}", name)
 }
@@ -1023,6 +1062,7 @@ fn preprocess_result_key_placeholders(input: TokenStream2) -> TokenStream2 {
     walk(input)
 }
 
+/// Builds `let` bindings for `{>key}` result flag identifiers.
 fn build_result_flag_bindings(keys: &[String], active_key: Option<&str>) -> Vec<TokenStream2> {
     keys.iter()
         .map(|key| {
@@ -1033,6 +1073,7 @@ fn build_result_flag_bindings(keys: &[String], active_key: Option<&str>) -> Vec<
         .collect()
 }
 
+/// Transposes a `[case][section]` matrix to `[section][case]`.
 fn transpose_section_case_matrix(
     case_matrix: Vec<Vec<SectionFragment>>,
     width: usize,
@@ -1053,6 +1094,7 @@ fn transpose_section_case_matrix(
     Ok(per_section)
 }
 
+/// Collects all section fragment cases as a `[case][section]` matrix for a given section value.
 fn collect_section_case_matrix(
     value: SectionValue,
     width: usize,
@@ -1222,6 +1264,7 @@ fn wrap_expr_for_match_arm(expr: Expr, match_expr: &Expr, pat: &Pat, guard: Opti
     }
 }
 
+/// Wraps a ParamsSource's expressions so they stay within the match arm scope.
 fn wrap_params_source_for_match_arm(
     params: &mut ParamsSource,
     match_expr: &Expr,
@@ -1241,6 +1284,7 @@ fn wrap_params_source_for_match_arm(
     }
 }
 
+/// Wraps all ParamsSource expressions in a section case matrix for the given match arm.
 fn wrap_section_case_matrix_for_match_arm(
     case_matrix: &mut [Vec<SectionFragment>],
     match_expr: &Expr,
@@ -1270,6 +1314,7 @@ fn collect_section_variants(
     transpose_section_case_matrix(collect_section_case_matrix(value, width, None)?, width)
 }
 
+/// Returns the key name if the expression is a `{>key}` result flag; otherwise None.
 fn expr_result_flag_key(expr: &Expr) -> Option<String> {
     match strip_expr(expr) {
         Expr::Path(path) if path.qself.is_none() && path.path.segments.len() == 1 => {
@@ -1281,6 +1326,7 @@ fn expr_result_flag_key(expr: &Expr) -> Option<String> {
     }
 }
 
+/// Returns whether a pattern matches a specific boolean value at compile time.
 fn pattern_matches_bool(pat: &Pat, value: bool) -> Option<bool> {
     match pat {
         Pat::Lit(expr_lit) => match &expr_lit.lit {
@@ -1525,6 +1571,7 @@ fn render_runtime_fragment(
     Ok(quote! { #( #steps )* })
 }
 
+/// Returns true if an ident starts with a lowercase letter or underscore (i.e., is a binding).
 fn is_pat_binding(ident: &Ident) -> bool {
     let name = ident.to_string();
     !name.is_empty()
@@ -1534,6 +1581,7 @@ fn is_pat_binding(ident: &Ident) -> bool {
             .is_some_and(|c| c.is_ascii_lowercase() || c == '_')
 }
 
+/// Collects all binding identifiers from a pattern.
 fn pat_var_idents(pat: &Pat) -> Vec<Ident> {
     let mut names = Vec::new();
     fn walk(p: &Pat, names: &mut Vec<Ident>) {
@@ -1554,6 +1602,7 @@ fn pat_var_idents(pat: &Pat) -> Vec<Ident> {
     names
 }
 
+/// Returns true if a section value's SQL or params references a given parameter name.
 fn section_value_refers_to(value: &SectionValue, name: &str) -> bool {
     match value {
         SectionValue::Single(f) => {
@@ -1589,6 +1638,7 @@ fn section_value_refers_to(value: &SectionValue, name: &str) -> bool {
     }
 }
 
+/// Builds the runtime `QueryBuilder` action tokens for a section value.
 fn build_section_runtime_action(
     value: &SectionValue,
     section_idx: usize,
@@ -1642,6 +1692,7 @@ fn build_section_runtime_action(
     }
 }
 
+/// Extracts unique parameter names from a list of segments.
 fn collect_used_param_names(segments: &[Segment]) -> Vec<String> {
     let mut names = Vec::new();
     let mut seen = HashSet::<String>::new();
@@ -1671,6 +1722,7 @@ fn collect_used_param_names(segments: &[Segment]) -> Vec<String> {
     names
 }
 
+/// Extracts unique parameter names from a SQL text string.
 fn collect_used_param_names_in_sql(sql: &str) -> Vec<String> {
     let mut names = Vec::new();
     let mut seen = HashSet::<String>::new();

@@ -9256,37 +9256,6 @@ fn execute_batch_full() {
     }
 }
 extern crate test;
-#[rustc_test_marker = "compile_fail"]
-#[doc(hidden)]
-pub const compile_fail: test::TestDescAndFn = test::TestDescAndFn {
-    desc: test::TestDesc {
-        name: test::StaticTestName("compile_fail"),
-        ignore: false,
-        ignore_message: ::core::option::Option::None,
-        source_file: "tests/tests.rs",
-        start_line: 838usize,
-        start_col: 4usize,
-        end_line: 838usize,
-        end_col: 16usize,
-        compile_fail: false,
-        no_run: false,
-        should_panic: test::ShouldPanic::No,
-        test_type: test::TestType::IntegrationTest,
-    },
-    testfn: test::StaticTestFn(
-        #[coverage(off)]
-        || test::assert_test_result(compile_fail()),
-    ),
-};
-fn compile_fail() {
-    let db_type = std::env::var("ENV_DB_TYPE").expect("ENV_DB_TYPE not defined");
-    let pattern = ::alloc::__export::must_use({
-        ::alloc::fmt::format(format_args!("tests/{0}/tmp-ui/*.rs", db_type))
-    });
-    let tests = trybuild::TestCases::new();
-    tests.compile_fail(&pattern);
-}
-extern crate test;
 #[rustc_test_marker = "section_match_bound_variable_no_warning"]
 #[doc(hidden)]
 pub const section_match_bound_variable_no_warning: test::TestDescAndFn = test::TestDescAndFn {
@@ -9295,9 +9264,9 @@ pub const section_match_bound_variable_no_warning: test::TestDescAndFn = test::T
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 846usize,
+        start_line: 838usize,
         start_col: 10usize,
-        end_line: 846usize,
+        end_line: 838usize,
         end_col: 49usize,
         compile_fail: false,
         no_run: false,
@@ -9633,9 +9602,9 @@ pub const section_nested_match_outer_var_used: test::TestDescAndFn = test::TestD
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 873usize,
+        start_line: 865usize,
         start_col: 10usize,
-        end_line: 873usize,
+        end_line: 865usize,
         end_col: 45usize,
         compile_fail: false,
         no_run: false,
@@ -10117,6 +10086,152 @@ fn section_nested_match_outer_var_used() {
     }
 }
 extern crate test;
+#[rustc_test_marker = "execute_only_with_explicit_postgres_db"]
+#[doc(hidden)]
+pub const execute_only_with_explicit_postgres_db: test::TestDescAndFn = test::TestDescAndFn {
+    desc: test::TestDesc {
+        name: test::StaticTestName("execute_only_with_explicit_postgres_db"),
+        ignore: false,
+        ignore_message: ::core::option::Option::None,
+        source_file: "tests/tests.rs",
+        start_line: 914usize,
+        start_col: 10usize,
+        end_line: 914usize,
+        end_col: 48usize,
+        compile_fail: false,
+        no_run: false,
+        should_panic: test::ShouldPanic::No,
+        test_type: test::TestType::IntegrationTest,
+    },
+    testfn: test::StaticTestFn(
+        #[coverage(off)]
+        || test::assert_test_result(execute_only_with_explicit_postgres_db()),
+    ),
+};
+fn execute_only_with_explicit_postgres_db() {
+    let body = async {
+        let pool = pool().await;
+        {
+            let _sql_forge_validator = || {
+                {
+                    {
+                        let _ = {
+                            #[allow(clippy::all)]
+                            {
+                                use ::sqlx::Arguments as _;
+                                let query_args = ::core::result::Result::<
+                                    _,
+                                    ::sqlx::error::BoxDynError,
+                                >::Ok(
+                                    <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default(),
+                                );
+                                ::sqlx::__query_scalar_with_result::<
+                                    sqlx::postgres::Postgres,
+                                    ::std::option::Option<i32>,
+                                    _,
+                                >("SELECT 1", query_args)
+                            }
+                        };
+                    }
+                }
+            };
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
+            }
+            impl __SqlForgeQuery_single {
+                async fn execute<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<<sqlx::Postgres as sqlx::Database>::QueryResult, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres>,
+                {
+                    self.inner.build().execute(executor).await
+                }
+            }
+            impl sql_forge::SqlForgeQueryExecute for __SqlForgeQuery_single {
+                type Db = sqlx::Postgres;
+                fn execute<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<
+                        <sqlx::Postgres as sqlx::Database>::QueryResult,
+                        sqlx::Error,
+                    >,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres> + Send + 'e,
+                    sqlx::Postgres: 'e,
+                {
+                    __SqlForgeQuery_single::execute(self, executor)
+                }
+            }
+            let mut __builder: sqlx::QueryBuilder<sqlx::Postgres> = sqlx::QueryBuilder::new(
+                "",
+            );
+            __builder.push("SELECT 1");
+            let __sql_forge_value_single = __SqlForgeQuery_single {
+                inner: __builder,
+            };
+            __sql_forge_value_single
+        }
+            .execute(&pool)
+            .await
+            .expect("execute-only with explicit Postgres db failed");
+    };
+    let mut body = body;
+    #[allow(unused_mut)]
+    let mut body = unsafe { ::tokio::macros::support::Pin::new_unchecked(&mut body) };
+    let body: ::core::pin::Pin<&mut dyn ::core::future::Future<Output = ()>> = body;
+    #[allow(
+        clippy::expect_used,
+        clippy::diverging_sub_expression,
+        clippy::needless_return,
+        clippy::unwrap_in_result
+    )]
+    {
+        use tokio::runtime::Builder;
+        return Builder::new_current_thread()
+            .enable_all()
+            .build()
+            .expect("Failed building the Runtime")
+            .block_on(body);
+    }
+}
+extern crate test;
+#[rustc_test_marker = "compile_fail"]
+#[doc(hidden)]
+pub const compile_fail: test::TestDescAndFn = test::TestDescAndFn {
+    desc: test::TestDesc {
+        name: test::StaticTestName("compile_fail"),
+        ignore: false,
+        ignore_message: ::core::option::Option::None,
+        source_file: "tests/tests.rs",
+        start_line: 935usize,
+        start_col: 4usize,
+        end_line: 935usize,
+        end_col: 16usize,
+        compile_fail: false,
+        no_run: false,
+        should_panic: test::ShouldPanic::No,
+        test_type: test::TestType::IntegrationTest,
+    },
+    testfn: test::StaticTestFn(
+        #[coverage(off)]
+        || test::assert_test_result(compile_fail()),
+    ),
+};
+fn compile_fail() {
+    let db_type = std::env::var("ENV_DB_TYPE").expect("ENV_DB_TYPE not defined");
+    let pattern = ::alloc::__export::must_use({
+        ::alloc::fmt::format(format_args!("tests/{0}/tmp-ui/*.rs", db_type))
+    });
+    let tests = trybuild::TestCases::new();
+    tests.compile_fail(&pattern);
+}
+extern crate test;
 #[rustc_test_marker = "compile_fail_specific"]
 #[doc(hidden)]
 pub const compile_fail_specific: test::TestDescAndFn = test::TestDescAndFn {
@@ -10125,9 +10240,9 @@ pub const compile_fail_specific: test::TestDescAndFn = test::TestDescAndFn {
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 910usize,
+        start_line: 943usize,
         start_col: 4usize,
-        end_line: 910usize,
+        end_line: 943usize,
         end_col: 25usize,
         compile_fail: false,
         no_run: false,
@@ -10163,6 +10278,7 @@ pub fn main() -> () {
             &execute_batch_full,
             &execute_only_insert_update_delete,
             &execute_only_query,
+            &execute_only_with_explicit_postgres_db,
             &grouped_sections,
             &grouped_sections_with_nested_matches,
             &list_parameter_in_clause,

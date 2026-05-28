@@ -1,6 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
+export RUSTFLAGS="--cfg sql_forge_db_mysql ${RUSTFLAGS:-}"
 export ENV_DB_TYPE="mysql"
 export DATABASE_URL="mysql://root:root@mysql:3306/sql_forge_test"
 export SQL_FORGE_DB_TYPE="sqlx::MySql"

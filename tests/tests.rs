@@ -834,14 +834,6 @@ async fn execute_batch_full() {
     .expect("delete batch full failed");
 }
 
-#[test]
-fn compile_fail() {
-    let db_type = std::env::var("ENV_DB_TYPE").expect("ENV_DB_TYPE not defined");
-    let pattern = format!("tests/{db_type}/tmp-ui/*.rs");
-    let tests = trybuild::TestCases::new();
-    tests.compile_fail(&pattern);
-}
-
 #[tokio::test]
 async fn section_match_bound_variable_no_warning() {
     let pool = pool().await;
@@ -904,6 +896,47 @@ async fn section_nested_match_outer_var_used() {
     for (i, user) in users.iter().enumerate() {
         assert!(user.id >= i as i64);
     }
+}
+
+#[cfg(sql_forge_db_mysql)]
+#[tokio::test]
+async fn execute_only_with_explicit_mysql_db() {
+    let pool = pool().await;
+
+    sql_forge!(sqlx::MySql, "SELECT 1",)
+        .execute(&pool)
+        .await
+        .expect("execute-only with explicit MySql db failed");
+}
+
+#[cfg(sql_forge_db_postgres)]
+#[tokio::test]
+async fn execute_only_with_explicit_postgres_db() {
+    let pool = pool().await;
+
+    sql_forge!(sqlx::Postgres, "SELECT 1",)
+        .execute(&pool)
+        .await
+        .expect("execute-only with explicit Postgres db failed");
+}
+
+#[cfg(sql_forge_db_sqlite)]
+#[tokio::test]
+async fn execute_only_with_explicit_sqlite_db() {
+    let pool = pool().await;
+
+    sql_forge!(sqlx::Sqlite, "SELECT 1",)
+        .execute(&pool)
+        .await
+        .expect("execute-only with explicit Sqlite db failed");
+}
+
+#[test]
+fn compile_fail() {
+    let db_type = std::env::var("ENV_DB_TYPE").expect("ENV_DB_TYPE not defined");
+    let pattern = format!("tests/{db_type}/tmp-ui/*.rs");
+    let tests = trybuild::TestCases::new();
+    tests.compile_fail(&pattern);
 }
 
 #[test]
