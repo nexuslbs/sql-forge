@@ -1,6 +1,6 @@
 {
   "db_name": "SQLite",
-  "query": "SELECT id, name FROM users WHERE id IN (?)  ORDER BY id",
+  "query": "SELECT id, name FROM users WHERE id IN (?, ?, ?)  AND id >= ? ORDER BY id",
   "describe": {
     "columns": [
       {
@@ -27,12 +27,12 @@
       }
     ],
     "parameters": {
-      "Right": 1
+      "Right": 4
     },
     "nullable": [
       false,
       false
     ]
   },
-  "hash": "861c59846cfe0d6f30a18c18d19cd2bb0a10547d401776db35a037bc19777ad7"
+  "hash": "6be3f6ac7a1ed37bf4c7f230a4b6b451c6b49b7598667f93d4f75dc99b0511de"
 }

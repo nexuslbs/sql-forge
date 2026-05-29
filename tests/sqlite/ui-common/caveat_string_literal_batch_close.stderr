@@ -1,4 +1,4 @@
-error: error returned from database: (code: 1) unrecognized token: "}"
+error: error returned from database: (code: 1) near "abc": syntax error
   --> tests/sqlite/tmp-ui/caveat_string_literal_batch_close.rs:10:13
    |
 10 |       let _ = sql_forge!(

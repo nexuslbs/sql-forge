@@ -389,22 +389,22 @@ fn basic_query_with_inline_params() {
         let pool = pool().await;
         let users: Vec<User> = {
             let _sql_forge_validator = || {
-                let __enhanced_top_level_max_id = &(3i64);
-                let __enhanced_top_level_limit = &(10i64);
+                let __sql_forge_top_level_max_id = &(3i64);
+                let __sql_forge_top_level_limit = &(10i64);
                 {
                     type __EnhancedModel = User;
                     {
-                        let __enhanced_validator_arg_0 = __enhanced_top_level_max_id;
-                        let __enhanced_validator_arg_1 = __enhanced_top_level_max_id;
-                        let __enhanced_validator_arg_2 = __enhanced_top_level_limit;
+                        let __sql_forge_validator_arg_0 = __sql_forge_top_level_max_id;
+                        let __sql_forge_validator_arg_1 = __sql_forge_top_level_max_id;
+                        let __sql_forge_validator_arg_2 = __sql_forge_top_level_limit;
                         let _ = {
                             {
                                 #[allow(clippy::all)]
                                 {
                                     use ::sqlx::Arguments as _;
-                                    let arg0 = &(__enhanced_validator_arg_0);
-                                    let arg1 = &(__enhanced_validator_arg_1);
-                                    let arg2 = &(__enhanced_validator_arg_2);
+                                    let arg0 = &(__sql_forge_validator_arg_0);
+                                    let arg1 = &(__sql_forge_validator_arg_1);
+                                    let arg2 = &(__sql_forge_validator_arg_2);
                                     let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
@@ -560,17 +560,17 @@ fn basic_query_with_inline_params() {
                     __SqlForgeQuery_single::execute(self, executor)
                 }
             }
-            let __enhanced_runtime_max_id = 3i64;
-            let __enhanced_runtime_limit = 10i64;
+            let __sql_forge_runtime_max_id = 3i64;
+            let __sql_forge_runtime_limit = 10i64;
             let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
                 "",
             );
             __builder.push("SELECT id, name FROM users WHERE id <= ");
-            __builder.push_bind(__enhanced_runtime_max_id);
+            __builder.push_bind(__sql_forge_runtime_max_id);
             __builder.push(" AND ");
-            __builder.push_bind(__enhanced_runtime_max_id);
+            __builder.push_bind(__sql_forge_runtime_max_id);
             __builder.push(" >= id LIMIT ");
-            __builder.push_bind(__enhanced_runtime_limit);
+            __builder.push_bind(__sql_forge_runtime_limit);
             let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
@@ -679,15 +679,15 @@ fn scalar_output() {
         let pool = pool().await;
         let count: i64 = {
             let _sql_forge_validator = || {
-                let __enhanced_top_level_min_id = &(2i64);
+                let __sql_forge_top_level_min_id = &(2i64);
                 {
                     {
-                        let __enhanced_validator_arg_0 = __enhanced_top_level_min_id;
+                        let __sql_forge_validator_arg_0 = __sql_forge_top_level_min_id;
                         let _ = {
                             #[allow(clippy::all)]
                             {
                                 use ::sqlx::Arguments as _;
-                                let arg0 = &(__enhanced_validator_arg_0);
+                                let arg0 = &(__sql_forge_validator_arg_0);
                                 let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                 query_args
                                     .reserve(
@@ -813,12 +813,12 @@ fn scalar_output() {
                     __SqlForgeQuery_single::execute(self, executor)
                 }
             }
-            let __enhanced_runtime_min_id = 2i64;
+            let __sql_forge_runtime_min_id = 2i64;
             let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
                 "",
             );
             __builder.push("SELECT COUNT(*) FROM users WHERE id > ");
-            __builder.push_bind(__enhanced_runtime_min_id);
+            __builder.push_bind(__sql_forge_runtime_min_id);
             let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
@@ -889,21 +889,21 @@ fn struct_source_params() {
         let filter = Filter { max_id: 3, limit: 2 };
         let users: Vec<User> = {
             let _sql_forge_validator = || {
-                let __enhanced_source_top_level = &(filter);
-                let __enhanced_top_level_max_id = &__enhanced_source_top_level.max_id;
-                let __enhanced_top_level_limit = &__enhanced_source_top_level.limit;
+                let __sql_forge_source_top_level = &(filter);
+                let __sql_forge_top_level_max_id = &__sql_forge_source_top_level.max_id;
+                let __sql_forge_top_level_limit = &__sql_forge_source_top_level.limit;
                 {
                     type __EnhancedModel = User;
                     {
-                        let __enhanced_validator_arg_0 = __enhanced_top_level_max_id;
-                        let __enhanced_validator_arg_1 = __enhanced_top_level_limit;
+                        let __sql_forge_validator_arg_0 = __sql_forge_top_level_max_id;
+                        let __sql_forge_validator_arg_1 = __sql_forge_top_level_limit;
                         let _ = {
                             {
                                 #[allow(clippy::all)]
                                 {
                                     use ::sqlx::Arguments as _;
-                                    let arg0 = &(__enhanced_validator_arg_0);
-                                    let arg1 = &(__enhanced_validator_arg_1);
+                                    let arg0 = &(__sql_forge_validator_arg_0);
+                                    let arg1 = &(__sql_forge_validator_arg_1);
                                     let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
@@ -1053,16 +1053,16 @@ fn struct_source_params() {
                     __SqlForgeQuery_single::execute(self, executor)
                 }
             }
-            let __enhanced_source_runtime = &(filter);
-            let __enhanced_runtime_max_id = __enhanced_source_runtime.max_id;
-            let __enhanced_runtime_limit = __enhanced_source_runtime.limit;
+            let __sql_forge_source_runtime = &(filter);
+            let __sql_forge_runtime_max_id = __sql_forge_source_runtime.max_id;
+            let __sql_forge_runtime_limit = __sql_forge_source_runtime.limit;
             let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
                 "",
             );
             __builder.push("SELECT id, name FROM users WHERE id <= ");
-            __builder.push_bind(__enhanced_runtime_max_id);
+            __builder.push_bind(__sql_forge_runtime_max_id);
             __builder.push(" LIMIT ");
-            __builder.push_bind(__enhanced_runtime_limit);
+            __builder.push_bind(__sql_forge_runtime_limit);
             let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
@@ -1136,14 +1136,14 @@ fn section_dynamic_where() {
                 {
                     type __EnhancedModel = Product;
                     {
-                        let __enhanced_section_case_single_0_filter_category_cat = &(cat);
-                        let __enhanced_validator_arg_0 = __enhanced_section_case_single_0_filter_category_cat;
+                        let __sql_forge_section_case_single_0_filter_category_cat = &(cat);
+                        let __sql_forge_validator_arg_0 = __sql_forge_section_case_single_0_filter_category_cat;
                         let _ = {
                             {
                                 #[allow(clippy::all)]
                                 {
                                     use ::sqlx::Arguments as _;
-                                    let arg0 = &(__enhanced_validator_arg_0);
+                                    let arg0 = &(__sql_forge_validator_arg_0);
                                     let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
@@ -1310,9 +1310,9 @@ fn section_dynamic_where() {
                     "\n        SELECT id, name, price, stock, category\n        FROM products\n        WHERE 1 = 1\n        ",
                 );
             {
-                let __enhanced_section_filter_category_cat = cat;
+                let __sql_forge_section_filter_category_cat = cat;
                 __builder.push(" AND category = ");
-                __builder.push_bind(__enhanced_section_filter_category_cat);
+                __builder.push_bind(__sql_forge_section_filter_category_cat);
                 __builder.push(" ");
             }
             __builder.push("\n        ");
@@ -1394,14 +1394,14 @@ fn section_with_local_params() {
                 {
                     type __EnhancedModel = User;
                     {
-                        let __enhanced_section_case_single_0_filter_max_id = &(max_id);
-                        let __enhanced_validator_arg_0 = __enhanced_section_case_single_0_filter_max_id;
+                        let __sql_forge_section_case_single_0_filter_max_id = &(max_id);
+                        let __sql_forge_validator_arg_0 = __sql_forge_section_case_single_0_filter_max_id;
                         let _ = {
                             {
                                 #[allow(clippy::all)]
                                 {
                                     use ::sqlx::Arguments as _;
-                                    let arg0 = &(__enhanced_validator_arg_0);
+                                    let arg0 = &(__sql_forge_validator_arg_0);
                                     let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
@@ -1547,9 +1547,9 @@ fn section_with_local_params() {
             );
             __builder.push("SELECT id, name FROM users ");
             {
-                let __enhanced_section_filter_max_id = max_id;
+                let __sql_forge_section_filter_max_id = max_id;
                 __builder.push(" WHERE id <= ");
-                __builder.push_bind(__enhanced_section_filter_max_id);
+                __builder.push_bind(__sql_forge_section_filter_max_id);
                 __builder.push(" ");
             }
             let __sql_forge_value_single = __SqlForgeQuery_single {
@@ -2351,23 +2351,23 @@ fn list_parameter_in_clause() {
         );
         let users: Vec<User> = {
             let _sql_forge_validator = || {
-                let __enhanced_top_level_ids = &(ids);
+                let __sql_forge_top_level_ids = &(ids);
                 {
                     type __EnhancedModel = User;
                     {
-                        let __enhanced_validator_arg_0 = (__enhanced_top_level_ids)
+                        let __sql_forge_validator_arg_0 = (__sql_forge_top_level_ids)
                             .as_slice()
                             .first()
                             .expect(
                                 "sql_forge!: list parameters used in validation must have at least one representative element",
                             );
-                        let __enhanced_validator_arg_1 = (__enhanced_top_level_ids)
+                        let __sql_forge_validator_arg_1 = (__sql_forge_top_level_ids)
                             .as_slice()
                             .first()
                             .expect(
                                 "sql_forge!: list parameters used in validation must have at least one representative element",
                             );
-                        let __enhanced_validator_arg_2 = (__enhanced_top_level_ids)
+                        let __sql_forge_validator_arg_2 = (__sql_forge_top_level_ids)
                             .as_slice()
                             .first()
                             .expect(
@@ -2378,9 +2378,9 @@ fn list_parameter_in_clause() {
                                 #[allow(clippy::all)]
                                 {
                                     use ::sqlx::Arguments as _;
-                                    let arg0 = &(__enhanced_validator_arg_0);
-                                    let arg1 = &(__enhanced_validator_arg_1);
-                                    let arg2 = &(__enhanced_validator_arg_2);
+                                    let arg0 = &(__sql_forge_validator_arg_0);
+                                    let arg1 = &(__sql_forge_validator_arg_1);
+                                    let arg2 = &(__sql_forge_validator_arg_2);
                                     let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
@@ -2536,14 +2536,14 @@ fn list_parameter_in_clause() {
                     __SqlForgeQuery_single::execute(self, executor)
                 }
             }
-            let __enhanced_runtime_ids = ids;
+            let __sql_forge_runtime_ids = ids;
             let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
                 "",
             );
             __builder.push("SELECT id, name FROM users WHERE id IN (");
-            let __enhanced_values = __enhanced_runtime_ids;
+            let __sql_forge_values = __sql_forge_runtime_ids;
             let mut __separated = __builder.separated(", ");
-            for __value in __enhanced_values {
+            for __value in __sql_forge_values {
                 __separated.push_bind(__value);
             }
             __builder.push(")");
@@ -2663,29 +2663,29 @@ fn list_parameter_in_main_sql_with_match_filter() {
         let expected_ids = [UserId(3), UserId(4), UserId(5)];
         let users: Vec<User> = {
             let _sql_forge_validator = || {
-                let __enhanced_top_level_ids = &(ids);
+                let __sql_forge_top_level_ids = &(ids);
                 {
                     type __EnhancedModel = User;
                     {
-                        let __enhanced_validator_arg_0 = (__enhanced_top_level_ids)
+                        let __sql_forge_validator_arg_0 = (__sql_forge_top_level_ids)
                             .as_slice()
                             .first()
                             .expect(
                                 "sql_forge!: list parameters used in validation must have at least one representative element",
                             );
-                        let __enhanced_validator_arg_1 = (__enhanced_top_level_ids)
+                        let __sql_forge_validator_arg_1 = (__sql_forge_top_level_ids)
                             .as_slice()
                             .first()
                             .expect(
                                 "sql_forge!: list parameters used in validation must have at least one representative element",
                             );
-                        let __enhanced_validator_arg_2 = (__enhanced_top_level_ids)
+                        let __sql_forge_validator_arg_2 = (__sql_forge_top_level_ids)
                             .as_slice()
                             .first()
                             .expect(
                                 "sql_forge!: list parameters used in validation must have at least one representative element",
                             );
-                        let __enhanced_section_case_single_0_filter_min_id = &(match &(min_id) {
+                        let __sql_forge_section_case_single_0_filter_min_id = &(match &(min_id) {
                             Some(min_id) => {
                                 let _ = &min_id;
                                 min_id
@@ -2699,16 +2699,16 @@ fn list_parameter_in_main_sql_with_match_filter() {
                                 );
                             }
                         });
-                        let __enhanced_validator_arg_3 = __enhanced_section_case_single_0_filter_min_id;
+                        let __sql_forge_validator_arg_3 = __sql_forge_section_case_single_0_filter_min_id;
                         let _ = {
                             {
                                 #[allow(clippy::all)]
                                 {
                                     use ::sqlx::Arguments as _;
-                                    let arg0 = &(__enhanced_validator_arg_0);
-                                    let arg1 = &(__enhanced_validator_arg_1);
-                                    let arg2 = &(__enhanced_validator_arg_2);
-                                    let arg3 = &(__enhanced_validator_arg_3);
+                                    let arg0 = &(__sql_forge_validator_arg_0);
+                                    let arg1 = &(__sql_forge_validator_arg_1);
+                                    let arg2 = &(__sql_forge_validator_arg_2);
+                                    let arg3 = &(__sql_forge_validator_arg_3);
                                     let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
@@ -2770,19 +2770,19 @@ fn list_parameter_in_main_sql_with_match_filter() {
                         };
                     }
                     {
-                        let __enhanced_validator_arg_0 = (__enhanced_top_level_ids)
+                        let __sql_forge_validator_arg_0 = (__sql_forge_top_level_ids)
                             .as_slice()
                             .first()
                             .expect(
                                 "sql_forge!: list parameters used in validation must have at least one representative element",
                             );
-                        let __enhanced_validator_arg_1 = (__enhanced_top_level_ids)
+                        let __sql_forge_validator_arg_1 = (__sql_forge_top_level_ids)
                             .as_slice()
                             .first()
                             .expect(
                                 "sql_forge!: list parameters used in validation must have at least one representative element",
                             );
-                        let __enhanced_validator_arg_2 = (__enhanced_top_level_ids)
+                        let __sql_forge_validator_arg_2 = (__sql_forge_top_level_ids)
                             .as_slice()
                             .first()
                             .expect(
@@ -2793,9 +2793,9 @@ fn list_parameter_in_main_sql_with_match_filter() {
                                 #[allow(clippy::all)]
                                 {
                                     use ::sqlx::Arguments as _;
-                                    let arg0 = &(__enhanced_validator_arg_0);
-                                    let arg1 = &(__enhanced_validator_arg_1);
-                                    let arg2 = &(__enhanced_validator_arg_2);
+                                    let arg0 = &(__sql_forge_validator_arg_0);
+                                    let arg1 = &(__sql_forge_validator_arg_1);
+                                    let arg2 = &(__sql_forge_validator_arg_2);
                                     let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
@@ -2951,14 +2951,14 @@ fn list_parameter_in_main_sql_with_match_filter() {
                     __SqlForgeQuery_single::execute(self, executor)
                 }
             }
-            let __enhanced_runtime_ids = ids;
+            let __sql_forge_runtime_ids = ids;
             let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
                 "",
             );
             __builder.push("SELECT id, name FROM users WHERE id IN (");
-            let __enhanced_values = __enhanced_runtime_ids;
+            let __sql_forge_values = __sql_forge_runtime_ids;
             let mut __separated = __builder.separated(", ");
-            for __value in __enhanced_values {
+            for __value in __sql_forge_values {
                 __separated.push_bind(__value);
             }
             __builder.push(") ");
@@ -2966,9 +2966,9 @@ fn list_parameter_in_main_sql_with_match_filter() {
                 Some(min_id) => {
                     ::core::hint::black_box(&min_id);
                     {
-                        let __enhanced_section_filter_0_min_id = min_id;
+                        let __sql_forge_section_filter_0_min_id = min_id;
                         __builder.push(" AND id >= ");
-                        __builder.push_bind(__enhanced_section_filter_0_min_id);
+                        __builder.push_bind(__sql_forge_section_filter_0_min_id);
                     }
                 }
                 None => {}
@@ -3097,7 +3097,7 @@ fn list_parameter_with_empty_guard() {
                         };
                     }
                     {
-                        let __enhanced_section_case_single_1_filter_ids = &(match &(ids
+                        let __sql_forge_section_case_single_1_filter_ids = &(match &(ids
                             .is_empty())
                         {
                             false => &(ids),
@@ -3110,19 +3110,19 @@ fn list_parameter_with_empty_guard() {
                                 );
                             }
                         });
-                        let __enhanced_validator_arg_0 = (__enhanced_section_case_single_1_filter_ids)
+                        let __sql_forge_validator_arg_0 = (__sql_forge_section_case_single_1_filter_ids)
                             .as_slice()
                             .first()
                             .expect(
                                 "sql_forge!: list parameters used in validation must have at least one representative element",
                             );
-                        let __enhanced_validator_arg_1 = (__enhanced_section_case_single_1_filter_ids)
+                        let __sql_forge_validator_arg_1 = (__sql_forge_section_case_single_1_filter_ids)
                             .as_slice()
                             .first()
                             .expect(
                                 "sql_forge!: list parameters used in validation must have at least one representative element",
                             );
-                        let __enhanced_validator_arg_2 = (__enhanced_section_case_single_1_filter_ids)
+                        let __sql_forge_validator_arg_2 = (__sql_forge_section_case_single_1_filter_ids)
                             .as_slice()
                             .first()
                             .expect(
@@ -3133,9 +3133,9 @@ fn list_parameter_with_empty_guard() {
                                 #[allow(clippy::all)]
                                 {
                                     use ::sqlx::Arguments as _;
-                                    let arg0 = &(__enhanced_validator_arg_0);
-                                    let arg1 = &(__enhanced_validator_arg_1);
-                                    let arg2 = &(__enhanced_validator_arg_2);
+                                    let arg0 = &(__sql_forge_validator_arg_0);
+                                    let arg1 = &(__sql_forge_validator_arg_1);
+                                    let arg2 = &(__sql_forge_validator_arg_2);
                                     let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
@@ -3300,11 +3300,11 @@ fn list_parameter_with_empty_guard() {
                     __builder.push("1 = 0");
                 }
                 false => {
-                    let __enhanced_section_filter_1_ids = ids;
+                    let __sql_forge_section_filter_1_ids = ids;
                     __builder.push("id IN (");
-                    let __enhanced_values = __enhanced_section_filter_1_ids;
+                    let __sql_forge_values = __sql_forge_section_filter_1_ids;
                     let mut __separated = __builder.separated(", ");
-                    for __value in __enhanced_values {
+                    for __value in __sql_forge_values {
                         __separated.push_bind(__value);
                     }
                     __builder.push(")");
@@ -3381,22 +3381,22 @@ fn multiple_results_group() {
         let min_price = price_new(10000, 2);
         let group = {
             let _sql_forge_validator = || {
-                let __enhanced_top_level_category_id = &(category_id);
-                let __enhanced_top_level_min_price = &(min_price);
+                let __sql_forge_top_level_category_id = &(category_id);
+                let __sql_forge_top_level_min_price = &(min_price);
                 {
-                    let __enhanced_result_flag_amount: bool = true;
-                    let __enhanced_result_flag_list: bool = false;
+                    let __sql_forge_result_flag_amount: bool = true;
+                    let __sql_forge_result_flag_list: bool = false;
                     type __EnhancedModel = AmountResult;
                     {
-                        let __enhanced_validator_arg_0 = __enhanced_top_level_category_id;
-                        let __enhanced_validator_arg_1 = __enhanced_top_level_min_price;
+                        let __sql_forge_validator_arg_0 = __sql_forge_top_level_category_id;
+                        let __sql_forge_validator_arg_1 = __sql_forge_top_level_min_price;
                         let _ = {
                             {
                                 #[allow(clippy::all)]
                                 {
                                     use ::sqlx::Arguments as _;
-                                    let arg0 = &(__enhanced_validator_arg_0);
-                                    let arg1 = &(__enhanced_validator_arg_1);
+                                    let arg0 = &(__sql_forge_validator_arg_0);
+                                    let arg1 = &(__sql_forge_validator_arg_1);
                                     let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
@@ -3442,13 +3442,13 @@ fn multiple_results_group() {
                     }
                 }
                 {
-                    let __enhanced_result_flag_amount: bool = false;
-                    let __enhanced_result_flag_list: bool = true;
+                    let __sql_forge_result_flag_amount: bool = false;
+                    let __sql_forge_result_flag_list: bool = true;
                     type __EnhancedModel = Item;
                     {
-                        let __enhanced_validator_arg_0 = __enhanced_top_level_category_id;
-                        let __enhanced_validator_arg_1 = __enhanced_top_level_min_price;
-                        let __enhanced_section_case_list_0_order_limit_start = &(match &(__enhanced_result_flag_amount) {
+                        let __sql_forge_validator_arg_0 = __sql_forge_top_level_category_id;
+                        let __sql_forge_validator_arg_1 = __sql_forge_top_level_min_price;
+                        let __sql_forge_section_case_list_0_order_limit_start = &(match &(__sql_forge_result_flag_amount) {
                             false => &(0i64),
                             _ => {
                                 ::core::panicking::panic_fmt(
@@ -3459,7 +3459,7 @@ fn multiple_results_group() {
                                 );
                             }
                         });
-                        let __enhanced_section_case_list_0_order_limit_limit = &(match &(__enhanced_result_flag_amount) {
+                        let __sql_forge_section_case_list_0_order_limit_limit = &(match &(__sql_forge_result_flag_amount) {
                             false => &(50i64),
                             _ => {
                                 ::core::panicking::panic_fmt(
@@ -3470,17 +3470,17 @@ fn multiple_results_group() {
                                 );
                             }
                         });
-                        let __enhanced_validator_arg_2 = __enhanced_section_case_list_0_order_limit_limit;
-                        let __enhanced_validator_arg_3 = __enhanced_section_case_list_0_order_limit_start;
+                        let __sql_forge_validator_arg_2 = __sql_forge_section_case_list_0_order_limit_limit;
+                        let __sql_forge_validator_arg_3 = __sql_forge_section_case_list_0_order_limit_start;
                         let _ = {
                             {
                                 #[allow(clippy::all)]
                                 {
                                     use ::sqlx::Arguments as _;
-                                    let arg0 = &(__enhanced_validator_arg_0);
-                                    let arg1 = &(__enhanced_validator_arg_1);
-                                    let arg2 = &(__enhanced_validator_arg_2);
-                                    let arg3 = &(__enhanced_validator_arg_3);
+                                    let arg0 = &(__sql_forge_validator_arg_0);
+                                    let arg1 = &(__sql_forge_validator_arg_1);
+                                    let arg2 = &(__sql_forge_validator_arg_2);
+                                    let arg3 = &(__sql_forge_validator_arg_3);
                                     let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
@@ -3754,15 +3754,15 @@ fn multiple_results_group() {
                     __SqlForgeQuery_list::execute(self, executor)
                 }
             }
-            let __enhanced_runtime_category_id = category_id;
-            let __enhanced_runtime_min_price = min_price;
-            let __enhanced_result_flag_amount: bool = true;
-            let __enhanced_result_flag_list: bool = false;
+            let __sql_forge_runtime_category_id = category_id;
+            let __sql_forge_runtime_min_price = min_price;
+            let __sql_forge_result_flag_amount: bool = true;
+            let __sql_forge_result_flag_list: bool = false;
             let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
                 "",
             );
             __builder.push("\n        SELECT ");
-            match __enhanced_result_flag_amount {
+            match __sql_forge_result_flag_amount {
                 true => {
                     __builder.push("COUNT(*) AS total");
                 }
@@ -3771,7 +3771,7 @@ fn multiple_results_group() {
                 }
             }
             __builder.push("\n        FROM items\n        ");
-            match __enhanced_result_flag_amount {
+            match __sql_forge_result_flag_amount {
                 true => {}
                 false => {
                     __builder
@@ -3779,36 +3779,36 @@ fn multiple_results_group() {
                 }
             }
             __builder.push("\n        WHERE items.category_id = ");
-            __builder.push_bind(__enhanced_runtime_category_id);
+            __builder.push_bind(__sql_forge_runtime_category_id);
             __builder.push("\n        AND   items.price      >= ");
-            __builder.push_bind(__enhanced_runtime_min_price);
+            __builder.push_bind(__sql_forge_runtime_min_price);
             __builder.push("\n        ");
-            match __enhanced_result_flag_amount {
+            match __sql_forge_result_flag_amount {
                 true => {}
                 false => {
-                    let __enhanced_section_order_limit_1_grouped_2_start = 0i64;
-                    let __enhanced_section_order_limit_1_grouped_2_limit = 50i64;
+                    let __sql_forge_section_order_limit_1_grouped_2_start = 0i64;
+                    let __sql_forge_section_order_limit_1_grouped_2_limit = 50i64;
                     __builder.push("ORDER BY items.created_at DESC LIMIT ");
                     __builder
-                        .push_bind(__enhanced_section_order_limit_1_grouped_2_limit);
+                        .push_bind(__sql_forge_section_order_limit_1_grouped_2_limit);
                     __builder.push(" OFFSET ");
                     __builder
-                        .push_bind(__enhanced_section_order_limit_1_grouped_2_start);
+                        .push_bind(__sql_forge_section_order_limit_1_grouped_2_start);
                 }
             }
             __builder.push("\n        ");
             let __sql_forge_value_amount = __SqlForgeQuery_amount {
                 inner: __builder,
             };
-            let __enhanced_runtime_category_id = category_id;
-            let __enhanced_runtime_min_price = min_price;
-            let __enhanced_result_flag_amount: bool = false;
-            let __enhanced_result_flag_list: bool = true;
+            let __sql_forge_runtime_category_id = category_id;
+            let __sql_forge_runtime_min_price = min_price;
+            let __sql_forge_result_flag_amount: bool = false;
+            let __sql_forge_result_flag_list: bool = true;
             let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
                 "",
             );
             __builder.push("\n        SELECT ");
-            match __enhanced_result_flag_amount {
+            match __sql_forge_result_flag_amount {
                 true => {
                     __builder.push("COUNT(*) AS total");
                 }
@@ -3817,7 +3817,7 @@ fn multiple_results_group() {
                 }
             }
             __builder.push("\n        FROM items\n        ");
-            match __enhanced_result_flag_amount {
+            match __sql_forge_result_flag_amount {
                 true => {}
                 false => {
                     __builder
@@ -3825,21 +3825,21 @@ fn multiple_results_group() {
                 }
             }
             __builder.push("\n        WHERE items.category_id = ");
-            __builder.push_bind(__enhanced_runtime_category_id);
+            __builder.push_bind(__sql_forge_runtime_category_id);
             __builder.push("\n        AND   items.price      >= ");
-            __builder.push_bind(__enhanced_runtime_min_price);
+            __builder.push_bind(__sql_forge_runtime_min_price);
             __builder.push("\n        ");
-            match __enhanced_result_flag_amount {
+            match __sql_forge_result_flag_amount {
                 true => {}
                 false => {
-                    let __enhanced_section_order_limit_1_grouped_2_start = 0i64;
-                    let __enhanced_section_order_limit_1_grouped_2_limit = 50i64;
+                    let __sql_forge_section_order_limit_1_grouped_2_start = 0i64;
+                    let __sql_forge_section_order_limit_1_grouped_2_limit = 50i64;
                     __builder.push("ORDER BY items.created_at DESC LIMIT ");
                     __builder
-                        .push_bind(__enhanced_section_order_limit_1_grouped_2_limit);
+                        .push_bind(__sql_forge_section_order_limit_1_grouped_2_limit);
                     __builder.push(" OFFSET ");
                     __builder
-                        .push_bind(__enhanced_section_order_limit_1_grouped_2_start);
+                        .push_bind(__sql_forge_section_order_limit_1_grouped_2_start);
                 }
             }
             __builder.push("\n        ");
@@ -3986,17 +3986,17 @@ fn multiple_results_scalar_key() {
         let category_id = 2i64;
         let group = {
             let _sql_forge_validator = || {
-                let __enhanced_top_level_category_id = &(category_id);
+                let __sql_forge_top_level_category_id = &(category_id);
                 {
-                    let __enhanced_result_flag_amount: bool = true;
-                    let __enhanced_result_flag_first_name: bool = false;
+                    let __sql_forge_result_flag_amount: bool = true;
+                    let __sql_forge_result_flag_first_name: bool = false;
                     {
-                        let __enhanced_validator_arg_0 = __enhanced_top_level_category_id;
+                        let __sql_forge_validator_arg_0 = __sql_forge_top_level_category_id;
                         let _ = {
                             #[allow(clippy::all)]
                             {
                                 use ::sqlx::Arguments as _;
-                                let arg0 = &(__enhanced_validator_arg_0);
+                                let arg0 = &(__sql_forge_validator_arg_0);
                                 let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                 query_args
                                     .reserve(
@@ -4026,15 +4026,15 @@ fn multiple_results_scalar_key() {
                     }
                 }
                 {
-                    let __enhanced_result_flag_amount: bool = false;
-                    let __enhanced_result_flag_first_name: bool = true;
+                    let __sql_forge_result_flag_amount: bool = false;
+                    let __sql_forge_result_flag_first_name: bool = true;
                     {
-                        let __enhanced_validator_arg_0 = __enhanced_top_level_category_id;
+                        let __sql_forge_validator_arg_0 = __sql_forge_top_level_category_id;
                         let _ = {
                             #[allow(clippy::all)]
                             {
                                 use ::sqlx::Arguments as _;
-                                let arg0 = &(__enhanced_validator_arg_0);
+                                let arg0 = &(__sql_forge_validator_arg_0);
                                 let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                 query_args
                                     .reserve(
@@ -4265,14 +4265,14 @@ fn multiple_results_scalar_key() {
                     __SqlForgeQuery_first_name::execute(self, executor)
                 }
             }
-            let __enhanced_runtime_category_id = category_id;
-            let __enhanced_result_flag_amount: bool = true;
-            let __enhanced_result_flag_first_name: bool = false;
+            let __sql_forge_runtime_category_id = category_id;
+            let __sql_forge_result_flag_amount: bool = true;
+            let __sql_forge_result_flag_first_name: bool = false;
             let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
                 "",
             );
             __builder.push("\n        SELECT ");
-            match __enhanced_result_flag_amount {
+            match __sql_forge_result_flag_amount {
                 true => {
                     __builder.push("COUNT(*)");
                 }
@@ -4281,19 +4281,19 @@ fn multiple_results_scalar_key() {
                 }
             }
             __builder.push("\n        FROM items\n        WHERE items.category_id = ");
-            __builder.push_bind(__enhanced_runtime_category_id);
+            __builder.push_bind(__sql_forge_runtime_category_id);
             __builder.push("\n        ");
             let __sql_forge_value_amount = __SqlForgeQuery_amount {
                 inner: __builder,
             };
-            let __enhanced_runtime_category_id = category_id;
-            let __enhanced_result_flag_amount: bool = false;
-            let __enhanced_result_flag_first_name: bool = true;
+            let __sql_forge_runtime_category_id = category_id;
+            let __sql_forge_result_flag_amount: bool = false;
+            let __sql_forge_result_flag_first_name: bool = true;
             let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
                 "",
             );
             __builder.push("\n        SELECT ");
-            match __enhanced_result_flag_amount {
+            match __sql_forge_result_flag_amount {
                 true => {
                     __builder.push("COUNT(*)");
                 }
@@ -4302,7 +4302,7 @@ fn multiple_results_scalar_key() {
                 }
             }
             __builder.push("\n        FROM items\n        WHERE items.category_id = ");
-            __builder.push_bind(__enhanced_runtime_category_id);
+            __builder.push_bind(__sql_forge_runtime_category_id);
             __builder.push("\n        ");
             let __sql_forge_value_first_name = __SqlForgeQuery_first_name {
                 inner: __builder,
@@ -4445,7 +4445,7 @@ fn combining_features_example() {
                 {
                     type __EnhancedModel = Product;
                     {
-                        let __enhanced_section_case_single_0_filter_category_cat = &(match &(category
+                        let __sql_forge_section_case_single_0_filter_category_cat = &(match &(category
                             .is_some())
                         {
                             true => &(category.unwrap()),
@@ -4458,8 +4458,8 @@ fn combining_features_example() {
                                 );
                             }
                         });
-                        let __enhanced_validator_arg_0 = __enhanced_section_case_single_0_filter_category_cat;
-                        let __enhanced_section_case_single_0_filter_price_min_price_min = &(match &(price_min
+                        let __sql_forge_validator_arg_0 = __sql_forge_section_case_single_0_filter_category_cat;
+                        let __sql_forge_section_case_single_0_filter_price_min_price_min = &(match &(price_min
                             .is_some())
                         {
                             true => &(price_min.unwrap()),
@@ -4472,8 +4472,8 @@ fn combining_features_example() {
                                 );
                             }
                         });
-                        let __enhanced_validator_arg_1 = __enhanced_section_case_single_0_filter_price_min_price_min;
-                        let __enhanced_section_case_single_0_filter_price_max_price_max = &(match &(price_max
+                        let __sql_forge_validator_arg_1 = __sql_forge_section_case_single_0_filter_price_min_price_min;
+                        let __sql_forge_section_case_single_0_filter_price_max_price_max = &(match &(price_max
                             .is_some())
                         {
                             true => &(price_max.unwrap()),
@@ -4486,8 +4486,8 @@ fn combining_features_example() {
                                 );
                             }
                         });
-                        let __enhanced_validator_arg_2 = __enhanced_section_case_single_0_filter_price_max_price_max;
-                        let __enhanced_section_case_single_0_limit_offset = &(match &(page_size
+                        let __sql_forge_validator_arg_2 = __sql_forge_section_case_single_0_filter_price_max_price_max;
+                        let __sql_forge_section_case_single_0_limit_offset = &(match &(page_size
                             .is_some())
                         {
                             true => &(page * page_size.unwrap()),
@@ -4500,7 +4500,7 @@ fn combining_features_example() {
                                 );
                             }
                         });
-                        let __enhanced_section_case_single_0_limit_size = &(match &(page_size
+                        let __sql_forge_section_case_single_0_limit_size = &(match &(page_size
                             .is_some())
                         {
                             true => &(page_size.unwrap()),
@@ -4513,18 +4513,18 @@ fn combining_features_example() {
                                 );
                             }
                         });
-                        let __enhanced_validator_arg_3 = __enhanced_section_case_single_0_limit_size;
-                        let __enhanced_validator_arg_4 = __enhanced_section_case_single_0_limit_offset;
+                        let __sql_forge_validator_arg_3 = __sql_forge_section_case_single_0_limit_size;
+                        let __sql_forge_validator_arg_4 = __sql_forge_section_case_single_0_limit_offset;
                         let _ = {
                             {
                                 #[allow(clippy::all)]
                                 {
                                     use ::sqlx::Arguments as _;
-                                    let arg0 = &(__enhanced_validator_arg_0);
-                                    let arg1 = &(__enhanced_validator_arg_1);
-                                    let arg2 = &(__enhanced_validator_arg_2);
-                                    let arg3 = &(__enhanced_validator_arg_3);
-                                    let arg4 = &(__enhanced_validator_arg_4);
+                                    let arg0 = &(__sql_forge_validator_arg_0);
+                                    let arg1 = &(__sql_forge_validator_arg_1);
+                                    let arg2 = &(__sql_forge_validator_arg_2);
+                                    let arg3 = &(__sql_forge_validator_arg_3);
+                                    let arg4 = &(__sql_forge_validator_arg_4);
                                     let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
@@ -4660,7 +4660,7 @@ fn combining_features_example() {
                         };
                     }
                     {
-                        let __enhanced_section_case_single_2_filter_category_cat = &(match &(category
+                        let __sql_forge_section_case_single_2_filter_category_cat = &(match &(category
                             .is_some())
                         {
                             true => &(category.unwrap()),
@@ -4673,8 +4673,8 @@ fn combining_features_example() {
                                 );
                             }
                         });
-                        let __enhanced_validator_arg_0 = __enhanced_section_case_single_2_filter_category_cat;
-                        let __enhanced_section_case_single_2_filter_price_min_price_min = &(match &(price_min
+                        let __sql_forge_validator_arg_0 = __sql_forge_section_case_single_2_filter_category_cat;
+                        let __sql_forge_section_case_single_2_filter_price_min_price_min = &(match &(price_min
                             .is_some())
                         {
                             true => &(price_min.unwrap()),
@@ -4687,8 +4687,8 @@ fn combining_features_example() {
                                 );
                             }
                         });
-                        let __enhanced_validator_arg_1 = __enhanced_section_case_single_2_filter_price_min_price_min;
-                        let __enhanced_section_case_single_2_filter_price_max_price_max = &(match &(price_max
+                        let __sql_forge_validator_arg_1 = __sql_forge_section_case_single_2_filter_price_min_price_min;
+                        let __sql_forge_section_case_single_2_filter_price_max_price_max = &(match &(price_max
                             .is_some())
                         {
                             true => &(price_max.unwrap()),
@@ -4701,8 +4701,8 @@ fn combining_features_example() {
                                 );
                             }
                         });
-                        let __enhanced_validator_arg_2 = __enhanced_section_case_single_2_filter_price_max_price_max;
-                        let __enhanced_section_case_single_2_limit_offset = &(match &(page_size
+                        let __sql_forge_validator_arg_2 = __sql_forge_section_case_single_2_filter_price_max_price_max;
+                        let __sql_forge_section_case_single_2_limit_offset = &(match &(page_size
                             .is_some())
                         {
                             true => &(page * page_size.unwrap()),
@@ -4715,7 +4715,7 @@ fn combining_features_example() {
                                 );
                             }
                         });
-                        let __enhanced_section_case_single_2_limit_size = &(match &(page_size
+                        let __sql_forge_section_case_single_2_limit_size = &(match &(page_size
                             .is_some())
                         {
                             true => &(page_size.unwrap()),
@@ -4728,18 +4728,18 @@ fn combining_features_example() {
                                 );
                             }
                         });
-                        let __enhanced_validator_arg_3 = __enhanced_section_case_single_2_limit_size;
-                        let __enhanced_validator_arg_4 = __enhanced_section_case_single_2_limit_offset;
+                        let __sql_forge_validator_arg_3 = __sql_forge_section_case_single_2_limit_size;
+                        let __sql_forge_validator_arg_4 = __sql_forge_section_case_single_2_limit_offset;
                         let _ = {
                             {
                                 #[allow(clippy::all)]
                                 {
                                     use ::sqlx::Arguments as _;
-                                    let arg0 = &(__enhanced_validator_arg_0);
-                                    let arg1 = &(__enhanced_validator_arg_1);
-                                    let arg2 = &(__enhanced_validator_arg_2);
-                                    let arg3 = &(__enhanced_validator_arg_3);
-                                    let arg4 = &(__enhanced_validator_arg_4);
+                                    let arg0 = &(__sql_forge_validator_arg_0);
+                                    let arg1 = &(__sql_forge_validator_arg_1);
+                                    let arg2 = &(__sql_forge_validator_arg_2);
+                                    let arg3 = &(__sql_forge_validator_arg_3);
+                                    let arg4 = &(__sql_forge_validator_arg_4);
                                     let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
@@ -4931,9 +4931,9 @@ fn combining_features_example() {
                 );
             match category.is_some() {
                 true => {
-                    let __enhanced_section_filter_category_0_cat = category.unwrap();
+                    let __sql_forge_section_filter_category_0_cat = category.unwrap();
                     __builder.push(" AND p.category = ");
-                    __builder.push_bind(__enhanced_section_filter_category_0_cat);
+                    __builder.push_bind(__sql_forge_section_filter_category_0_cat);
                     __builder.push(" ");
                 }
                 false => {}
@@ -4941,10 +4941,11 @@ fn combining_features_example() {
             __builder.push("\n        ");
             match price_min.is_some() {
                 true => {
-                    let __enhanced_section_filter_price_min_0_price_min = price_min
+                    let __sql_forge_section_filter_price_min_0_price_min = price_min
                         .unwrap();
                     __builder.push(" AND p.price >= ");
-                    __builder.push_bind(__enhanced_section_filter_price_min_0_price_min);
+                    __builder
+                        .push_bind(__sql_forge_section_filter_price_min_0_price_min);
                     __builder.push(" ");
                 }
                 false => {}
@@ -4952,10 +4953,11 @@ fn combining_features_example() {
             __builder.push("\n        ");
             match price_max.is_some() {
                 true => {
-                    let __enhanced_section_filter_price_max_0_price_max = price_max
+                    let __sql_forge_section_filter_price_max_0_price_max = price_max
                         .unwrap();
                     __builder.push(" AND p.price <= ");
-                    __builder.push_bind(__enhanced_section_filter_price_max_0_price_max);
+                    __builder
+                        .push_bind(__sql_forge_section_filter_price_max_0_price_max);
                     __builder.push(" ");
                 }
                 false => {}
@@ -4982,12 +4984,12 @@ fn combining_features_example() {
             __builder.push("\n        ");
             match page_size.is_some() {
                 true => {
-                    let __enhanced_section_limit_0_offset = page * page_size.unwrap();
-                    let __enhanced_section_limit_0_size = page_size.unwrap();
+                    let __sql_forge_section_limit_0_offset = page * page_size.unwrap();
+                    let __sql_forge_section_limit_0_size = page_size.unwrap();
                     __builder.push(" LIMIT ");
-                    __builder.push_bind(__enhanced_section_limit_0_size);
+                    __builder.push_bind(__sql_forge_section_limit_0_size);
                     __builder.push(" OFFSET ");
-                    __builder.push_bind(__enhanced_section_limit_0_offset);
+                    __builder.push_bind(__sql_forge_section_limit_0_offset);
                     __builder.push(" ");
                 }
                 false => {}
@@ -5098,15 +5100,15 @@ fn execute_only_query() {
         let pool = pool().await;
         {
             let _sql_forge_validator = || {
-                let __enhanced_top_level_id = &(1i64);
+                let __sql_forge_top_level_id = &(1i64);
                 {
                     {
-                        let __enhanced_validator_arg_0 = __enhanced_top_level_id;
+                        let __sql_forge_validator_arg_0 = __sql_forge_top_level_id;
                         let _ = {
                             #[allow(clippy::all)]
                             {
                                 use ::sqlx::Arguments as _;
-                                let arg0 = &(__enhanced_validator_arg_0);
+                                let arg0 = &(__sql_forge_validator_arg_0);
                                 let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                 query_args
                                     .reserve(
@@ -5165,12 +5167,12 @@ fn execute_only_query() {
                     __SqlForgeQuery_single::execute(self, executor)
                 }
             }
-            let __enhanced_runtime_id = 1i64;
+            let __sql_forge_runtime_id = 1i64;
             let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
                 "",
             );
             __builder.push("UPDATE products SET stock = 50 WHERE id = ");
-            __builder.push_bind(__enhanced_runtime_id);
+            __builder.push_bind(__sql_forge_runtime_id);
             let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
@@ -5181,15 +5183,15 @@ fn execute_only_query() {
             .expect("reset stock failed");
         {
             let _sql_forge_validator = || {
-                let __enhanced_top_level_id = &(1i64);
+                let __sql_forge_top_level_id = &(1i64);
                 {
                     {
-                        let __enhanced_validator_arg_0 = __enhanced_top_level_id;
+                        let __sql_forge_validator_arg_0 = __sql_forge_top_level_id;
                         let _ = {
                             #[allow(clippy::all)]
                             {
                                 use ::sqlx::Arguments as _;
-                                let arg0 = &(__enhanced_validator_arg_0);
+                                let arg0 = &(__sql_forge_validator_arg_0);
                                 let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                 query_args
                                     .reserve(
@@ -5251,13 +5253,13 @@ fn execute_only_query() {
                     __SqlForgeQuery_single::execute(self, executor)
                 }
             }
-            let __enhanced_runtime_id = 1i64;
+            let __sql_forge_runtime_id = 1i64;
             let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
                 "",
             );
             __builder
                 .push("\n        UPDATE products SET stock = stock + 1 WHERE id = ");
-            __builder.push_bind(__enhanced_runtime_id);
+            __builder.push_bind(__sql_forge_runtime_id);
             __builder.push("\n        ");
             let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
@@ -5339,15 +5341,15 @@ fn execute_only_insert_update_delete() {
         let pool = pool().await;
         {
             let _sql_forge_validator = || {
-                let __enhanced_top_level_category = &("Temporary");
+                let __sql_forge_top_level_category = &("Temporary");
                 {
                     {
-                        let __enhanced_validator_arg_0 = __enhanced_top_level_category;
+                        let __sql_forge_validator_arg_0 = __sql_forge_top_level_category;
                         let _ = {
                             #[allow(clippy::all)]
                             {
                                 use ::sqlx::Arguments as _;
-                                let arg0 = &(__enhanced_validator_arg_0);
+                                let arg0 = &(__sql_forge_validator_arg_0);
                                 let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                 query_args
                                     .reserve(
@@ -5406,12 +5408,12 @@ fn execute_only_insert_update_delete() {
                     __SqlForgeQuery_single::execute(self, executor)
                 }
             }
-            let __enhanced_runtime_category = "Temporary";
+            let __sql_forge_runtime_category = "Temporary";
             let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
                 "",
             );
             __builder.push("DELETE FROM products WHERE category = ");
-            __builder.push_bind(__enhanced_runtime_category);
+            __builder.push_bind(__sql_forge_runtime_category);
             let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
@@ -5425,28 +5427,28 @@ fn execute_only_insert_update_delete() {
         for (i, name) in names.iter().enumerate() {
             {
                 let _sql_forge_validator = || {
-                    let __enhanced_top_level_name = &(name);
-                    let __enhanced_top_level_price = &(price_inc(
+                    let __sql_forge_top_level_name = &(name);
+                    let __sql_forge_top_level_price = &(price_inc(
                         &base_price,
                         i as i64,
                         2,
                     ));
-                    let __enhanced_top_level_stock = &(10i64);
-                    let __enhanced_top_level_category = &("Temporary");
+                    let __sql_forge_top_level_stock = &(10i64);
+                    let __sql_forge_top_level_category = &("Temporary");
                     {
                         {
-                            let __enhanced_validator_arg_0 = __enhanced_top_level_name;
-                            let __enhanced_validator_arg_1 = __enhanced_top_level_price;
-                            let __enhanced_validator_arg_2 = __enhanced_top_level_stock;
-                            let __enhanced_validator_arg_3 = __enhanced_top_level_category;
+                            let __sql_forge_validator_arg_0 = __sql_forge_top_level_name;
+                            let __sql_forge_validator_arg_1 = __sql_forge_top_level_price;
+                            let __sql_forge_validator_arg_2 = __sql_forge_top_level_stock;
+                            let __sql_forge_validator_arg_3 = __sql_forge_top_level_category;
                             let _ = {
                                 #[allow(clippy::all)]
                                 {
                                     use ::sqlx::Arguments as _;
-                                    let arg0 = &(__enhanced_validator_arg_0);
-                                    let arg1 = &(__enhanced_validator_arg_1);
-                                    let arg2 = &(__enhanced_validator_arg_2);
-                                    let arg3 = &(__enhanced_validator_arg_3);
+                                    let arg0 = &(__sql_forge_validator_arg_0);
+                                    let arg1 = &(__sql_forge_validator_arg_1);
+                                    let arg2 = &(__sql_forge_validator_arg_2);
+                                    let arg3 = &(__sql_forge_validator_arg_3);
                                     let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
@@ -5529,10 +5531,10 @@ fn execute_only_insert_update_delete() {
                         __SqlForgeQuery_single::execute(self, executor)
                     }
                 }
-                let __enhanced_runtime_name = name;
-                let __enhanced_runtime_price = price_inc(&base_price, i as i64, 2);
-                let __enhanced_runtime_stock = 10i64;
-                let __enhanced_runtime_category = "Temporary";
+                let __sql_forge_runtime_name = name;
+                let __sql_forge_runtime_price = price_inc(&base_price, i as i64, 2);
+                let __sql_forge_runtime_stock = 10i64;
+                let __sql_forge_runtime_category = "Temporary";
                 let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
                     "",
                 );
@@ -5540,13 +5542,13 @@ fn execute_only_insert_update_delete() {
                     .push(
                         "\n            INSERT INTO products (name, price, stock, category)\n            VALUES (",
                     );
-                __builder.push_bind(__enhanced_runtime_name);
+                __builder.push_bind(__sql_forge_runtime_name);
                 __builder.push(", ");
-                __builder.push_bind(__enhanced_runtime_price);
+                __builder.push_bind(__sql_forge_runtime_price);
                 __builder.push(", ");
-                __builder.push_bind(__enhanced_runtime_stock);
+                __builder.push_bind(__sql_forge_runtime_stock);
                 __builder.push(", ");
-                __builder.push_bind(__enhanced_runtime_category);
+                __builder.push_bind(__sql_forge_runtime_category);
                 __builder.push(")\n            ");
                 let __sql_forge_value_single = __SqlForgeQuery_single {
                     inner: __builder,
@@ -5559,21 +5561,21 @@ fn execute_only_insert_update_delete() {
         }
         {
             let _sql_forge_validator = || {
-                let __enhanced_top_level_new_price = &(price_new(4999, 2));
-                let __enhanced_top_level_category = &("Temporary");
-                let __enhanced_top_level_name = &("Temp B");
+                let __sql_forge_top_level_new_price = &(price_new(4999, 2));
+                let __sql_forge_top_level_category = &("Temporary");
+                let __sql_forge_top_level_name = &("Temp B");
                 {
                     {
-                        let __enhanced_validator_arg_0 = __enhanced_top_level_new_price;
-                        let __enhanced_validator_arg_1 = __enhanced_top_level_category;
-                        let __enhanced_validator_arg_2 = __enhanced_top_level_name;
+                        let __sql_forge_validator_arg_0 = __sql_forge_top_level_new_price;
+                        let __sql_forge_validator_arg_1 = __sql_forge_top_level_category;
+                        let __sql_forge_validator_arg_2 = __sql_forge_top_level_name;
                         let _ = {
                             #[allow(clippy::all)]
                             {
                                 use ::sqlx::Arguments as _;
-                                let arg0 = &(__enhanced_validator_arg_0);
-                                let arg1 = &(__enhanced_validator_arg_1);
-                                let arg2 = &(__enhanced_validator_arg_2);
+                                let arg0 = &(__sql_forge_validator_arg_0);
+                                let arg1 = &(__sql_forge_validator_arg_1);
+                                let arg2 = &(__sql_forge_validator_arg_2);
                                 let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                 query_args
                                     .reserve(
@@ -5647,18 +5649,18 @@ fn execute_only_insert_update_delete() {
                     __SqlForgeQuery_single::execute(self, executor)
                 }
             }
-            let __enhanced_runtime_new_price = price_new(4999, 2);
-            let __enhanced_runtime_category = "Temporary";
-            let __enhanced_runtime_name = "Temp B";
+            let __sql_forge_runtime_new_price = price_new(4999, 2);
+            let __sql_forge_runtime_category = "Temporary";
+            let __sql_forge_runtime_name = "Temp B";
             let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
                 "",
             );
             __builder.push("\n        UPDATE products\n        SET price = ");
-            __builder.push_bind(__enhanced_runtime_new_price);
+            __builder.push_bind(__sql_forge_runtime_new_price);
             __builder.push("\n        WHERE category = ");
-            __builder.push_bind(__enhanced_runtime_category);
+            __builder.push_bind(__sql_forge_runtime_category);
             __builder.push(" AND name = ");
-            __builder.push_bind(__enhanced_runtime_name);
+            __builder.push_bind(__sql_forge_runtime_name);
             __builder.push("\n        ");
             let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
@@ -5690,17 +5692,17 @@ fn execute_only_insert_update_delete() {
         }
         let rows: Vec<TempRow> = {
             let _sql_forge_validator = || {
-                let __enhanced_top_level_cat = &("Temporary");
+                let __sql_forge_top_level_cat = &("Temporary");
                 {
                     type __EnhancedModel = TempRow;
                     {
-                        let __enhanced_validator_arg_0 = __enhanced_top_level_cat;
+                        let __sql_forge_validator_arg_0 = __sql_forge_top_level_cat;
                         let _ = {
                             {
                                 #[allow(clippy::all)]
                                 {
                                     use ::sqlx::Arguments as _;
-                                    let arg0 = &(__enhanced_validator_arg_0);
+                                    let arg0 = &(__sql_forge_validator_arg_0);
                                     let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
@@ -5844,7 +5846,7 @@ fn execute_only_insert_update_delete() {
                     __SqlForgeQuery_single::execute(self, executor)
                 }
             }
-            let __enhanced_runtime_cat = "Temporary";
+            let __sql_forge_runtime_cat = "Temporary";
             let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
                 "",
             );
@@ -5852,7 +5854,7 @@ fn execute_only_insert_update_delete() {
                 .push(
                     "\n        SELECT name, price FROM products\n        WHERE category = ",
                 );
-            __builder.push_bind(__enhanced_runtime_cat);
+            __builder.push_bind(__sql_forge_runtime_cat);
             __builder.push("\n        ORDER BY id\n        ");
             let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
@@ -5916,15 +5918,15 @@ fn execute_only_insert_update_delete() {
         };
         {
             let _sql_forge_validator = || {
-                let __enhanced_top_level_category = &("Temporary");
+                let __sql_forge_top_level_category = &("Temporary");
                 {
                     {
-                        let __enhanced_validator_arg_0 = __enhanced_top_level_category;
+                        let __sql_forge_validator_arg_0 = __sql_forge_top_level_category;
                         let _ = {
                             #[allow(clippy::all)]
                             {
                                 use ::sqlx::Arguments as _;
-                                let arg0 = &(__enhanced_validator_arg_0);
+                                let arg0 = &(__sql_forge_validator_arg_0);
                                 let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                 query_args
                                     .reserve(
@@ -5986,12 +5988,12 @@ fn execute_only_insert_update_delete() {
                     __SqlForgeQuery_single::execute(self, executor)
                 }
             }
-            let __enhanced_runtime_category = "Temporary";
+            let __sql_forge_runtime_category = "Temporary";
             let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
                 "",
             );
             __builder.push("\n        DELETE FROM products\n        WHERE category = ");
-            __builder.push_bind(__enhanced_runtime_category);
+            __builder.push_bind(__sql_forge_runtime_category);
             __builder.push("\n        ");
             let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
@@ -6003,15 +6005,15 @@ fn execute_only_insert_update_delete() {
             .expect("delete failed");
         let remaining: i64 = {
             let _sql_forge_validator = || {
-                let __enhanced_top_level_cat = &("Temporary");
+                let __sql_forge_top_level_cat = &("Temporary");
                 {
                     {
-                        let __enhanced_validator_arg_0 = __enhanced_top_level_cat;
+                        let __sql_forge_validator_arg_0 = __sql_forge_top_level_cat;
                         let _ = {
                             #[allow(clippy::all)]
                             {
                                 use ::sqlx::Arguments as _;
-                                let arg0 = &(__enhanced_validator_arg_0);
+                                let arg0 = &(__sql_forge_validator_arg_0);
                                 let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                 query_args
                                     .reserve(
@@ -6140,12 +6142,12 @@ fn execute_only_insert_update_delete() {
                     __SqlForgeQuery_single::execute(self, executor)
                 }
             }
-            let __enhanced_runtime_cat = "Temporary";
+            let __sql_forge_runtime_cat = "Temporary";
             let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
                 "",
             );
             __builder.push("SELECT COUNT(*) FROM products WHERE category = ");
-            __builder.push_bind(__enhanced_runtime_cat);
+            __builder.push_bind(__sql_forge_runtime_cat);
             let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
@@ -6238,15 +6240,15 @@ fn execute_batch() {
         let pool = pool().await;
         {
             let _sql_forge_validator = || {
-                let __enhanced_top_level_category = &("Batch");
+                let __sql_forge_top_level_category = &("Batch");
                 {
                     {
-                        let __enhanced_validator_arg_0 = __enhanced_top_level_category;
+                        let __sql_forge_validator_arg_0 = __sql_forge_top_level_category;
                         let _ = {
                             #[allow(clippy::all)]
                             {
                                 use ::sqlx::Arguments as _;
-                                let arg0 = &(__enhanced_validator_arg_0);
+                                let arg0 = &(__sql_forge_validator_arg_0);
                                 let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                 query_args
                                     .reserve(
@@ -6305,12 +6307,12 @@ fn execute_batch() {
                     __SqlForgeQuery_single::execute(self, executor)
                 }
             }
-            let __enhanced_runtime_category = "Batch";
+            let __sql_forge_runtime_category = "Batch";
             let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
                 "",
             );
             __builder.push("DELETE FROM products WHERE category = ");
-            __builder.push_bind(__enhanced_runtime_category);
+            __builder.push_bind(__sql_forge_runtime_category);
             let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
@@ -6475,17 +6477,17 @@ fn execute_batch() {
             .expect("batch insert failed");
         let rows: Vec<BatchItem> = {
             let _sql_forge_validator = || {
-                let __enhanced_top_level_cat = &("Batch");
+                let __sql_forge_top_level_cat = &("Batch");
                 {
                     type __EnhancedModel = BatchItem;
                     {
-                        let __enhanced_validator_arg_0 = __enhanced_top_level_cat;
+                        let __sql_forge_validator_arg_0 = __sql_forge_top_level_cat;
                         let _ = {
                             {
                                 #[allow(clippy::all)]
                                 {
                                     use ::sqlx::Arguments as _;
-                                    let arg0 = &(__enhanced_validator_arg_0);
+                                    let arg0 = &(__sql_forge_validator_arg_0);
                                     let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
@@ -6632,7 +6634,7 @@ fn execute_batch() {
                     __SqlForgeQuery_single::execute(self, executor)
                 }
             }
-            let __enhanced_runtime_cat = "Batch";
+            let __sql_forge_runtime_cat = "Batch";
             let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
                 "",
             );
@@ -6640,7 +6642,7 @@ fn execute_batch() {
                 .push(
                     "\n        SELECT name, price FROM products\n        WHERE category = ",
                 );
-            __builder.push_bind(__enhanced_runtime_cat);
+            __builder.push_bind(__sql_forge_runtime_cat);
             __builder.push("\n        ORDER BY id\n        ");
             let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
@@ -6743,15 +6745,15 @@ fn execute_batch() {
         };
         {
             let _sql_forge_validator = || {
-                let __enhanced_top_level_category = &("Batch");
+                let __sql_forge_top_level_category = &("Batch");
                 {
                     {
-                        let __enhanced_validator_arg_0 = __enhanced_top_level_category;
+                        let __sql_forge_validator_arg_0 = __sql_forge_top_level_category;
                         let _ = {
                             #[allow(clippy::all)]
                             {
                                 use ::sqlx::Arguments as _;
-                                let arg0 = &(__enhanced_validator_arg_0);
+                                let arg0 = &(__sql_forge_validator_arg_0);
                                 let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                 query_args
                                     .reserve(
@@ -6810,12 +6812,12 @@ fn execute_batch() {
                     __SqlForgeQuery_single::execute(self, executor)
                 }
             }
-            let __enhanced_runtime_category = "Batch";
+            let __sql_forge_runtime_category = "Batch";
             let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
                 "",
             );
             __builder.push("DELETE FROM products WHERE category = ");
-            __builder.push_bind(__enhanced_runtime_category);
+            __builder.push_bind(__sql_forge_runtime_category);
             let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
@@ -6904,15 +6906,15 @@ fn execute_batch_full() {
         let pool = pool().await;
         {
             let _sql_forge_validator = || {
-                let __enhanced_top_level_category = &("BatchFull");
+                let __sql_forge_top_level_category = &("BatchFull");
                 {
                     {
-                        let __enhanced_validator_arg_0 = __enhanced_top_level_category;
+                        let __sql_forge_validator_arg_0 = __sql_forge_top_level_category;
                         let _ = {
                             #[allow(clippy::all)]
                             {
                                 use ::sqlx::Arguments as _;
-                                let arg0 = &(__enhanced_validator_arg_0);
+                                let arg0 = &(__sql_forge_validator_arg_0);
                                 let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                 query_args
                                     .reserve(
@@ -6971,12 +6973,12 @@ fn execute_batch_full() {
                     __SqlForgeQuery_single::execute(self, executor)
                 }
             }
-            let __enhanced_runtime_category = "BatchFull";
+            let __sql_forge_runtime_category = "BatchFull";
             let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
                 "",
             );
             __builder.push("DELETE FROM products WHERE category = ");
-            __builder.push_bind(__enhanced_runtime_category);
+            __builder.push_bind(__sql_forge_runtime_category);
             let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
@@ -7187,17 +7189,17 @@ fn execute_batch_full() {
             .expect("batch insert failed");
         let rows: Vec<BatchFullItem> = {
             let _sql_forge_validator = || {
-                let __enhanced_top_level_cat = &("BatchFull");
+                let __sql_forge_top_level_cat = &("BatchFull");
                 {
                     type __EnhancedModel = BatchFullItem;
                     {
-                        let __enhanced_validator_arg_0 = __enhanced_top_level_cat;
+                        let __sql_forge_validator_arg_0 = __sql_forge_top_level_cat;
                         let _ = {
                             {
                                 #[allow(clippy::all)]
                                 {
                                     use ::sqlx::Arguments as _;
-                                    let arg0 = &(__enhanced_validator_arg_0);
+                                    let arg0 = &(__sql_forge_validator_arg_0);
                                     let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
@@ -7360,7 +7362,7 @@ fn execute_batch_full() {
                     __SqlForgeQuery_single::execute(self, executor)
                 }
             }
-            let __enhanced_runtime_cat = "BatchFull";
+            let __sql_forge_runtime_cat = "BatchFull";
             let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
                 "",
             );
@@ -7368,7 +7370,7 @@ fn execute_batch_full() {
                 .push(
                     "\n        SELECT name, price, stock, category FROM products\n        WHERE category = ",
                 );
-            __builder.push_bind(__enhanced_runtime_cat);
+            __builder.push_bind(__sql_forge_runtime_cat);
             __builder.push("\n        ORDER BY id\n        ");
             let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
@@ -7497,15 +7499,15 @@ fn execute_batch_full() {
         };
         {
             let _sql_forge_validator = || {
-                let __enhanced_top_level_category = &("BatchFull");
+                let __sql_forge_top_level_category = &("BatchFull");
                 {
                     {
-                        let __enhanced_validator_arg_0 = __enhanced_top_level_category;
+                        let __sql_forge_validator_arg_0 = __sql_forge_top_level_category;
                         let _ = {
                             #[allow(clippy::all)]
                             {
                                 use ::sqlx::Arguments as _;
-                                let arg0 = &(__enhanced_validator_arg_0);
+                                let arg0 = &(__sql_forge_validator_arg_0);
                                 let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                 query_args
                                     .reserve(
@@ -7564,12 +7566,12 @@ fn execute_batch_full() {
                     __SqlForgeQuery_single::execute(self, executor)
                 }
             }
-            let __enhanced_runtime_category = "BatchFull";
+            let __sql_forge_runtime_category = "BatchFull";
             let mut __builder: sqlx::QueryBuilder<sqlx::MySql> = sqlx::QueryBuilder::new(
                 "",
             );
             __builder.push("DELETE FROM products WHERE category = ");
-            __builder.push_bind(__enhanced_runtime_category);
+            __builder.push_bind(__sql_forge_runtime_category);
             let __sql_forge_value_single = __SqlForgeQuery_single {
                 inner: __builder,
             };
@@ -7630,7 +7632,7 @@ fn section_match_bound_variable_no_warning() {
                 {
                     type __EnhancedModel = Product;
                     {
-                        let __enhanced_section_case_single_0_filter_price_max_price = &(match &(max_price) {
+                        let __sql_forge_section_case_single_0_filter_price_max_price = &(match &(max_price) {
                             Some(max_price) => {
                                 let _ = &max_price;
                                 max_price
@@ -7644,13 +7646,13 @@ fn section_match_bound_variable_no_warning() {
                                 );
                             }
                         });
-                        let __enhanced_validator_arg_0 = __enhanced_section_case_single_0_filter_price_max_price;
+                        let __sql_forge_validator_arg_0 = __sql_forge_section_case_single_0_filter_price_max_price;
                         let _ = {
                             {
                                 #[allow(clippy::all)]
                                 {
                                     use ::sqlx::Arguments as _;
-                                    let arg0 = &(__enhanced_validator_arg_0);
+                                    let arg0 = &(__sql_forge_validator_arg_0);
                                     let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
@@ -7873,9 +7875,10 @@ fn section_match_bound_variable_no_warning() {
                 Some(max_price) => {
                     ::core::hint::black_box(&max_price);
                     {
-                        let __enhanced_section_filter_price_0_max_price = max_price;
+                        let __sql_forge_section_filter_price_0_max_price = max_price;
                         __builder.push(" AND price <= ");
-                        __builder.push_bind(__enhanced_section_filter_price_0_max_price);
+                        __builder
+                            .push_bind(__sql_forge_section_filter_price_0_max_price);
                     }
                 }
                 None => {}
@@ -7947,7 +7950,7 @@ fn section_nested_match_outer_var_used() {
                 {
                     type __EnhancedModel = User;
                     {
-                        let __enhanced_section_case_single_0_limit_start = &(match &(limit_val) {
+                        let __sql_forge_section_case_single_0_limit_start = &(match &(limit_val) {
                             Some(limit) => {
                                 let _ = &limit;
                                 match &(start_val) {
@@ -7974,7 +7977,7 @@ fn section_nested_match_outer_var_used() {
                                 );
                             }
                         });
-                        let __enhanced_section_case_single_0_limit_limit = &(match &(limit_val) {
+                        let __sql_forge_section_case_single_0_limit_limit = &(match &(limit_val) {
                             Some(limit) => {
                                 let _ = &limit;
                                 match &(start_val) {
@@ -8001,15 +8004,15 @@ fn section_nested_match_outer_var_used() {
                                 );
                             }
                         });
-                        let __enhanced_validator_arg_0 = __enhanced_section_case_single_0_limit_limit;
-                        let __enhanced_validator_arg_1 = __enhanced_section_case_single_0_limit_start;
+                        let __sql_forge_validator_arg_0 = __sql_forge_section_case_single_0_limit_limit;
+                        let __sql_forge_validator_arg_1 = __sql_forge_section_case_single_0_limit_start;
                         let _ = {
                             {
                                 #[allow(clippy::all)]
                                 {
                                     use ::sqlx::Arguments as _;
-                                    let arg0 = &(__enhanced_validator_arg_0);
-                                    let arg1 = &(__enhanced_validator_arg_1);
+                                    let arg0 = &(__sql_forge_validator_arg_0);
+                                    let arg1 = &(__sql_forge_validator_arg_1);
                                     let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
@@ -8059,7 +8062,7 @@ fn section_nested_match_outer_var_used() {
                         };
                     }
                     {
-                        let __enhanced_section_case_single_1_limit_limit = &(match &(limit_val) {
+                        let __sql_forge_section_case_single_1_limit_limit = &(match &(limit_val) {
                             Some(limit) => {
                                 let _ = &limit;
                                 match &(start_val) {
@@ -8083,13 +8086,13 @@ fn section_nested_match_outer_var_used() {
                                 );
                             }
                         });
-                        let __enhanced_validator_arg_0 = __enhanced_section_case_single_1_limit_limit;
+                        let __sql_forge_validator_arg_0 = __sql_forge_section_case_single_1_limit_limit;
                         let _ = {
                             {
                                 #[allow(clippy::all)]
                                 {
                                     use ::sqlx::Arguments as _;
-                                    let arg0 = &(__enhanced_validator_arg_0);
+                                    let arg0 = &(__sql_forge_validator_arg_0);
                                     let mut query_args = <sqlx::mysql::MySql as ::sqlx::database::Database>::Arguments::default();
                                     query_args
                                         .reserve(
@@ -8282,19 +8285,19 @@ fn section_nested_match_outer_var_used() {
                         Some(start) => {
                             ::core::hint::black_box(&start);
                             {
-                                let __enhanced_section_limit_0_0_start = start;
-                                let __enhanced_section_limit_0_0_limit = limit;
+                                let __sql_forge_section_limit_0_0_start = start;
+                                let __sql_forge_section_limit_0_0_limit = limit;
                                 __builder.push(" LIMIT ");
-                                __builder.push_bind(__enhanced_section_limit_0_0_limit);
+                                __builder.push_bind(__sql_forge_section_limit_0_0_limit);
                                 __builder.push(" OFFSET ");
-                                __builder.push_bind(__enhanced_section_limit_0_0_start);
+                                __builder.push_bind(__sql_forge_section_limit_0_0_start);
                                 __builder.push(" ");
                             }
                         }
                         None => {
-                            let __enhanced_section_limit_0_1_limit = limit;
+                            let __sql_forge_section_limit_0_1_limit = limit;
                             __builder.push(" LIMIT ");
-                            __builder.push_bind(__enhanced_section_limit_0_1_limit);
+                            __builder.push_bind(__sql_forge_section_limit_0_1_limit);
                             __builder.push(" ");
                         }
                     }

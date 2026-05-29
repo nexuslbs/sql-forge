@@ -979,7 +979,28 @@ fn render_validator_text(
     (out_sql, occurrences)
 }
 
-/// Unwraps parenthesized, grouped, and single-expression block expressions.
+/// Recursively strips syntactic wrapper expressions to reach the inner expression.
+///
+/// # Wrapper kinds
+///
+/// | Variant          | Rust syntax           | When it appears                                |
+/// |------------------|-----------------------|------------------------------------------------|
+/// | `Expr::Paren`    | `(expr)`              | Parenthesized expression in source code. syn   |
+/// |                  |                       | preserves parens so tokens round-trip.         |
+/// | `Expr::Group`    | `{ expr }`            | *Compiler-inserted* invisible group. syn uses  |
+/// |                  |                       | this when a proc-macro receives braced tokens  |
+/// |                  |                       | containing a single expression as `proc_macro! |
+/// |                  |                       | { expr }`. Unlike `Paren`, `Group` does not    |
+/// |                  |                       | correspond to parens the user wrote.           |
+/// | `Expr::Block`    | `{ stmts }` or        | A real block expression the user wrote —       |
+/// |                  | `{ stmts; }`          | `{ x; y }`. Stripped only when it contains     |
+/// |                  |                       | exactly one `Stmt::Expr` without a trailing    |
+/// |                  |                       | semicolon. Multi-statement blocks and non-expr |
+/// |                  |                       | statements would change semantics if stripped, |
+/// |                  |                       | so they are returned as-is.                    |
+///
+/// Returns the original expression unchanged when none of these patterns match, making
+/// it safe to call unconditionally before pattern-matching against the expression kind.
 fn strip_expr(expr: &Expr) -> &Expr {
     match expr {
         Expr::Paren(ExprParen { expr, .. }) => strip_expr(expr),
@@ -1011,12 +1032,12 @@ fn extract_lit_str(expr: &Expr) -> Option<String> {
 // Preprocessing: {>key} compile-time result flags
 // =============================================================================
 
-/// Generates a `__enhanced_result_flag_{name}` identifier for `{>name}` result key flags.
+/// Generates a `__sql_forge_result_flag_{name}` identifier for `{>name}` result key flags.
 fn result_flag_ident(name: &str) -> syn::Ident {
-    format_ident!("__enhanced_result_flag_{}", name)
+    format_ident!("__sql_forge_result_flag_{}", name)
 }
 
-/// Replaces `{>key}` tokens inside braced groups with `__enhanced_result_flag_key`
+/// Replaces `{>key}` tokens inside braced groups with `__sql_forge_result_flag_key`
 /// identifiers. This is a preprocessing step so that the rest of the parser sees
 /// plain identifiers instead of braced groups it does not understand.
 fn preprocess_result_key_placeholders(input: TokenStream2) -> TokenStream2 {
@@ -1319,7 +1340,7 @@ fn expr_result_flag_key(expr: &Expr) -> Option<String> {
     match strip_expr(expr) {
         Expr::Path(path) if path.qself.is_none() && path.path.segments.len() == 1 => {
             let name = path.path.segments[0].ident.to_string();
-            name.strip_prefix("__enhanced_result_flag_")
+            name.strip_prefix("__sql_forge_result_flag_")
                 .map(|v| v.to_string())
         }
         _ => None,
@@ -1394,7 +1415,7 @@ fn build_param_bindings(
                     .to_compile_error()
                     .into());
                 }
-                let local_ident = format_ident!("__enhanced_{}_{}", prefix, key);
+                let local_ident = format_ident!("__sql_forge_{}_{}", prefix, key);
                 let expr = &entry.expr;
                 if for_validator {
                     bindings.push(quote! {
@@ -1409,12 +1430,12 @@ fn build_param_bindings(
             }
         }
         ParamsSource::Struct(expr) => {
-            let source_ident = format_ident!("__enhanced_source_{}", prefix);
+            let source_ident = format_ident!("__sql_forge_source_{}", prefix);
             bindings.push(quote! {
                 let #source_ident = &(#expr);
             });
             for name in used_param_names {
-                let local_ident = format_ident!("__enhanced_{}_{}", prefix, name);
+                let local_ident = format_ident!("__sql_forge_{}_{}", prefix, name);
                 let field_ident = format_ident!("{}", name);
                 if for_validator {
                     bindings.push(quote! {
@@ -1483,7 +1504,7 @@ fn render_validator_args(
 
         if is_list {
             for _ in 0..context.list_count {
-                let value_ident = format_ident!("__enhanced_validator_arg_{}", *arg_index);
+                let value_ident = format_ident!("__sql_forge_validator_arg_{}", *arg_index);
                 *arg_index += 1;
                 if context.use_dollar_params {
                     setup.push(quote! {
@@ -1505,7 +1526,7 @@ fn render_validator_args(
                 args.push(quote! { #value_ident });
             }
         } else {
-            let value_ident = format_ident!("__enhanced_validator_arg_{}", *arg_index);
+            let value_ident = format_ident!("__sql_forge_validator_arg_{}", *arg_index);
             *arg_index += 1;
             if context.use_dollar_params {
                 setup.push(quote! {
@@ -1553,9 +1574,9 @@ fn render_runtime_fragment(
 
                 if is_list {
                     steps.push(quote! {
-                        let __enhanced_values = #local_ident;
+                        let __sql_forge_values = #local_ident;
                         let mut __separated = __builder.separated(", ");
-                        for __value in __enhanced_values {
+                        for __value in __sql_forge_values {
                             __separated.push_bind(__value);
                         }
                     });
@@ -1775,12 +1796,12 @@ fn collect_used_param_names_in_sql(sql: &str) -> Vec<String> {
 /// database-specific placeholder: `?` for MySQL and SQLite, and `$1`, `$2`, ...
 /// for Postgres.
 ///
-/// **Inline map** – bind individual expressions:
+/// **Inline map**: bind individual expressions:
 /// ```rust,ignore
 /// sql_forge!(User, "SELECT ... WHERE id <= :max_id", ( :max_id = filter.max_id ))
 /// ```
 ///
-/// **Struct source** – field names are matched to `:name` placeholders automatically:
+/// **Struct source**: field names are matched to `:name` placeholders automatically:
 /// ```rust,ignore
 /// sql_forge!(User, "SELECT ... WHERE id <= :max_id LIMIT :limit", filter)
 /// ```
@@ -1979,7 +2000,7 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
         Err(err) => return err.to_compile_error().into(),
     };
 
-    // ---- Phase 2: Resolve database type (from macro arg or Cargo.toml) ----
+    // ---- Phase 2: Resolve database type (from macro arg, env var or Cargo.toml) ----
     let db = match db {
         Some(db) => db,
         None => match resolve_db_from_env() {
@@ -1993,19 +2014,10 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
     };
 
     let use_dollar_params = uses_dollar_params(&db);
-    let is_sqlite = if let syn::Type::Path(type_path) = &db {
-        type_path
-            .path
-            .segments
-            .last()
-            .is_some_and(|s| s.ident == "Sqlite")
-    } else {
-        false
-    };
-    let list_count: usize = if is_sqlite { 1 } else { 3 };
+    let list_count: usize = 3;
 
     // ---- Phase 3: Build result case definitions ----
-    // Each result case is (optional_key, model_type, optional_scalar_type).
+    // Each result case is (optional_key, optional_model_type, optional_scalar_type).
     // Scalar type is set for primitives and `scalar`-marked types.
     let result_cases: Vec<(Option<String>, Option<Type>, Option<Type>)> = match result {
         ResultSpec::None => {
@@ -2061,7 +2073,7 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
     let is_grouped_result = !group_result_keys.is_empty();
     let sql_span = sql.span();
 
-    // ---- Phase 4: Parse SQL into segments (text + {#section} slots) ----
+    // ---- Phase 4: Parse SQL into segments (text + {#section} + {( ..batch )} slots) ----
     let segments = match sql.into_segments() {
         Ok(segments) => segments,
         Err(msg) => {
@@ -2486,9 +2498,9 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
 
                                 if is_list {
                                     runtime_steps.push(quote! {
-                                        let __enhanced_values = #local_ident;
+                                        let __sql_forge_values = #local_ident;
                                         let mut __separated = __builder.separated(", ");
-                                        for __value in __enhanced_values {
+                                        for __value in __sql_forge_values {
                                             __separated.push_bind(__value);
                                         }
                                     });
@@ -2755,7 +2767,7 @@ pub fn sql_forge(input: TokenStream) -> TokenStream {
         }
     }
 
-    // ---- Phase 8: Emit the final token stream ----
+    // ---- Phase 9: Emit the final token stream ----
     let validator_tokens = quote! {
         let _sql_forge_validator = || {
             #( #validator_param_bindings )*
