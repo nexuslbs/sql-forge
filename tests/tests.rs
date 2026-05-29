@@ -769,10 +769,10 @@ async fn execute_batch_with_params() {
     .ok();
 
     let batch_items = vec![
-        // BatchItem {
-        //     name: "Batch A".to_string(),
-        //     price: price_new(9999, 2),
-        // },
+        BatchItem {
+            name: "Batch A".to_string(),
+            price: price_new(9999, 2),
+        },
         BatchItem {
             name: "Batch B".to_string(),
             price: price_new(4999, 2),
@@ -782,6 +782,11 @@ async fn execute_batch_with_params() {
             price: price_new(10001, 2),
         },
     ];
+    let batch_items = if batch_items.len() > 2 {
+        batch_items.into_iter().skip(1).collect()
+    } else {
+        batch_items
+    };
 
     sql_forge!(
         r#"

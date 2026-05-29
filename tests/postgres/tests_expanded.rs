@@ -8321,6 +8321,10 @@ fn execute_batch_with_params() {
                 ::alloc::boxed::Box::new_uninit(),
                 [
                     BatchItem {
+                        name: "Batch A".to_string(),
+                        price: price_new(9999, 2),
+                    },
+                    BatchItem {
                         name: "Batch B".to_string(),
                         price: price_new(4999, 2),
                     },
@@ -8331,6 +8335,11 @@ fn execute_batch_with_params() {
                 ],
             ),
         );
+        let batch_items = if batch_items.len() > 2 {
+            batch_items.into_iter().skip(1).collect()
+        } else {
+            batch_items
+        };
         {
             let _sql_forge_validator = || {
                 let __sql_forge_top_level_name = &("Batch A Param".to_string());
@@ -9110,9 +9119,9 @@ pub const execute_batch_full: test::TestDescAndFn = test::TestDescAndFn {
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 837usize,
+        start_line: 842usize,
         start_col: 10usize,
-        end_line: 837usize,
+        end_line: 842usize,
         end_col: 28usize,
         compile_fail: false,
         no_run: false,
@@ -10138,9 +10147,9 @@ pub const section_match_bound_variable_no_warning: test::TestDescAndFn = test::T
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 907usize,
+        start_line: 912usize,
         start_col: 10usize,
-        end_line: 907usize,
+        end_line: 912usize,
         end_col: 49usize,
         compile_fail: false,
         no_run: false,
@@ -10477,9 +10486,9 @@ pub const section_nested_match_outer_var_used: test::TestDescAndFn = test::TestD
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 934usize,
+        start_line: 939usize,
         start_col: 10usize,
-        end_line: 934usize,
+        end_line: 939usize,
         end_col: 45usize,
         compile_fail: false,
         no_run: false,
@@ -10969,9 +10978,9 @@ pub const execute_only_with_explicit_postgres_db: test::TestDescAndFn = test::Te
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 983usize,
+        start_line: 988usize,
         start_col: 10usize,
-        end_line: 983usize,
+        end_line: 988usize,
         end_col: 48usize,
         compile_fail: false,
         no_run: false,
@@ -11084,9 +11093,9 @@ pub const compile_fail: test::TestDescAndFn = test::TestDescAndFn {
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 1004usize,
+        start_line: 1009usize,
         start_col: 4usize,
-        end_line: 1004usize,
+        end_line: 1009usize,
         end_col: 16usize,
         compile_fail: false,
         no_run: false,
@@ -11115,9 +11124,9 @@ pub const compile_fail_specific: test::TestDescAndFn = test::TestDescAndFn {
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 1012usize,
+        start_line: 1017usize,
         start_col: 4usize,
-        end_line: 1012usize,
+        end_line: 1017usize,
         end_col: 25usize,
         compile_fail: false,
         no_run: false,
