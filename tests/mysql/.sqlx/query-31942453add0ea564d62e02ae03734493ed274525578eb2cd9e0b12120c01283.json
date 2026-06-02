@@ -1,0 +1,48 @@
+{
+  "db_name": "MySQL",
+  "query": "SELECT id, name FROM users WHERE 1=1  AND id <= 1  ORDER BY id",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": {
+          "type": "LongLong",
+          "flags": "NOT_NULL | PRIMARY_KEY | AUTO_INCREMENT",
+          "collation": 63,
+          "max_size": 20
+        },
+        "origin": {
+          "Table": {
+            "table": "sql_forge_test.users",
+            "name": "id"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": {
+          "type": "VarString",
+          "flags": "NOT_NULL | NO_DEFAULT_VALUE",
+          "collation": 255,
+          "max_size": 1020
+        },
+        "origin": {
+          "Table": {
+            "table": "sql_forge_test.users",
+            "name": "name"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "31942453add0ea564d62e02ae03734493ed274525578eb2cd9e0b12120c01283"
+}

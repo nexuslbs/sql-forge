@@ -398,6 +398,53 @@ fn parse_section_value(input: ParseStream<'_>, width: usize) -> syn::Result<Sect
         return Ok(SectionValue::Match { expr, arms });
     }
 
+    if input.peek(Token![if]) {
+        input.parse::<Token![if]>()?;
+
+        let (pat, expr) = if input.peek(Token![let]) {
+            // if let PAT = EXPR { value } else { value }
+            input.parse::<Token![let]>()?;
+            let pat: Pat = input.call(Pat::parse_single)?;
+            input.parse::<Token![=]>()?;
+            let expr: Expr = input.call(Expr::parse_without_eager_brace)?;
+            (pat, expr)
+        } else {
+            // if EXPR { value } else { value }
+            let expr: Expr = input.call(Expr::parse_without_eager_brace)?;
+            let pat: Pat = parse_quote! { true };
+            (pat, expr)
+        };
+
+        let true_content;
+        syn::braced!(true_content in input);
+        let true_value = parse_section_value(&true_content, width)?;
+        input.parse::<Token![else]>()?;
+
+        let false_value = if input.peek(Token![if]) {
+            parse_section_value(input, width)?
+        } else {
+            let false_content;
+            syn::braced!(false_content in input);
+            parse_section_value(&false_content, width)?
+        };
+
+        let wild_pat: Pat = parse_quote! { _ };
+
+        let arms = vec![
+            SectionMatchArm {
+                pat,
+                guard: None,
+                value: true_value,
+            },
+            SectionMatchArm {
+                pat: wild_pat,
+                guard: None,
+                value: false_value,
+            },
+        ];
+        return Ok(SectionValue::Match { expr, arms });
+    }
+
     if width == 1 {
         return Ok(SectionValue::Single(parse_section_fragment(input)?));
     }

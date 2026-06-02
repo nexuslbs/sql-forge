@@ -972,6 +972,174 @@ async fn section_nested_match_outer_var_used() {
     }
 }
 
+#[tokio::test]
+async fn section_if_let() {
+    let pool = pool().await;
+
+    let name: Option<String> = Some("Ali".to_string());
+
+    let users: Vec<User> = sql_forge!(
+        User,
+        "SELECT id, name FROM users WHERE 1=1 {#filter_name} ORDER BY id",
+        (
+            #filter_name = if let Some(n) = name {
+                (" AND name LIKE :name", ( :name = format!("%{}%", n) ))
+            } else {
+                ""
+            },
+        )
+    )
+    .fetch_all(&pool)
+    .await
+    .expect("section if let query failed");
+
+    assert!(!users.is_empty());
+    for user in &users {
+        assert!(user.name.contains("Ali"));
+    }
+}
+
+#[tokio::test]
+async fn section_if_let_none() {
+    let pool = pool().await;
+
+    let name: Option<String> = None;
+
+    let users: Vec<User> = sql_forge!(
+        User,
+        "SELECT id, name FROM users WHERE 1=1 {#filter_name} ORDER BY id",
+        (
+            #filter_name = if let Some(n) = name {
+                (" AND name LIKE :name", ( :name = format!("%{}%", n) ))
+            } else {
+                ""
+            },
+        )
+    )
+    .fetch_all(&pool)
+    .await
+    .expect("section if let none query failed");
+
+    assert!(!users.is_empty());
+}
+
+#[tokio::test]
+async fn section_if_runtime_bool() {
+    let pool = pool().await;
+
+    let filter_active = true;
+
+    let users: Vec<User> = sql_forge!(
+        User,
+        "SELECT id, name FROM users WHERE 1=1 {#filter} ORDER BY id",
+        (
+            #filter = if filter_active {
+                " AND id <= 3 "
+            } else {
+                " AND id <= 1 "
+            },
+        )
+    )
+    .fetch_all(&pool)
+    .await
+    .expect("section if runtime bool query failed");
+
+    assert_eq!(users.len(), 3);
+}
+
+#[tokio::test]
+async fn section_if_runtime_bool_false() {
+    let pool = pool().await;
+
+    let filter_active = false;
+
+    let users: Vec<User> = sql_forge!(
+        User,
+        "SELECT id, name FROM users WHERE 1=1 {#filter} ORDER BY id",
+        (
+            #filter = if filter_active {
+                " AND id <= 3 "
+            } else {
+                " AND id <= 1 "
+            },
+        )
+    )
+    .fetch_all(&pool)
+    .await
+    .expect("section if runtime bool false query failed");
+
+    assert_eq!(users.len(), 1);
+}
+
+#[tokio::test]
+async fn section_if_result_case() {
+    let pool = pool().await;
+
+    let category_id = 2i64;
+
+    let group = sql_forge!(
+        (
+            >amount = scalar i64,
+            >first_name = scalar String,
+        ),
+        r#"
+        SELECT {#fields}
+        FROM items
+        WHERE items.category_id = :category_id
+        "#,
+        ( :category_id = category_id ),
+        (
+            #fields = if {>amount} {
+                "COUNT(*)"
+            } else {
+                "items.name"
+            },
+        )
+    );
+
+    let count: i64 = group
+        .amount
+        .fetch_one(&pool)
+        .await
+        .expect("count query failed");
+    let first_name: String = group
+        .first_name
+        .fetch_one(&pool)
+        .await
+        .expect("first_name query failed");
+
+    assert_eq!(count, 1);
+    assert_eq!(first_name, "Rust Book");
+}
+
+#[tokio::test]
+async fn section_if_else_if_chain() {
+    let pool = pool().await;
+
+    let filter_kind: u8 = 2;
+
+    let users: Vec<User> = sql_forge!(
+        User,
+        "SELECT id, name FROM users WHERE 1=1 {#filter} ORDER BY id",
+        (
+            #filter = if filter_kind == 1 {
+                " AND id <= 1 "
+            } else if filter_kind == 2 {
+                " AND id <= 3 "
+            } else if filter_kind == 3 {
+                " AND id <= 4 "
+            } else {
+                " AND id <= 5 "
+            },
+        )
+    )
+    .fetch_all(&pool)
+    .await
+    .expect("section if else if chain query failed");
+
+    assert_eq!(users.len(), 3);
+}
+
 #[cfg(sql_forge_db_mysql)]
 #[tokio::test]
 async fn execute_only_with_explicit_mysql_db() {

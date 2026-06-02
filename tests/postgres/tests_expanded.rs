@@ -10970,6 +10970,2038 @@ fn section_nested_match_outer_var_used() {
     }
 }
 extern crate test;
+#[rustc_test_marker = "section_if_let"]
+#[doc(hidden)]
+pub const section_if_let: test::TestDescAndFn = test::TestDescAndFn {
+    desc: test::TestDesc {
+        name: test::StaticTestName("section_if_let"),
+        ignore: false,
+        ignore_message: ::core::option::Option::None,
+        source_file: "tests/tests.rs",
+        start_line: 976usize,
+        start_col: 10usize,
+        end_line: 976usize,
+        end_col: 24usize,
+        compile_fail: false,
+        no_run: false,
+        should_panic: test::ShouldPanic::No,
+        test_type: test::TestType::IntegrationTest,
+    },
+    testfn: test::StaticTestFn(
+        #[coverage(off)]
+        || test::assert_test_result(section_if_let()),
+    ),
+};
+fn section_if_let() {
+    let body = async {
+        let pool = pool().await;
+        let name: Option<String> = Some("Ali".to_string());
+        let users: Vec<User> = {
+            let _sql_forge_validator = || {
+                {
+                    type __SqlForgeModel = User;
+                    {
+                        let __sql_forge_section_case_single_0_filter_name_name = &(match &(name) {
+                            Some(n) => {
+                                let _ = &n;
+                                ::alloc::__export::must_use({
+                                    ::alloc::fmt::format(format_args!("%{0}%", n))
+                                })
+                            }
+                            _ => {
+                                ::core::panicking::panic_fmt(
+                                    format_args!(
+                                        "internal error: entered unreachable code: {0}",
+                                        format_args!("sql_forge!: validator arm mismatch"),
+                                    ),
+                                );
+                            }
+                        });
+                        let __sql_forge_validator_arg_0 = sql_forge::sql_forge_validator_value(
+                            __sql_forge_section_case_single_0_filter_name_name,
+                        );
+                        let _ = {
+                            {
+                                #[allow(clippy::all)]
+                                {
+                                    use ::sqlx::Arguments as _;
+                                    let arg0 = &(__sql_forge_validator_arg_0);
+                                    #[allow(clippy::missing_panics_doc, clippy::unreachable)]
+                                    if false {
+                                        use ::sqlx::ty_match::{
+                                            WrapSameExt as _, MatchBorrowExt as _,
+                                        };
+                                        let expr = ::sqlx::ty_match::dupe_value(arg0);
+                                        let ty_check = ::sqlx::ty_match::WrapSame::<
+                                            &str,
+                                            _,
+                                        >::new(&expr)
+                                            .wrap_same();
+                                        let (mut _ty_check, match_borrow) = ::sqlx::ty_match::MatchBorrow::new(
+                                            ty_check,
+                                            &expr,
+                                        );
+                                        _ty_check = match_borrow.match_borrow();
+                                        ::core::panicking::panic(
+                                            "internal error: entered unreachable code",
+                                        );
+                                    }
+                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
+                                    query_args
+                                        .reserve(
+                                            1usize,
+                                            0
+                                                + ::sqlx::encode::Encode::<
+                                                    sqlx::postgres::Postgres,
+                                                >::size_hint(arg0),
+                                        );
+                                    let query_args = ::core::result::Result::<
+                                        _,
+                                        ::sqlx::error::BoxDynError,
+                                    >::Ok(query_args)
+                                        .and_then(move |mut query_args| {
+                                            query_args.add(arg0).map(move |()| query_args)
+                                        });
+                                    ::sqlx::__query_with_result::<
+                                        sqlx::postgres::Postgres,
+                                        _,
+                                    >(
+                                            "SELECT id, name FROM users WHERE 1=1  AND name LIKE $1 ORDER BY id",
+                                            query_args,
+                                        )
+                                        .try_map(|row: sqlx::postgres::PgRow| {
+                                            use ::sqlx::Row as _;
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_id = row
+                                                .try_get_unchecked::<i64, _>(0usize)?
+                                                .into();
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_name = row
+                                                .try_get_unchecked::<String, _>(1usize)?
+                                                .into();
+                                            ::std::result::Result::Ok(__SqlForgeModel {
+                                                id: sqlx_query_as_id,
+                                                name: sqlx_query_as_name,
+                                            })
+                                        })
+                                }
+                            }
+                        };
+                    }
+                    {
+                        let _ = {
+                            {
+                                #[allow(clippy::all)]
+                                {
+                                    use ::sqlx::Arguments as _;
+                                    let query_args = ::core::result::Result::<
+                                        _,
+                                        ::sqlx::error::BoxDynError,
+                                    >::Ok(
+                                        <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default(),
+                                    );
+                                    ::sqlx::__query_with_result::<
+                                        sqlx::postgres::Postgres,
+                                        _,
+                                    >(
+                                            "SELECT id, name FROM users WHERE 1=1  ORDER BY id",
+                                            query_args,
+                                        )
+                                        .try_map(|row: sqlx::postgres::PgRow| {
+                                            use ::sqlx::Row as _;
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_id = row
+                                                .try_get_unchecked::<i64, _>(0usize)?
+                                                .into();
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_name = row
+                                                .try_get_unchecked::<String, _>(1usize)?
+                                                .into();
+                                            ::std::result::Result::Ok(__SqlForgeModel {
+                                                id: sqlx_query_as_id,
+                                                name: sqlx_query_as_name,
+                                            })
+                                        })
+                                }
+                            }
+                        };
+                    }
+                }
+            };
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
+            }
+            impl __SqlForgeQuery_single {
+                async fn fetch_all<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<Vec<User>, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres>,
+                {
+                    self.inner.build_query_as::<User>().fetch_all(executor).await
+                }
+                async fn fetch_one<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<User, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres>,
+                {
+                    self.inner.build_query_as::<User>().fetch_one(executor).await
+                }
+                async fn fetch_optional<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<Option<User>, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres>,
+                {
+                    self.inner.build_query_as::<User>().fetch_optional(executor).await
+                }
+                async fn execute<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<<sqlx::Postgres as sqlx::Database>::QueryResult, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres>,
+                {
+                    self.inner.build().execute(executor).await
+                }
+            }
+            impl sql_forge::SqlForgeQuery<User> for __SqlForgeQuery_single {
+                type Db = sqlx::Postgres;
+                fn fetch_all<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<Vec<User>, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres> + Send + 'e,
+                    sqlx::Postgres: 'e,
+                {
+                    __SqlForgeQuery_single::fetch_all(self, executor)
+                }
+                fn fetch_one<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<User, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres> + Send + 'e,
+                    sqlx::Postgres: 'e,
+                {
+                    __SqlForgeQuery_single::fetch_one(self, executor)
+                }
+                fn fetch_optional<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<Option<User>, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres> + Send + 'e,
+                    sqlx::Postgres: 'e,
+                {
+                    __SqlForgeQuery_single::fetch_optional(self, executor)
+                }
+                fn execute<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<
+                        <sqlx::Postgres as sqlx::Database>::QueryResult,
+                        sqlx::Error,
+                    >,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres> + Send + 'e,
+                    sqlx::Postgres: 'e,
+                {
+                    __SqlForgeQuery_single::execute(self, executor)
+                }
+            }
+            let mut __builder: sqlx::QueryBuilder<sqlx::Postgres> = sqlx::QueryBuilder::new(
+                "",
+            );
+            __builder.push("SELECT id, name FROM users WHERE 1=1 ");
+            match name {
+                Some(n) => {
+                    let __sql_forge_section_filter_name_0_name = ::alloc::__export::must_use({
+                        ::alloc::fmt::format(format_args!("%{0}%", n))
+                    });
+                    __builder.push(" AND name LIKE ");
+                    __builder.push_bind(__sql_forge_section_filter_name_0_name);
+                }
+                _ => {}
+            }
+            __builder.push(" ORDER BY id");
+            let __sql_forge_value_single = __SqlForgeQuery_single {
+                inner: __builder,
+            };
+            __sql_forge_value_single
+        }
+            .fetch_all(&pool)
+            .await
+            .expect("section if let query failed");
+        if !!users.is_empty() {
+            ::core::panicking::panic("assertion failed: !users.is_empty()")
+        }
+        for user in &users {
+            if !user.name.contains("Ali") {
+                ::core::panicking::panic("assertion failed: user.name.contains(\"Ali\")")
+            }
+        }
+    };
+    let mut body = body;
+    #[allow(unused_mut)]
+    let mut body = unsafe { ::tokio::macros::support::Pin::new_unchecked(&mut body) };
+    let body: ::core::pin::Pin<&mut dyn ::core::future::Future<Output = ()>> = body;
+    #[allow(
+        clippy::expect_used,
+        clippy::diverging_sub_expression,
+        clippy::needless_return,
+        clippy::unwrap_in_result
+    )]
+    {
+        use tokio::runtime::Builder;
+        return Builder::new_current_thread()
+            .enable_all()
+            .build()
+            .expect("Failed building the Runtime")
+            .block_on(body);
+    }
+}
+extern crate test;
+#[rustc_test_marker = "section_if_let_none"]
+#[doc(hidden)]
+pub const section_if_let_none: test::TestDescAndFn = test::TestDescAndFn {
+    desc: test::TestDesc {
+        name: test::StaticTestName("section_if_let_none"),
+        ignore: false,
+        ignore_message: ::core::option::Option::None,
+        source_file: "tests/tests.rs",
+        start_line: 1003usize,
+        start_col: 10usize,
+        end_line: 1003usize,
+        end_col: 29usize,
+        compile_fail: false,
+        no_run: false,
+        should_panic: test::ShouldPanic::No,
+        test_type: test::TestType::IntegrationTest,
+    },
+    testfn: test::StaticTestFn(
+        #[coverage(off)]
+        || test::assert_test_result(section_if_let_none()),
+    ),
+};
+fn section_if_let_none() {
+    let body = async {
+        let pool = pool().await;
+        let name: Option<String> = None;
+        let users: Vec<User> = {
+            let _sql_forge_validator = || {
+                {
+                    type __SqlForgeModel = User;
+                    {
+                        let __sql_forge_section_case_single_0_filter_name_name = &(match &(name) {
+                            Some(n) => {
+                                let _ = &n;
+                                ::alloc::__export::must_use({
+                                    ::alloc::fmt::format(format_args!("%{0}%", n))
+                                })
+                            }
+                            _ => {
+                                ::core::panicking::panic_fmt(
+                                    format_args!(
+                                        "internal error: entered unreachable code: {0}",
+                                        format_args!("sql_forge!: validator arm mismatch"),
+                                    ),
+                                );
+                            }
+                        });
+                        let __sql_forge_validator_arg_0 = sql_forge::sql_forge_validator_value(
+                            __sql_forge_section_case_single_0_filter_name_name,
+                        );
+                        let _ = {
+                            {
+                                #[allow(clippy::all)]
+                                {
+                                    use ::sqlx::Arguments as _;
+                                    let arg0 = &(__sql_forge_validator_arg_0);
+                                    #[allow(clippy::missing_panics_doc, clippy::unreachable)]
+                                    if false {
+                                        use ::sqlx::ty_match::{
+                                            WrapSameExt as _, MatchBorrowExt as _,
+                                        };
+                                        let expr = ::sqlx::ty_match::dupe_value(arg0);
+                                        let ty_check = ::sqlx::ty_match::WrapSame::<
+                                            &str,
+                                            _,
+                                        >::new(&expr)
+                                            .wrap_same();
+                                        let (mut _ty_check, match_borrow) = ::sqlx::ty_match::MatchBorrow::new(
+                                            ty_check,
+                                            &expr,
+                                        );
+                                        _ty_check = match_borrow.match_borrow();
+                                        ::core::panicking::panic(
+                                            "internal error: entered unreachable code",
+                                        );
+                                    }
+                                    let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
+                                    query_args
+                                        .reserve(
+                                            1usize,
+                                            0
+                                                + ::sqlx::encode::Encode::<
+                                                    sqlx::postgres::Postgres,
+                                                >::size_hint(arg0),
+                                        );
+                                    let query_args = ::core::result::Result::<
+                                        _,
+                                        ::sqlx::error::BoxDynError,
+                                    >::Ok(query_args)
+                                        .and_then(move |mut query_args| {
+                                            query_args.add(arg0).map(move |()| query_args)
+                                        });
+                                    ::sqlx::__query_with_result::<
+                                        sqlx::postgres::Postgres,
+                                        _,
+                                    >(
+                                            "SELECT id, name FROM users WHERE 1=1  AND name LIKE $1 ORDER BY id",
+                                            query_args,
+                                        )
+                                        .try_map(|row: sqlx::postgres::PgRow| {
+                                            use ::sqlx::Row as _;
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_id = row
+                                                .try_get_unchecked::<i64, _>(0usize)?
+                                                .into();
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_name = row
+                                                .try_get_unchecked::<String, _>(1usize)?
+                                                .into();
+                                            ::std::result::Result::Ok(__SqlForgeModel {
+                                                id: sqlx_query_as_id,
+                                                name: sqlx_query_as_name,
+                                            })
+                                        })
+                                }
+                            }
+                        };
+                    }
+                    {
+                        let _ = {
+                            {
+                                #[allow(clippy::all)]
+                                {
+                                    use ::sqlx::Arguments as _;
+                                    let query_args = ::core::result::Result::<
+                                        _,
+                                        ::sqlx::error::BoxDynError,
+                                    >::Ok(
+                                        <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default(),
+                                    );
+                                    ::sqlx::__query_with_result::<
+                                        sqlx::postgres::Postgres,
+                                        _,
+                                    >(
+                                            "SELECT id, name FROM users WHERE 1=1  ORDER BY id",
+                                            query_args,
+                                        )
+                                        .try_map(|row: sqlx::postgres::PgRow| {
+                                            use ::sqlx::Row as _;
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_id = row
+                                                .try_get_unchecked::<i64, _>(0usize)?
+                                                .into();
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_name = row
+                                                .try_get_unchecked::<String, _>(1usize)?
+                                                .into();
+                                            ::std::result::Result::Ok(__SqlForgeModel {
+                                                id: sqlx_query_as_id,
+                                                name: sqlx_query_as_name,
+                                            })
+                                        })
+                                }
+                            }
+                        };
+                    }
+                }
+            };
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
+            }
+            impl __SqlForgeQuery_single {
+                async fn fetch_all<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<Vec<User>, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres>,
+                {
+                    self.inner.build_query_as::<User>().fetch_all(executor).await
+                }
+                async fn fetch_one<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<User, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres>,
+                {
+                    self.inner.build_query_as::<User>().fetch_one(executor).await
+                }
+                async fn fetch_optional<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<Option<User>, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres>,
+                {
+                    self.inner.build_query_as::<User>().fetch_optional(executor).await
+                }
+                async fn execute<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<<sqlx::Postgres as sqlx::Database>::QueryResult, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres>,
+                {
+                    self.inner.build().execute(executor).await
+                }
+            }
+            impl sql_forge::SqlForgeQuery<User> for __SqlForgeQuery_single {
+                type Db = sqlx::Postgres;
+                fn fetch_all<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<Vec<User>, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres> + Send + 'e,
+                    sqlx::Postgres: 'e,
+                {
+                    __SqlForgeQuery_single::fetch_all(self, executor)
+                }
+                fn fetch_one<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<User, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres> + Send + 'e,
+                    sqlx::Postgres: 'e,
+                {
+                    __SqlForgeQuery_single::fetch_one(self, executor)
+                }
+                fn fetch_optional<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<Option<User>, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres> + Send + 'e,
+                    sqlx::Postgres: 'e,
+                {
+                    __SqlForgeQuery_single::fetch_optional(self, executor)
+                }
+                fn execute<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<
+                        <sqlx::Postgres as sqlx::Database>::QueryResult,
+                        sqlx::Error,
+                    >,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres> + Send + 'e,
+                    sqlx::Postgres: 'e,
+                {
+                    __SqlForgeQuery_single::execute(self, executor)
+                }
+            }
+            let mut __builder: sqlx::QueryBuilder<sqlx::Postgres> = sqlx::QueryBuilder::new(
+                "",
+            );
+            __builder.push("SELECT id, name FROM users WHERE 1=1 ");
+            match name {
+                Some(n) => {
+                    let __sql_forge_section_filter_name_0_name = ::alloc::__export::must_use({
+                        ::alloc::fmt::format(format_args!("%{0}%", n))
+                    });
+                    __builder.push(" AND name LIKE ");
+                    __builder.push_bind(__sql_forge_section_filter_name_0_name);
+                }
+                _ => {}
+            }
+            __builder.push(" ORDER BY id");
+            let __sql_forge_value_single = __SqlForgeQuery_single {
+                inner: __builder,
+            };
+            __sql_forge_value_single
+        }
+            .fetch_all(&pool)
+            .await
+            .expect("section if let none query failed");
+        if !!users.is_empty() {
+            ::core::panicking::panic("assertion failed: !users.is_empty()")
+        }
+    };
+    let mut body = body;
+    #[allow(unused_mut)]
+    let mut body = unsafe { ::tokio::macros::support::Pin::new_unchecked(&mut body) };
+    let body: ::core::pin::Pin<&mut dyn ::core::future::Future<Output = ()>> = body;
+    #[allow(
+        clippy::expect_used,
+        clippy::diverging_sub_expression,
+        clippy::needless_return,
+        clippy::unwrap_in_result
+    )]
+    {
+        use tokio::runtime::Builder;
+        return Builder::new_current_thread()
+            .enable_all()
+            .build()
+            .expect("Failed building the Runtime")
+            .block_on(body);
+    }
+}
+extern crate test;
+#[rustc_test_marker = "section_if_runtime_bool"]
+#[doc(hidden)]
+pub const section_if_runtime_bool: test::TestDescAndFn = test::TestDescAndFn {
+    desc: test::TestDesc {
+        name: test::StaticTestName("section_if_runtime_bool"),
+        ignore: false,
+        ignore_message: ::core::option::Option::None,
+        source_file: "tests/tests.rs",
+        start_line: 1027usize,
+        start_col: 10usize,
+        end_line: 1027usize,
+        end_col: 33usize,
+        compile_fail: false,
+        no_run: false,
+        should_panic: test::ShouldPanic::No,
+        test_type: test::TestType::IntegrationTest,
+    },
+    testfn: test::StaticTestFn(
+        #[coverage(off)]
+        || test::assert_test_result(section_if_runtime_bool()),
+    ),
+};
+fn section_if_runtime_bool() {
+    let body = async {
+        let pool = pool().await;
+        let filter_active = true;
+        let users: Vec<User> = {
+            let _sql_forge_validator = || {
+                {
+                    type __SqlForgeModel = User;
+                    {
+                        let _ = {
+                            {
+                                #[allow(clippy::all)]
+                                {
+                                    use ::sqlx::Arguments as _;
+                                    let query_args = ::core::result::Result::<
+                                        _,
+                                        ::sqlx::error::BoxDynError,
+                                    >::Ok(
+                                        <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default(),
+                                    );
+                                    ::sqlx::__query_with_result::<
+                                        sqlx::postgres::Postgres,
+                                        _,
+                                    >(
+                                            "SELECT id, name FROM users WHERE 1=1  AND id <= 3  ORDER BY id",
+                                            query_args,
+                                        )
+                                        .try_map(|row: sqlx::postgres::PgRow| {
+                                            use ::sqlx::Row as _;
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_id = row
+                                                .try_get_unchecked::<i64, _>(0usize)?
+                                                .into();
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_name = row
+                                                .try_get_unchecked::<String, _>(1usize)?
+                                                .into();
+                                            ::std::result::Result::Ok(__SqlForgeModel {
+                                                id: sqlx_query_as_id,
+                                                name: sqlx_query_as_name,
+                                            })
+                                        })
+                                }
+                            }
+                        };
+                    }
+                    {
+                        let _ = {
+                            {
+                                #[allow(clippy::all)]
+                                {
+                                    use ::sqlx::Arguments as _;
+                                    let query_args = ::core::result::Result::<
+                                        _,
+                                        ::sqlx::error::BoxDynError,
+                                    >::Ok(
+                                        <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default(),
+                                    );
+                                    ::sqlx::__query_with_result::<
+                                        sqlx::postgres::Postgres,
+                                        _,
+                                    >(
+                                            "SELECT id, name FROM users WHERE 1=1  AND id <= 1  ORDER BY id",
+                                            query_args,
+                                        )
+                                        .try_map(|row: sqlx::postgres::PgRow| {
+                                            use ::sqlx::Row as _;
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_id = row
+                                                .try_get_unchecked::<i64, _>(0usize)?
+                                                .into();
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_name = row
+                                                .try_get_unchecked::<String, _>(1usize)?
+                                                .into();
+                                            ::std::result::Result::Ok(__SqlForgeModel {
+                                                id: sqlx_query_as_id,
+                                                name: sqlx_query_as_name,
+                                            })
+                                        })
+                                }
+                            }
+                        };
+                    }
+                }
+            };
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
+            }
+            impl __SqlForgeQuery_single {
+                async fn fetch_all<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<Vec<User>, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres>,
+                {
+                    self.inner.build_query_as::<User>().fetch_all(executor).await
+                }
+                async fn fetch_one<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<User, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres>,
+                {
+                    self.inner.build_query_as::<User>().fetch_one(executor).await
+                }
+                async fn fetch_optional<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<Option<User>, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres>,
+                {
+                    self.inner.build_query_as::<User>().fetch_optional(executor).await
+                }
+                async fn execute<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<<sqlx::Postgres as sqlx::Database>::QueryResult, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres>,
+                {
+                    self.inner.build().execute(executor).await
+                }
+            }
+            impl sql_forge::SqlForgeQuery<User> for __SqlForgeQuery_single {
+                type Db = sqlx::Postgres;
+                fn fetch_all<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<Vec<User>, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres> + Send + 'e,
+                    sqlx::Postgres: 'e,
+                {
+                    __SqlForgeQuery_single::fetch_all(self, executor)
+                }
+                fn fetch_one<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<User, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres> + Send + 'e,
+                    sqlx::Postgres: 'e,
+                {
+                    __SqlForgeQuery_single::fetch_one(self, executor)
+                }
+                fn fetch_optional<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<Option<User>, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres> + Send + 'e,
+                    sqlx::Postgres: 'e,
+                {
+                    __SqlForgeQuery_single::fetch_optional(self, executor)
+                }
+                fn execute<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<
+                        <sqlx::Postgres as sqlx::Database>::QueryResult,
+                        sqlx::Error,
+                    >,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres> + Send + 'e,
+                    sqlx::Postgres: 'e,
+                {
+                    __SqlForgeQuery_single::execute(self, executor)
+                }
+            }
+            let mut __builder: sqlx::QueryBuilder<sqlx::Postgres> = sqlx::QueryBuilder::new(
+                "",
+            );
+            __builder.push("SELECT id, name FROM users WHERE 1=1 ");
+            match filter_active {
+                true => {
+                    __builder.push(" AND id <= 3 ");
+                }
+                _ => {
+                    __builder.push(" AND id <= 1 ");
+                }
+            }
+            __builder.push(" ORDER BY id");
+            let __sql_forge_value_single = __SqlForgeQuery_single {
+                inner: __builder,
+            };
+            __sql_forge_value_single
+        }
+            .fetch_all(&pool)
+            .await
+            .expect("section if runtime bool query failed");
+        match (&users.len(), &3) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
+    };
+    let mut body = body;
+    #[allow(unused_mut)]
+    let mut body = unsafe { ::tokio::macros::support::Pin::new_unchecked(&mut body) };
+    let body: ::core::pin::Pin<&mut dyn ::core::future::Future<Output = ()>> = body;
+    #[allow(
+        clippy::expect_used,
+        clippy::diverging_sub_expression,
+        clippy::needless_return,
+        clippy::unwrap_in_result
+    )]
+    {
+        use tokio::runtime::Builder;
+        return Builder::new_current_thread()
+            .enable_all()
+            .build()
+            .expect("Failed building the Runtime")
+            .block_on(body);
+    }
+}
+extern crate test;
+#[rustc_test_marker = "section_if_runtime_bool_false"]
+#[doc(hidden)]
+pub const section_if_runtime_bool_false: test::TestDescAndFn = test::TestDescAndFn {
+    desc: test::TestDesc {
+        name: test::StaticTestName("section_if_runtime_bool_false"),
+        ignore: false,
+        ignore_message: ::core::option::Option::None,
+        source_file: "tests/tests.rs",
+        start_line: 1051usize,
+        start_col: 10usize,
+        end_line: 1051usize,
+        end_col: 39usize,
+        compile_fail: false,
+        no_run: false,
+        should_panic: test::ShouldPanic::No,
+        test_type: test::TestType::IntegrationTest,
+    },
+    testfn: test::StaticTestFn(
+        #[coverage(off)]
+        || test::assert_test_result(section_if_runtime_bool_false()),
+    ),
+};
+fn section_if_runtime_bool_false() {
+    let body = async {
+        let pool = pool().await;
+        let filter_active = false;
+        let users: Vec<User> = {
+            let _sql_forge_validator = || {
+                {
+                    type __SqlForgeModel = User;
+                    {
+                        let _ = {
+                            {
+                                #[allow(clippy::all)]
+                                {
+                                    use ::sqlx::Arguments as _;
+                                    let query_args = ::core::result::Result::<
+                                        _,
+                                        ::sqlx::error::BoxDynError,
+                                    >::Ok(
+                                        <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default(),
+                                    );
+                                    ::sqlx::__query_with_result::<
+                                        sqlx::postgres::Postgres,
+                                        _,
+                                    >(
+                                            "SELECT id, name FROM users WHERE 1=1  AND id <= 3  ORDER BY id",
+                                            query_args,
+                                        )
+                                        .try_map(|row: sqlx::postgres::PgRow| {
+                                            use ::sqlx::Row as _;
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_id = row
+                                                .try_get_unchecked::<i64, _>(0usize)?
+                                                .into();
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_name = row
+                                                .try_get_unchecked::<String, _>(1usize)?
+                                                .into();
+                                            ::std::result::Result::Ok(__SqlForgeModel {
+                                                id: sqlx_query_as_id,
+                                                name: sqlx_query_as_name,
+                                            })
+                                        })
+                                }
+                            }
+                        };
+                    }
+                    {
+                        let _ = {
+                            {
+                                #[allow(clippy::all)]
+                                {
+                                    use ::sqlx::Arguments as _;
+                                    let query_args = ::core::result::Result::<
+                                        _,
+                                        ::sqlx::error::BoxDynError,
+                                    >::Ok(
+                                        <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default(),
+                                    );
+                                    ::sqlx::__query_with_result::<
+                                        sqlx::postgres::Postgres,
+                                        _,
+                                    >(
+                                            "SELECT id, name FROM users WHERE 1=1  AND id <= 1  ORDER BY id",
+                                            query_args,
+                                        )
+                                        .try_map(|row: sqlx::postgres::PgRow| {
+                                            use ::sqlx::Row as _;
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_id = row
+                                                .try_get_unchecked::<i64, _>(0usize)?
+                                                .into();
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_name = row
+                                                .try_get_unchecked::<String, _>(1usize)?
+                                                .into();
+                                            ::std::result::Result::Ok(__SqlForgeModel {
+                                                id: sqlx_query_as_id,
+                                                name: sqlx_query_as_name,
+                                            })
+                                        })
+                                }
+                            }
+                        };
+                    }
+                }
+            };
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
+            }
+            impl __SqlForgeQuery_single {
+                async fn fetch_all<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<Vec<User>, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres>,
+                {
+                    self.inner.build_query_as::<User>().fetch_all(executor).await
+                }
+                async fn fetch_one<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<User, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres>,
+                {
+                    self.inner.build_query_as::<User>().fetch_one(executor).await
+                }
+                async fn fetch_optional<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<Option<User>, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres>,
+                {
+                    self.inner.build_query_as::<User>().fetch_optional(executor).await
+                }
+                async fn execute<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<<sqlx::Postgres as sqlx::Database>::QueryResult, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres>,
+                {
+                    self.inner.build().execute(executor).await
+                }
+            }
+            impl sql_forge::SqlForgeQuery<User> for __SqlForgeQuery_single {
+                type Db = sqlx::Postgres;
+                fn fetch_all<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<Vec<User>, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres> + Send + 'e,
+                    sqlx::Postgres: 'e,
+                {
+                    __SqlForgeQuery_single::fetch_all(self, executor)
+                }
+                fn fetch_one<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<User, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres> + Send + 'e,
+                    sqlx::Postgres: 'e,
+                {
+                    __SqlForgeQuery_single::fetch_one(self, executor)
+                }
+                fn fetch_optional<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<Option<User>, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres> + Send + 'e,
+                    sqlx::Postgres: 'e,
+                {
+                    __SqlForgeQuery_single::fetch_optional(self, executor)
+                }
+                fn execute<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<
+                        <sqlx::Postgres as sqlx::Database>::QueryResult,
+                        sqlx::Error,
+                    >,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres> + Send + 'e,
+                    sqlx::Postgres: 'e,
+                {
+                    __SqlForgeQuery_single::execute(self, executor)
+                }
+            }
+            let mut __builder: sqlx::QueryBuilder<sqlx::Postgres> = sqlx::QueryBuilder::new(
+                "",
+            );
+            __builder.push("SELECT id, name FROM users WHERE 1=1 ");
+            match filter_active {
+                true => {
+                    __builder.push(" AND id <= 3 ");
+                }
+                _ => {
+                    __builder.push(" AND id <= 1 ");
+                }
+            }
+            __builder.push(" ORDER BY id");
+            let __sql_forge_value_single = __SqlForgeQuery_single {
+                inner: __builder,
+            };
+            __sql_forge_value_single
+        }
+            .fetch_all(&pool)
+            .await
+            .expect("section if runtime bool false query failed");
+        match (&users.len(), &1) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
+    };
+    let mut body = body;
+    #[allow(unused_mut)]
+    let mut body = unsafe { ::tokio::macros::support::Pin::new_unchecked(&mut body) };
+    let body: ::core::pin::Pin<&mut dyn ::core::future::Future<Output = ()>> = body;
+    #[allow(
+        clippy::expect_used,
+        clippy::diverging_sub_expression,
+        clippy::needless_return,
+        clippy::unwrap_in_result
+    )]
+    {
+        use tokio::runtime::Builder;
+        return Builder::new_current_thread()
+            .enable_all()
+            .build()
+            .expect("Failed building the Runtime")
+            .block_on(body);
+    }
+}
+extern crate test;
+#[rustc_test_marker = "section_if_result_case"]
+#[doc(hidden)]
+pub const section_if_result_case: test::TestDescAndFn = test::TestDescAndFn {
+    desc: test::TestDesc {
+        name: test::StaticTestName("section_if_result_case"),
+        ignore: false,
+        ignore_message: ::core::option::Option::None,
+        source_file: "tests/tests.rs",
+        start_line: 1075usize,
+        start_col: 10usize,
+        end_line: 1075usize,
+        end_col: 32usize,
+        compile_fail: false,
+        no_run: false,
+        should_panic: test::ShouldPanic::No,
+        test_type: test::TestType::IntegrationTest,
+    },
+    testfn: test::StaticTestFn(
+        #[coverage(off)]
+        || test::assert_test_result(section_if_result_case()),
+    ),
+};
+fn section_if_result_case() {
+    let body = async {
+        let pool = pool().await;
+        let category_id = 2i64;
+        let group = {
+            let _sql_forge_validator = || {
+                let __sql_forge_top_level_category_id = &(category_id);
+                {
+                    let __sql_forge_result_flag_amount: bool = true;
+                    let __sql_forge_result_flag_first_name: bool = false;
+                    {
+                        let __sql_forge_validator_arg_0 = sql_forge::sql_forge_validator_value(
+                            __sql_forge_top_level_category_id,
+                        );
+                        let _ = {
+                            #[allow(clippy::all)]
+                            {
+                                use ::sqlx::Arguments as _;
+                                let arg0 = &(__sql_forge_validator_arg_0);
+                                #[allow(clippy::missing_panics_doc, clippy::unreachable)]
+                                if false {
+                                    use ::sqlx::ty_match::{
+                                        WrapSameExt as _, MatchBorrowExt as _,
+                                    };
+                                    let expr = ::sqlx::ty_match::dupe_value(arg0);
+                                    let ty_check = ::sqlx::ty_match::WrapSame::<
+                                        i64,
+                                        _,
+                                    >::new(&expr)
+                                        .wrap_same();
+                                    let (mut _ty_check, match_borrow) = ::sqlx::ty_match::MatchBorrow::new(
+                                        ty_check,
+                                        &expr,
+                                    );
+                                    _ty_check = match_borrow.match_borrow();
+                                    ::core::panicking::panic(
+                                        "internal error: entered unreachable code",
+                                    );
+                                }
+                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
+                                query_args
+                                    .reserve(
+                                        1usize,
+                                        0
+                                            + ::sqlx::encode::Encode::<
+                                                sqlx::postgres::Postgres,
+                                            >::size_hint(arg0),
+                                    );
+                                let query_args = ::core::result::Result::<
+                                    _,
+                                    ::sqlx::error::BoxDynError,
+                                >::Ok(query_args)
+                                    .and_then(move |mut query_args| {
+                                        query_args.add(arg0).map(move |()| query_args)
+                                    });
+                                ::sqlx::__query_scalar_with_result::<
+                                    sqlx::postgres::Postgres,
+                                    ::std::option::Option<i64>,
+                                    _,
+                                >(
+                                    "\n        SELECT COUNT(*)\n        FROM items\n        WHERE items.category_id = $1\n        ",
+                                    query_args,
+                                )
+                            }
+                        };
+                    }
+                    {
+                        let __sql_forge_validator_arg_0 = sql_forge::sql_forge_validator_value(
+                            __sql_forge_top_level_category_id,
+                        );
+                        let _ = {
+                            #[allow(clippy::all)]
+                            {
+                                use ::sqlx::Arguments as _;
+                                let arg0 = &(__sql_forge_validator_arg_0);
+                                #[allow(clippy::missing_panics_doc, clippy::unreachable)]
+                                if false {
+                                    use ::sqlx::ty_match::{
+                                        WrapSameExt as _, MatchBorrowExt as _,
+                                    };
+                                    let expr = ::sqlx::ty_match::dupe_value(arg0);
+                                    let ty_check = ::sqlx::ty_match::WrapSame::<
+                                        i64,
+                                        _,
+                                    >::new(&expr)
+                                        .wrap_same();
+                                    let (mut _ty_check, match_borrow) = ::sqlx::ty_match::MatchBorrow::new(
+                                        ty_check,
+                                        &expr,
+                                    );
+                                    _ty_check = match_borrow.match_borrow();
+                                    ::core::panicking::panic(
+                                        "internal error: entered unreachable code",
+                                    );
+                                }
+                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
+                                query_args
+                                    .reserve(
+                                        1usize,
+                                        0
+                                            + ::sqlx::encode::Encode::<
+                                                sqlx::postgres::Postgres,
+                                            >::size_hint(arg0),
+                                    );
+                                let query_args = ::core::result::Result::<
+                                    _,
+                                    ::sqlx::error::BoxDynError,
+                                >::Ok(query_args)
+                                    .and_then(move |mut query_args| {
+                                        query_args.add(arg0).map(move |()| query_args)
+                                    });
+                                ::sqlx::__query_scalar_with_result::<
+                                    sqlx::postgres::Postgres,
+                                    String,
+                                    _,
+                                >(
+                                    "\n        SELECT items.name\n        FROM items\n        WHERE items.category_id = $1\n        ",
+                                    query_args,
+                                )
+                            }
+                        };
+                    }
+                }
+                {
+                    let __sql_forge_result_flag_amount: bool = false;
+                    let __sql_forge_result_flag_first_name: bool = true;
+                    {
+                        let __sql_forge_validator_arg_0 = sql_forge::sql_forge_validator_value(
+                            __sql_forge_top_level_category_id,
+                        );
+                        let _ = {
+                            #[allow(clippy::all)]
+                            {
+                                use ::sqlx::Arguments as _;
+                                let arg0 = &(__sql_forge_validator_arg_0);
+                                #[allow(clippy::missing_panics_doc, clippy::unreachable)]
+                                if false {
+                                    use ::sqlx::ty_match::{
+                                        WrapSameExt as _, MatchBorrowExt as _,
+                                    };
+                                    let expr = ::sqlx::ty_match::dupe_value(arg0);
+                                    let ty_check = ::sqlx::ty_match::WrapSame::<
+                                        i64,
+                                        _,
+                                    >::new(&expr)
+                                        .wrap_same();
+                                    let (mut _ty_check, match_borrow) = ::sqlx::ty_match::MatchBorrow::new(
+                                        ty_check,
+                                        &expr,
+                                    );
+                                    _ty_check = match_borrow.match_borrow();
+                                    ::core::panicking::panic(
+                                        "internal error: entered unreachable code",
+                                    );
+                                }
+                                let mut query_args = <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default();
+                                query_args
+                                    .reserve(
+                                        1usize,
+                                        0
+                                            + ::sqlx::encode::Encode::<
+                                                sqlx::postgres::Postgres,
+                                            >::size_hint(arg0),
+                                    );
+                                let query_args = ::core::result::Result::<
+                                    _,
+                                    ::sqlx::error::BoxDynError,
+                                >::Ok(query_args)
+                                    .and_then(move |mut query_args| {
+                                        query_args.add(arg0).map(move |()| query_args)
+                                    });
+                                ::sqlx::__query_scalar_with_result::<
+                                    sqlx::postgres::Postgres,
+                                    String,
+                                    _,
+                                >(
+                                    "\n        SELECT items.name\n        FROM items\n        WHERE items.category_id = $1\n        ",
+                                    query_args,
+                                )
+                            }
+                        };
+                    }
+                }
+            };
+            struct __SqlForgeQuery_amount {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
+            }
+            impl __SqlForgeQuery_amount {
+                async fn fetch_all<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<Vec<i64>, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres>,
+                {
+                    self.inner.build_query_scalar::<i64>().fetch_all(executor).await
+                }
+                async fn fetch_one<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<i64, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres>,
+                {
+                    self.inner.build_query_scalar::<i64>().fetch_one(executor).await
+                }
+                async fn fetch_optional<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<Option<i64>, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres>,
+                {
+                    self.inner.build_query_scalar::<i64>().fetch_optional(executor).await
+                }
+                async fn execute<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<<sqlx::Postgres as sqlx::Database>::QueryResult, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres>,
+                {
+                    self.inner.build().execute(executor).await
+                }
+            }
+            impl sql_forge::SqlForgeQuery<i64> for __SqlForgeQuery_amount {
+                type Db = sqlx::Postgres;
+                fn fetch_all<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<Vec<i64>, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres> + Send + 'e,
+                    sqlx::Postgres: 'e,
+                {
+                    __SqlForgeQuery_amount::fetch_all(self, executor)
+                }
+                fn fetch_one<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<i64, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres> + Send + 'e,
+                    sqlx::Postgres: 'e,
+                {
+                    __SqlForgeQuery_amount::fetch_one(self, executor)
+                }
+                fn fetch_optional<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<Option<i64>, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres> + Send + 'e,
+                    sqlx::Postgres: 'e,
+                {
+                    __SqlForgeQuery_amount::fetch_optional(self, executor)
+                }
+                fn execute<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<
+                        <sqlx::Postgres as sqlx::Database>::QueryResult,
+                        sqlx::Error,
+                    >,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres> + Send + 'e,
+                    sqlx::Postgres: 'e,
+                {
+                    __SqlForgeQuery_amount::execute(self, executor)
+                }
+            }
+            struct __SqlForgeQuery_first_name {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
+            }
+            impl __SqlForgeQuery_first_name {
+                async fn fetch_all<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<Vec<String>, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres>,
+                {
+                    self.inner.build_query_scalar::<String>().fetch_all(executor).await
+                }
+                async fn fetch_one<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<String, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres>,
+                {
+                    self.inner.build_query_scalar::<String>().fetch_one(executor).await
+                }
+                async fn fetch_optional<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<Option<String>, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres>,
+                {
+                    self.inner
+                        .build_query_scalar::<String>()
+                        .fetch_optional(executor)
+                        .await
+                }
+                async fn execute<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<<sqlx::Postgres as sqlx::Database>::QueryResult, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres>,
+                {
+                    self.inner.build().execute(executor).await
+                }
+            }
+            impl sql_forge::SqlForgeQuery<String> for __SqlForgeQuery_first_name {
+                type Db = sqlx::Postgres;
+                fn fetch_all<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<Vec<String>, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres> + Send + 'e,
+                    sqlx::Postgres: 'e,
+                {
+                    __SqlForgeQuery_first_name::fetch_all(self, executor)
+                }
+                fn fetch_one<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<String, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres> + Send + 'e,
+                    sqlx::Postgres: 'e,
+                {
+                    __SqlForgeQuery_first_name::fetch_one(self, executor)
+                }
+                fn fetch_optional<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<Option<String>, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres> + Send + 'e,
+                    sqlx::Postgres: 'e,
+                {
+                    __SqlForgeQuery_first_name::fetch_optional(self, executor)
+                }
+                fn execute<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<
+                        <sqlx::Postgres as sqlx::Database>::QueryResult,
+                        sqlx::Error,
+                    >,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres> + Send + 'e,
+                    sqlx::Postgres: 'e,
+                {
+                    __SqlForgeQuery_first_name::execute(self, executor)
+                }
+            }
+            let __sql_forge_runtime_category_id = category_id;
+            let __sql_forge_result_flag_amount: bool = true;
+            let __sql_forge_result_flag_first_name: bool = false;
+            let mut __builder: sqlx::QueryBuilder<sqlx::Postgres> = sqlx::QueryBuilder::new(
+                "",
+            );
+            __builder.push("\n        SELECT ");
+            match __sql_forge_result_flag_amount {
+                true => {
+                    __builder.push("COUNT(*)");
+                }
+                _ => {
+                    __builder.push("items.name");
+                }
+            }
+            __builder.push("\n        FROM items\n        WHERE items.category_id = ");
+            __builder.push_bind(__sql_forge_runtime_category_id);
+            __builder.push("\n        ");
+            let __sql_forge_value_amount = __SqlForgeQuery_amount {
+                inner: __builder,
+            };
+            let __sql_forge_runtime_category_id = category_id;
+            let __sql_forge_result_flag_amount: bool = false;
+            let __sql_forge_result_flag_first_name: bool = true;
+            let mut __builder: sqlx::QueryBuilder<sqlx::Postgres> = sqlx::QueryBuilder::new(
+                "",
+            );
+            __builder.push("\n        SELECT ");
+            match __sql_forge_result_flag_amount {
+                true => {
+                    __builder.push("COUNT(*)");
+                }
+                _ => {
+                    __builder.push("items.name");
+                }
+            }
+            __builder.push("\n        FROM items\n        WHERE items.category_id = ");
+            __builder.push_bind(__sql_forge_runtime_category_id);
+            __builder.push("\n        ");
+            let __sql_forge_value_first_name = __SqlForgeQuery_first_name {
+                inner: __builder,
+            };
+            struct __SqlForgeQueryGroup {
+                amount: __SqlForgeQuery_amount,
+                first_name: __SqlForgeQuery_first_name,
+            }
+            impl __SqlForgeQueryGroup {
+                pub fn into_parts(
+                    self,
+                ) -> (__SqlForgeQuery_amount, __SqlForgeQuery_first_name) {
+                    (self.amount, self.first_name)
+                }
+            }
+            impl sql_forge::SqlForgeQueryGroup for __SqlForgeQueryGroup {
+                type Db = sqlx::Postgres;
+            }
+            struct __SqlForgeQueryGroupKey_amount;
+            impl sql_forge::SqlForgeQueryGroupGet<__SqlForgeQueryGroupKey_amount, i64>
+            for __SqlForgeQueryGroup {
+                type Query = __SqlForgeQuery_amount;
+                fn get(self, _: __SqlForgeQueryGroupKey_amount) -> Self::Query {
+                    self.amount
+                }
+            }
+            struct __SqlForgeQueryGroupKey_first_name;
+            impl sql_forge::SqlForgeQueryGroupGet<
+                __SqlForgeQueryGroupKey_first_name,
+                String,
+            > for __SqlForgeQueryGroup {
+                type Query = __SqlForgeQuery_first_name;
+                fn get(self, _: __SqlForgeQueryGroupKey_first_name) -> Self::Query {
+                    self.first_name
+                }
+            }
+            __SqlForgeQueryGroup {
+                amount: __sql_forge_value_amount,
+                first_name: __sql_forge_value_first_name,
+            }
+        };
+        let count: i64 = group
+            .amount
+            .fetch_one(&pool)
+            .await
+            .expect("count query failed");
+        let first_name: String = group
+            .first_name
+            .fetch_one(&pool)
+            .await
+            .expect("first_name query failed");
+        match (&count, &1) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
+        match (&first_name, &"Rust Book") {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
+    };
+    let mut body = body;
+    #[allow(unused_mut)]
+    let mut body = unsafe { ::tokio::macros::support::Pin::new_unchecked(&mut body) };
+    let body: ::core::pin::Pin<&mut dyn ::core::future::Future<Output = ()>> = body;
+    #[allow(
+        clippy::expect_used,
+        clippy::diverging_sub_expression,
+        clippy::needless_return,
+        clippy::unwrap_in_result
+    )]
+    {
+        use tokio::runtime::Builder;
+        return Builder::new_current_thread()
+            .enable_all()
+            .build()
+            .expect("Failed building the Runtime")
+            .block_on(body);
+    }
+}
+extern crate test;
+#[rustc_test_marker = "section_if_else_if_chain"]
+#[doc(hidden)]
+pub const section_if_else_if_chain: test::TestDescAndFn = test::TestDescAndFn {
+    desc: test::TestDesc {
+        name: test::StaticTestName("section_if_else_if_chain"),
+        ignore: false,
+        ignore_message: ::core::option::Option::None,
+        source_file: "tests/tests.rs",
+        start_line: 1116usize,
+        start_col: 10usize,
+        end_line: 1116usize,
+        end_col: 34usize,
+        compile_fail: false,
+        no_run: false,
+        should_panic: test::ShouldPanic::No,
+        test_type: test::TestType::IntegrationTest,
+    },
+    testfn: test::StaticTestFn(
+        #[coverage(off)]
+        || test::assert_test_result(section_if_else_if_chain()),
+    ),
+};
+fn section_if_else_if_chain() {
+    let body = async {
+        let pool = pool().await;
+        let filter_kind: u8 = 2;
+        let users: Vec<User> = {
+            let _sql_forge_validator = || {
+                {
+                    type __SqlForgeModel = User;
+                    {
+                        let _ = {
+                            {
+                                #[allow(clippy::all)]
+                                {
+                                    use ::sqlx::Arguments as _;
+                                    let query_args = ::core::result::Result::<
+                                        _,
+                                        ::sqlx::error::BoxDynError,
+                                    >::Ok(
+                                        <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default(),
+                                    );
+                                    ::sqlx::__query_with_result::<
+                                        sqlx::postgres::Postgres,
+                                        _,
+                                    >(
+                                            "SELECT id, name FROM users WHERE 1=1  AND id <= 1  ORDER BY id",
+                                            query_args,
+                                        )
+                                        .try_map(|row: sqlx::postgres::PgRow| {
+                                            use ::sqlx::Row as _;
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_id = row
+                                                .try_get_unchecked::<i64, _>(0usize)?
+                                                .into();
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_name = row
+                                                .try_get_unchecked::<String, _>(1usize)?
+                                                .into();
+                                            ::std::result::Result::Ok(__SqlForgeModel {
+                                                id: sqlx_query_as_id,
+                                                name: sqlx_query_as_name,
+                                            })
+                                        })
+                                }
+                            }
+                        };
+                    }
+                    {
+                        let _ = {
+                            {
+                                #[allow(clippy::all)]
+                                {
+                                    use ::sqlx::Arguments as _;
+                                    let query_args = ::core::result::Result::<
+                                        _,
+                                        ::sqlx::error::BoxDynError,
+                                    >::Ok(
+                                        <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default(),
+                                    );
+                                    ::sqlx::__query_with_result::<
+                                        sqlx::postgres::Postgres,
+                                        _,
+                                    >(
+                                            "SELECT id, name FROM users WHERE 1=1  AND id <= 3  ORDER BY id",
+                                            query_args,
+                                        )
+                                        .try_map(|row: sqlx::postgres::PgRow| {
+                                            use ::sqlx::Row as _;
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_id = row
+                                                .try_get_unchecked::<i64, _>(0usize)?
+                                                .into();
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_name = row
+                                                .try_get_unchecked::<String, _>(1usize)?
+                                                .into();
+                                            ::std::result::Result::Ok(__SqlForgeModel {
+                                                id: sqlx_query_as_id,
+                                                name: sqlx_query_as_name,
+                                            })
+                                        })
+                                }
+                            }
+                        };
+                    }
+                    {
+                        let _ = {
+                            {
+                                #[allow(clippy::all)]
+                                {
+                                    use ::sqlx::Arguments as _;
+                                    let query_args = ::core::result::Result::<
+                                        _,
+                                        ::sqlx::error::BoxDynError,
+                                    >::Ok(
+                                        <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default(),
+                                    );
+                                    ::sqlx::__query_with_result::<
+                                        sqlx::postgres::Postgres,
+                                        _,
+                                    >(
+                                            "SELECT id, name FROM users WHERE 1=1  AND id <= 4  ORDER BY id",
+                                            query_args,
+                                        )
+                                        .try_map(|row: sqlx::postgres::PgRow| {
+                                            use ::sqlx::Row as _;
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_id = row
+                                                .try_get_unchecked::<i64, _>(0usize)?
+                                                .into();
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_name = row
+                                                .try_get_unchecked::<String, _>(1usize)?
+                                                .into();
+                                            ::std::result::Result::Ok(__SqlForgeModel {
+                                                id: sqlx_query_as_id,
+                                                name: sqlx_query_as_name,
+                                            })
+                                        })
+                                }
+                            }
+                        };
+                    }
+                    {
+                        let _ = {
+                            {
+                                #[allow(clippy::all)]
+                                {
+                                    use ::sqlx::Arguments as _;
+                                    let query_args = ::core::result::Result::<
+                                        _,
+                                        ::sqlx::error::BoxDynError,
+                                    >::Ok(
+                                        <sqlx::postgres::Postgres as ::sqlx::database::Database>::Arguments::default(),
+                                    );
+                                    ::sqlx::__query_with_result::<
+                                        sqlx::postgres::Postgres,
+                                        _,
+                                    >(
+                                            "SELECT id, name FROM users WHERE 1=1  AND id <= 5  ORDER BY id",
+                                            query_args,
+                                        )
+                                        .try_map(|row: sqlx::postgres::PgRow| {
+                                            use ::sqlx::Row as _;
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_id = row
+                                                .try_get_unchecked::<i64, _>(0usize)?
+                                                .into();
+                                            #[allow(non_snake_case)]
+                                            let sqlx_query_as_name = row
+                                                .try_get_unchecked::<String, _>(1usize)?
+                                                .into();
+                                            ::std::result::Result::Ok(__SqlForgeModel {
+                                                id: sqlx_query_as_id,
+                                                name: sqlx_query_as_name,
+                                            })
+                                        })
+                                }
+                            }
+                        };
+                    }
+                }
+            };
+            struct __SqlForgeQuery_single {
+                inner: sqlx::QueryBuilder<sqlx::Postgres>,
+            }
+            impl __SqlForgeQuery_single {
+                async fn fetch_all<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<Vec<User>, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres>,
+                {
+                    self.inner.build_query_as::<User>().fetch_all(executor).await
+                }
+                async fn fetch_one<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<User, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres>,
+                {
+                    self.inner.build_query_as::<User>().fetch_one(executor).await
+                }
+                async fn fetch_optional<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<Option<User>, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres>,
+                {
+                    self.inner.build_query_as::<User>().fetch_optional(executor).await
+                }
+                async fn execute<'e, E>(
+                    mut self,
+                    executor: E,
+                ) -> Result<<sqlx::Postgres as sqlx::Database>::QueryResult, sqlx::Error>
+                where
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres>,
+                {
+                    self.inner.build().execute(executor).await
+                }
+            }
+            impl sql_forge::SqlForgeQuery<User> for __SqlForgeQuery_single {
+                type Db = sqlx::Postgres;
+                fn fetch_all<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<Vec<User>, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres> + Send + 'e,
+                    sqlx::Postgres: 'e,
+                {
+                    __SqlForgeQuery_single::fetch_all(self, executor)
+                }
+                fn fetch_one<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<User, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres> + Send + 'e,
+                    sqlx::Postgres: 'e,
+                {
+                    __SqlForgeQuery_single::fetch_one(self, executor)
+                }
+                fn fetch_optional<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<Option<User>, sqlx::Error>,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres> + Send + 'e,
+                    sqlx::Postgres: 'e,
+                {
+                    __SqlForgeQuery_single::fetch_optional(self, executor)
+                }
+                fn execute<'e, E>(
+                    self,
+                    executor: E,
+                ) -> impl std::future::Future<
+                    Output = Result<
+                        <sqlx::Postgres as sqlx::Database>::QueryResult,
+                        sqlx::Error,
+                    >,
+                > + Send + 'e
+                where
+                    Self: Sized + 'e,
+                    E: sqlx::Executor<'e, Database = sqlx::Postgres> + Send + 'e,
+                    sqlx::Postgres: 'e,
+                {
+                    __SqlForgeQuery_single::execute(self, executor)
+                }
+            }
+            let mut __builder: sqlx::QueryBuilder<sqlx::Postgres> = sqlx::QueryBuilder::new(
+                "",
+            );
+            __builder.push("SELECT id, name FROM users WHERE 1=1 ");
+            match filter_kind == 1 {
+                true => {
+                    __builder.push(" AND id <= 1 ");
+                }
+                _ => {
+                    match filter_kind == 2 {
+                        true => {
+                            __builder.push(" AND id <= 3 ");
+                        }
+                        _ => {
+                            match filter_kind == 3 {
+                                true => {
+                                    __builder.push(" AND id <= 4 ");
+                                }
+                                _ => {
+                                    __builder.push(" AND id <= 5 ");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            __builder.push(" ORDER BY id");
+            let __sql_forge_value_single = __SqlForgeQuery_single {
+                inner: __builder,
+            };
+            __sql_forge_value_single
+        }
+            .fetch_all(&pool)
+            .await
+            .expect("section if else if chain query failed");
+        match (&users.len(), &3) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
+    };
+    let mut body = body;
+    #[allow(unused_mut)]
+    let mut body = unsafe { ::tokio::macros::support::Pin::new_unchecked(&mut body) };
+    let body: ::core::pin::Pin<&mut dyn ::core::future::Future<Output = ()>> = body;
+    #[allow(
+        clippy::expect_used,
+        clippy::diverging_sub_expression,
+        clippy::needless_return,
+        clippy::unwrap_in_result
+    )]
+    {
+        use tokio::runtime::Builder;
+        return Builder::new_current_thread()
+            .enable_all()
+            .build()
+            .expect("Failed building the Runtime")
+            .block_on(body);
+    }
+}
+extern crate test;
 #[rustc_test_marker = "execute_only_with_explicit_postgres_db"]
 #[doc(hidden)]
 pub const execute_only_with_explicit_postgres_db: test::TestDescAndFn = test::TestDescAndFn {
@@ -10978,9 +13010,9 @@ pub const execute_only_with_explicit_postgres_db: test::TestDescAndFn = test::Te
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 988usize,
+        start_line: 1156usize,
         start_col: 10usize,
-        end_line: 988usize,
+        end_line: 1156usize,
         end_col: 48usize,
         compile_fail: false,
         no_run: false,
@@ -11093,9 +13125,9 @@ pub const compile_fail: test::TestDescAndFn = test::TestDescAndFn {
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 1009usize,
+        start_line: 1177usize,
         start_col: 4usize,
-        end_line: 1009usize,
+        end_line: 1177usize,
         end_col: 16usize,
         compile_fail: false,
         no_run: false,
@@ -11124,9 +13156,9 @@ pub const compile_fail_specific: test::TestDescAndFn = test::TestDescAndFn {
         ignore: false,
         ignore_message: ::core::option::Option::None,
         source_file: "tests/tests.rs",
-        start_line: 1017usize,
+        start_line: 1185usize,
         start_col: 4usize,
-        end_line: 1017usize,
+        end_line: 1185usize,
         end_col: 25usize,
         compile_fail: false,
         no_run: false,
@@ -11173,6 +13205,12 @@ pub fn main() -> () {
             &multiple_results_scalar_key,
             &scalar_output,
             &section_dynamic_where,
+            &section_if_else_if_chain,
+            &section_if_let,
+            &section_if_let_none,
+            &section_if_result_case,
+            &section_if_runtime_bool,
+            &section_if_runtime_bool_false,
             &section_match_bound_variable_no_warning,
             &section_nested_match_outer_var_used,
             &section_with_local_params,

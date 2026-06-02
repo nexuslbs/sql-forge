@@ -1,0 +1,48 @@
+{
+  "db_name": "MySQL",
+  "query": "SELECT id, name FROM users WHERE 1=1  AND name LIKE ? ORDER BY id",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": {
+          "type": "LongLong",
+          "flags": "NOT_NULL | PRIMARY_KEY | AUTO_INCREMENT",
+          "collation": 63,
+          "max_size": 20
+        },
+        "origin": {
+          "Table": {
+            "table": "sql_forge_test.users",
+            "name": "id"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": {
+          "type": "VarString",
+          "flags": "NOT_NULL | NO_DEFAULT_VALUE",
+          "collation": 255,
+          "max_size": 1020
+        },
+        "origin": {
+          "Table": {
+            "table": "sql_forge_test.users",
+            "name": "name"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "82bfa9a1f197eb4ca0eab438e67329cda3d028e1806b1634d78a6b833dd04da6"
+}
