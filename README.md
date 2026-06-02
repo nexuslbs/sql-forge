@@ -10,7 +10,7 @@ Write SQL with named parameters and optional sections that are swapped in at run
 
 ```toml
 [dependencies]
-sql-forge = "0.4.5"
+sql-forge = "0.4.6"
 sqlx = { version = "0.9.0", features = ["mysql", "runtime-tokio"] }  # or postgres / sqlite
 ```
 
@@ -147,6 +147,63 @@ sql_forge!(
     )
 )
 ```
+
+### Dynamic section with `if` / `if let` / `else if`
+
+As an alternative to `match`, sections support `if`, `if let`, and `else if` chains:
+
+```rust
+sql_forge!(
+    User,
+    "SELECT * FROM users WHERE 1=1 {#filter}",
+    (
+        // Simple boolean condition
+        #filter = if in_stock_only {
+            " AND p.stock > 0 "
+        } else {
+            ""
+        },
+    )
+)
+```
+
+`if let` unpacks an `Option` (or any enum) and binds the inner value for use in the branch:
+
+```rust
+sql_forge!(
+    User,
+    "SELECT * FROM users WHERE 1=1 {#filter_name} ORDER BY id",
+    (
+        #filter_name = if let Some(n) = name {
+            (" AND name LIKE :name", ( :name = format!("%{}%", n) ))
+        } else {
+            ""
+        },
+    )
+)
+```
+
+Any number of `else if` branches are supported:
+
+```rust
+sql_forge!(
+    User,
+    "SELECT * FROM users {#order}",
+    (
+        #order = if sort == "name_asc" {
+            " ORDER BY name ASC "
+        } else if sort == "name_desc" {
+            " ORDER BY name DESC "
+        } else if sort == "id_desc" {
+            " ORDER BY id DESC "
+        } else {
+            " ORDER BY id ASC "
+        },
+    )
+)
+```
+
+`if` and `if let` can also be used in grouped sections and with `{>key}` result flags, just like `match`.
 
 ### Section with local parameters
 
