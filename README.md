@@ -358,23 +358,6 @@ let users: Vec<User> = sql_forge!(
 .await?;
 ```
 
-### Transparent wrapper types (`#[sql_forge::sql_forge_transparent]`)
-
-When using a custom wrapper type as a parameter with `sql_forge!`, PostgreSQL requires the type to implement `SqlForgeValidatorValue` so that the compile-time validator can convert it to the underlying SQL-facing type. Annotate the type with `#[sql_forge::sql_forge_transparent]` to derive both `#[sqlx(transparent)]` and the required trait impl:
-
-```rust
-#[derive(Debug, PartialEq, Eq)]
-#[sql_forge::sql_forge_transparent]
-struct UserId(pub i64);
-```
-
-This expands to:
-
-- `#[derive(sqlx::Type)]` + `#[sqlx(transparent)]` is needed for all database backends (enables `push_bind`)
-- `impl SqlForgeValidatorValue<i64>` is needed only for PostgreSQL (strict type matching in `query_as!`)
-
-PostgreSQL requires this for **all** parameter types (single values and `IN (:ids[])` lists). MySQL and SQLite do not use the trait at all, as `#[sqlx(transparent)]` alone is sufficient for those backends.
-
 ---
 
 ## Batch inserts (`{( ... )}`)
