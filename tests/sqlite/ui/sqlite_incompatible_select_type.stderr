@@ -8,14 +8,14 @@ error[E0277]: the trait bound `i64: From<std::string::String>` is not satisfied
 12 | |     );
    | |_____^ the trait `From<std::string::String>` is not implemented for `i64`
    |
-   = help: `i64` implements trait `From<T>`:
-             From<bool>
-             From<crypto_bigint::int::Int<1>>
-             From<i16>
-             From<i32>
-             From<i8>
-             From<u16>
-             From<u32>
-             From<u8>
+   = help: the following other types implement trait `From<T>`:
+             `i64` implements `From<bool>`
+             `i64` implements `From<crypto_bigint::int::Int<1>>`
+             `i64` implements `From<i16>`
+             `i64` implements `From<i32>`
+             `i64` implements `From<i8>`
+             `i64` implements `From<u16>`
+             `i64` implements `From<u32>`
+             `i64` implements `From<u8>`
    = note: required for `std::string::String` to implement `Into<i64>`
    = note: this error originates in the macro `$crate::sqlx_macros::expand_query` which comes from the expansion of the macro `sql_forge` (in Nightly builds, run with -Z macro-backtrace for more info)

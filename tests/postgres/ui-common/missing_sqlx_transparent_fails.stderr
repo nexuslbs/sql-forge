@@ -1,4 +1,20 @@
-error[E0277]: the trait bound `RawId: SqlForgeValidatorValue<_>` is not satisfied
+error[E0308]: mismatched types
+  --> tests/postgres/tmp-ui/missing_sqlx_transparent_fails.rs:7:13
+   |
+ 7 |       let _ = sql_forge!(
+   |  _____________^
+ 8 | |         support::User,
+ 9 | |         "SELECT id, name FROM users WHERE id IN (:ids[])",
+10 | |         ( :ids = ids ),
+11 | |     );
+   | |     ^
+   | |     |
+   | |_____expected `i64`, found `&RawId`
+   |       expected due to the type of this binding
+   |
+   = note: this error originates in the macro `sql_forge` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `RawId: sqlx::Encode<'_, Postgres>` is not satisfied
   --> tests/postgres/tmp-ui/missing_sqlx_transparent_fails.rs:7:13
    |
  7 |       let _ = sql_forge!(
@@ -9,30 +25,67 @@ error[E0277]: the trait bound `RawId: SqlForgeValidatorValue<_>` is not satisfie
 11 | |     );
    | |_____^ unsatisfied trait bound
    |
-help: the trait `SqlForgeValidatorValue<_>` is not implemented for `RawId`
+help: the trait `sqlx::Encode<'_, Postgres>` is not implemented for `RawId`
   --> tests/postgres/tmp-ui/support/mod.rs
    |
    | pub struct RawId(pub i64);
    | ^^^^^^^^^^^^^^^^
-   = help: the following other types implement trait `SqlForgeValidatorValue<Expected>`:
-             `&'a str` implements `SqlForgeValidatorValue<&'a str>`
-             `&T` implements `SqlForgeValidatorValue<Expected>`
-             `Option<T>` implements `SqlForgeValidatorValue<Option<U>>`
-             `Vec<u8>` implements `SqlForgeValidatorValue<Vec<u8>>`
-             `bool` implements `SqlForgeValidatorValue<bool>`
-             `f32` implements `SqlForgeValidatorValue<f32>`
-             `f64` implements `SqlForgeValidatorValue<f64>`
-             `i16` implements `SqlForgeValidatorValue<i16>`
+   = help: the following other types implement trait `sqlx::Encode<'q, DB>`:
+             `&'a str` implements `sqlx::Encode<'a, sqlx::Any>`
+             `&'q JsonRawValue` implements `sqlx::Encode<'q, DB>`
+             `&'q [u8]` implements `sqlx::Encode<'q, sqlx::Any>`
+             `&T` implements `sqlx::Encode<'q, DB>`
+             `&[T]` implements `sqlx::Encode<'q, Postgres>`
+             `&[u8]` implements `sqlx::Encode<'_, MySql>`
+             `&[u8]` implements `sqlx::Encode<'_, Postgres>`
+             `&[u8]` implements `sqlx::Encode<'_, Sqlite>`
            and $N others
-note: required by a bound in `sql_forge::sql_forge_validator_value`
-  --> src/traits.rs
+   = note: required for `&RawId` to implement `sqlx::Encode<'_, Postgres>`
+   = note: this error originates in the macro `$crate::sqlx_macros::expand_query` which comes from the expansion of the macro `sql_forge` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `RawId: sqlx::Type<Postgres>` is not satisfied
+  --> tests/postgres/tmp-ui/missing_sqlx_transparent_fails.rs:7:13
    |
-   | pub fn sql_forge_validator_value<Expected, T>(value: &T) -> Expected
-   |        ------------------------- required by a bound in this function
-   | where
-   |     T: SqlForgeValidatorValue<Expected>,
-   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `sql_forge_validator_value`
-   = note: this error originates in the macro `sql_forge` (in Nightly builds, run with -Z macro-backtrace for more info)
+ 7 |       let _ = sql_forge!(
+   |  _____________^
+ 8 | |         support::User,
+ 9 | |         "SELECT id, name FROM users WHERE id IN (:ids[])",
+10 | |         ( :ids = ids ),
+11 | |     );
+   | |_____^ unsatisfied trait bound
+   |
+help: the trait `sqlx::Type<Postgres>` is not implemented for `RawId`
+  --> tests/postgres/tmp-ui/support/mod.rs
+   |
+   | pub struct RawId(pub i64);
+   | ^^^^^^^^^^^^^^^^
+   = help: the following other types implement trait `sqlx::Type<DB>`:
+             `&T` implements `sqlx::Type<DB>`
+             `()` implements `sqlx::Type<Postgres>`
+             `(T1, T2)` implements `sqlx::Type<Postgres>`
+             `(T1, T2, T3)` implements `sqlx::Type<Postgres>`
+             `(T1, T2, T3, T4)` implements `sqlx::Type<Postgres>`
+             `(T1, T2, T3, T4, T5)` implements `sqlx::Type<Postgres>`
+             `(T1, T2, T3, T4, T5, T6)` implements `sqlx::Type<Postgres>`
+             `(T1, T2, T3, T4, T5, T6, T7)` implements `sqlx::Type<Postgres>`
+           and $N others
+   = note: required for `&RawId` to implement `sqlx::Type<Postgres>`
+   = note: 1 redundant requirement hidden
+   = note: required for `&&RawId` to implement `sqlx::Type<Postgres>`
+note: required by a bound in `sqlx::Arguments::add`
+  --> $CARGO/sqlx-core-$VERSION/src/arguments.rs
+   |
+   |     fn add<'t, T>(&mut self, value: T) -> Result<(), BoxDynError>
+   |        --- required by a bound in this associated function
+   |     where
+   |         T: Encode<'t, Self::Database> + Type<Self::Database>;
+   |                                         ^^^^^^^^^^^^^^^^^^^^ required by this bound in `Arguments::add`
+   = note: this error originates in the macro `$crate::sqlx_macros::expand_query` which comes from the expansion of the macro `sql_forge` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use a unary tuple instead
+  --> $CARGO/sqlx-$VERSION/src/macros/mod.rs
+   |
+   |         ($crate::sqlx_macros::expand_query!(record = $out_struct, source = $query, args = [$($args)*]),)
+   |         +                                                                                             ++
 
 error[E0277]: the trait bound `RawId: sqlx::Encode<'_, Postgres>` is not satisfied
   --> tests/postgres/tmp-ui/missing_sqlx_transparent_fails.rs:7:13
