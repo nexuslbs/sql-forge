@@ -18,14 +18,14 @@ members = [
 ]
 
 [workspace.package]
-version = "0.4.6"
+version = "0.5.0"
 edition = "2021"
 license = "MIT"
 homepage = "https://github.com/lucasbasquerotto/sql-forge"
 repository = "https://github.com/lucasbasquerotto/sql-forge"
 
 [workspace.dependencies]
-sql-forge-macro = { version = "0.4.6", path = "./sql-forge-macro" }
+sql-forge-macro = { version = "0.5.0", path = "./sql-forge-macro" }
 
 [dependencies]
 sql-forge-macro.workspace = true

@@ -7,6 +7,7 @@ pub type DbPool = sqlx::Pool<AppDb>;
 
 type Price = i64;
 
+#[cfg(any(sql_forge_db_mysql, sql_forge_db_sqlite))]
 #[derive(Debug, PartialEq, Eq)]
 #[sql_forge::sql_forge_transparent]
 struct UserId(pub i64);
@@ -301,6 +302,7 @@ async fn list_parameter_in_clause() {
     assert_eq!(users[2].id, 5);
 }
 
+#[cfg(any(sql_forge_db_mysql, sql_forge_db_sqlite))]
 #[tokio::test]
 async fn list_parameter_in_main_sql_with_match_filter() {
     let pool = pool().await;
