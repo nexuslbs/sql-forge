@@ -1577,37 +1577,20 @@ fn render_validator_args(
             for _ in 0..context.list_count {
                 let value_ident = format_ident!("__sql_forge_validator_arg_{}", *arg_index);
                 *arg_index += 1;
-                if context.use_dollar_params {
-                    setup.push(quote! {
-                        let #value_ident = sql_forge::sql_forge_validator_value(
-                            (#local_ident)
-                                .as_slice()
-                                .first()
-                                .expect("sql_forge!: list parameters used in validation must have at least one representative element")
-                        );
-                    });
-                } else {
-                    setup.push(quote! {
-                        let #value_ident = (#local_ident)
-                            .as_slice()
-                            .first()
-                            .expect("sql_forge!: list parameters used in validation must have at least one representative element");
-                    });
-                }
+                setup.push(quote! {
+                    let #value_ident = (#local_ident)
+                        .as_slice()
+                        .first()
+                        .expect("sql_forge!: list parameters used in validation must have at least one representative element");
+                });
                 args.push(quote! { #value_ident });
             }
         } else {
             let value_ident = format_ident!("__sql_forge_validator_arg_{}", *arg_index);
             *arg_index += 1;
-            if context.use_dollar_params {
-                setup.push(quote! {
-                    let #value_ident = sql_forge::sql_forge_validator_value(#local_ident);
-                });
-            } else {
-                setup.push(quote! {
-                    let #value_ident = #local_ident;
-                });
-            }
+            setup.push(quote! {
+                let #value_ident = #local_ident;
+            });
             args.push(quote! { #value_ident });
         }
     }
@@ -2910,10 +2893,7 @@ pub fn db_type(input: TokenStream) -> TokenStream {
 /// `sql_forge!` parameters.
 ///
 /// Expands to `#[derive(sqlx::Type)]` + `#[sqlx(transparent)]` (needed for
-/// all database backends so the type implements `sqlx::Encode` + `sqlx::Type`)
-/// and additionally implements `SqlForgeValidatorValue<InnerType>`, which is
-/// **required for PostgreSQL** to pass compile-time parameter validation in
-/// `query_as!`. MySQL and SQLite do not need to use the trait.
+/// all database backends so the type implements `sqlx::Encode` + `sqlx::Type`).
 ///
 /// ```rust,ignore
 /// #[derive(Debug, PartialEq, Eq)]
@@ -2928,7 +2908,7 @@ pub fn sql_forge_transparent(_attr: TokenStream, item: TokenStream) -> TokenStre
     };
 
     let struct_name = &input.ident;
-    let inner_type = match &input.fields {
+    let _inner_type = match &input.fields {
         Fields::Unnamed(fields) if fields.unnamed.len() == 1 => &fields.unnamed.first().unwrap().ty,
         _ => {
             return syn::Error::new(
@@ -2952,12 +2932,6 @@ pub fn sql_forge_transparent(_attr: TokenStream, item: TokenStream) -> TokenStre
         #[derive(sqlx::Type)]
         #[sqlx(transparent)]
         #vis #struct_token #struct_name #generics #fields #semi_token
-
-        impl #generics sql_forge::SqlForgeValidatorValue<#inner_type> for #struct_name #generics {
-            fn sql_forge_validator_value(&self) -> #inner_type {
-                self.0.clone()
-            }
-        }
     };
 
     expanded.into()
